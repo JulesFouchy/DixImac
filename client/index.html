@@ -1,0 +1,51 @@
+<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+	const ctx = document.getElementById("ctx").getContext("2d")
+	const socket = io()
+
+	let myHand = [];
+	let myPlayerList = [];
+
+	const drawHand = () => {
+		for (let i = 0; i < myHand.length; ++i){
+			ctx.beginPath();
+			ctx.fillStyle = myHand[i];
+			const cardW = 50
+			const cardH = 150
+			const margin = 20
+			ctx.rect(15 + i*(cardW+margin), 500 - 15 - cardH, cardW, cardH)
+			ctx.fill()
+		}
+	}
+
+	const drawPlayerList = () => {
+		ctx.font = '25pt Calibri';
+		for (let i = 0; i < myPlayerList.length; ++i){
+			const player = myPlayerList[i]
+			ctx.fillStyle = player.color;
+			ctx.fillText(player.name, 30, 30 + 40 * i)
+		}
+	}
+
+	const draw = () => {
+		ctx.clearRect(0, 0, 500, 500)
+		drawPlayerList()
+		drawHand()
+	}
+
+	socket.on('HandChanged', hand => {
+		myHand = hand.cards
+		draw()
+	})
+
+	socket.on('PlayerListChanged', data => {
+		myPlayerList = JSON.parse(JSON.stringify(data.playerList))
+		draw()
+	})
+
+</script>
+
+<button onclick = "DrawCard()">Draw a card</button>
