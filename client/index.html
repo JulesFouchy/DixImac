@@ -10,6 +10,17 @@
 	let myPlayerList = [];
 	let myGameMasterIndex = 0;
 
+	const onMouseClick = (canvas, event) => {
+		// Get x and y
+	    const rect = canvas.getBoundingClientRect()
+	    const x = event.clientX - rect.left
+	    const y = event.clientY - rect.top
+	    //
+	    socket.emit('changeGameMaster')
+	}
+	const canvas = document.querySelector('canvas')
+	canvas.addEventListener('mousedown', e => onMouseClick(canvas, e))
+
 	const drawHand = () => {
 		for (let i = 0; i < myHand.length; ++i){
 			ctx.beginPath();

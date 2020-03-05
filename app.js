@@ -77,4 +77,6 @@ io.sockets.on('connection', socket => {
 		delete socketList[socket.id]
 		updatePlayerListsOfClients()
 	})
+	// On changeGameMaster
+	socket.on('changeGameMaster', () => changeGameMaster())
 })
