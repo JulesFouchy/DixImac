@@ -9,6 +9,15 @@ serv.listen(2000, () => console.log('Server started.'))
 
 const io = require('socket.io')(serv,{})
 
+// Utils
+
+const sendToAllSockets = (eventName, data) => {
+	for (const socket of Object.values(socketList)){
+		socket.emit(eventName, data)
+	}
+}
+
+
 //--------PLAYER------------
 function randomColor() {
   var letters = '0123456789ABCDEF';
@@ -36,17 +45,20 @@ const printPlayer = player => {
 }
 
 const updatePlayerListsOfClients = () => {
-	for (const socket of Object.values(socketList)){
-		socket.emit('PlayerListChanged', {playerList: Object.values(socketList).map(el=>({
+	sendToAllSockets('PlayerListChanged', {playerList: Object.values(socketList).map(el=>({
 			name: el.player.name,
 			color: el.player.color
-		}))})
-	}
+	}))})
 }
 
 // Game state
 
-let currentPlayerIndex = 0
+let currentGameMasterIndex = 0
+
+const changeGameMaster = () => {
+	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
+	console.log(currentGameMasterIndex)
+}
 
 // Sockets
 
@@ -77,3 +89,8 @@ io.sockets.on('connection', socket => {
 //	}
 //	console.log("-------------")
 //}, 1000/60.0 * 60 * 1)
+
+setInterval( () => {
+	changeGameMaster()
+	console.log("-------------")
+}, 1000/60.0 * 60 * 1)
