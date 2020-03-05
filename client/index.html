@@ -8,6 +8,7 @@
 
 	let myHand = [];
 	let myPlayerList = [];
+	let myGameMasterIndex = 0;
 
 	const drawHand = () => {
 		for (let i = 0; i < myHand.length; ++i){
@@ -27,6 +28,11 @@
 			const player = myPlayerList[i]
 			ctx.fillStyle = player.color;
 			ctx.fillText(player.name, 30, 30 + 40 * i)
+			if (i == myGameMasterIndex) {
+				ctx.beginPath();
+				ctx.arc(15, -10 + 30 + 40 * i, 10, 0, 2 * Math.PI);
+				ctx.fill();
+			}
 		}
 	}
 
@@ -46,8 +52,8 @@
 		draw()
 	})
 
-	socket.on('PlayerListChanged', data => {
-		myPlayerList = JSON.parse(JSON.stringify(data.playerList))
+	socket.on('GameMasterChanged', data => {
+		myGameMasterIndex = data.gameMasterIndex
 		draw()
 	})
 

@@ -92,5 +92,4 @@ io.sockets.on('connection', socket => {
 
 setInterval( () => {
 	changeGameMaster()
-	console.log("-------------")
 }, 1000/60.0 * 60 * 1)
