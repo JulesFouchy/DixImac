@@ -48,7 +48,7 @@
 	})
 
 	socket.on('PlayerListChanged', data => {
-		myPlayerList = JSON.parse(JSON.stringify(data.playerList))
+		myPlayerList = data.playerList
 		draw()
 	})
 
