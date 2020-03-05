@@ -32,16 +32,16 @@ const createPlayer = (name) => {
 	const player = {
 		name,
 		color : randomColor(),
-		cards:[]
+		hand:[]
 	}
 	for(var i = 0; i < 7; ++i)
-		player.cards.push(randomColor())
+		player.hand.push(randomColor())
 	return player
 }
 
 const printPlayer = player => {
 	console.log(player.name)
-	console.log(player.cards)
+	console.log(player.hand)
 }
 
 const updatePlayerListsOfClients = () => {
@@ -57,7 +57,7 @@ let currentGameMasterIndex = 0
 
 const changeGameMaster = () => {
 	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	console.log(currentGameMasterIndex)
+	sendToAllSockets('GameMasterChanged', {gameMasterIndex : currentGameMasterIndex})
 }
 
 // Sockets
@@ -70,7 +70,7 @@ io.sockets.on('connection', socket => {
 	socket.player = createPlayer('Player'+randomColor())
 	printPlayer(socket.player)
 	// Send hand
-	socket.emit('HandChanged', socket.player)
+	socket.emit('HandChanged', {hand: socket.player.hand})
 	// Update playerLists
 	console.log('**********************')
 	updatePlayerListsOfClients();

@@ -36,8 +36,13 @@
 		drawHand()
 	}
 
-	socket.on('HandChanged', hand => {
-		myHand = hand.cards
+	socket.on('HandChanged', data => {
+		myHand = data.hand
+		draw()
+	})
+
+	socket.on('PlayerListChanged', data => {
+		myPlayerList = JSON.parse(JSON.stringify(data.playerList))
 		draw()
 	})
 
