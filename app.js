@@ -17,16 +17,16 @@ const sendToAllSockets = (eventName, data) => {
 	}
 }
 
-
-//--------PLAYER------------
-function randomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
+const randomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
 }
+
+//--------PLAYER------------
 
 const createPlayer = (name) => {
 	const player = {
@@ -65,14 +65,12 @@ const changeGameMaster = () => {
 const socketList = {}
 
 io.sockets.on('connection', socket => {
-	console.log('Socket Connection : ' + socket.id)
 	socketList[socket.id] = socket
+	// Create player
 	socket.player = createPlayer('Player'+randomColor())
-	printPlayer(socket.player)
 	// Send hand
 	socket.emit('HandChanged', {hand: socket.player.hand})
 	// Update playerLists
-	console.log('**********************')
 	updatePlayerListsOfClients();
 	// On disconnect
 	socket.on('disconnect', () => {
@@ -80,16 +78,3 @@ io.sockets.on('connection', socket => {
 		updatePlayerListsOfClients()
 	})
 })
-
-//setInterval( () => {
-//	for (const socket of Object.values(socketList)){
-//		socket.emit('NbCards', {
-//			nbCards: socket.nbCards
-//		})
-//	}
-//	console.log("-------------")
-//}, 1000/60.0 * 60 * 1)
-
-setInterval( () => {
-	changeGameMaster()
-}, 1000/60.0 * 60 * 1)
