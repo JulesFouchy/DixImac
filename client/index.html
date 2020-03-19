@@ -1,10 +1,18 @@
 <canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
 
 <script src="/socket.io/socket.io.js"></script>
+<!---<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script><-->
 
 <script>
 	const ctx = document.getElementById("ctx").getContext("2d")
+	const canvas = document.querySelector('canvas')
 	const socket = io()
+
+	let img = new Image();
+	img.addEventListener('load', 
+		() => ctx.drawImage(img, 0, 0, 100, 100)
+	, false);
+	img.src = 'https://i.pinimg.com/originals/54/7a/9c/547a9cc6b93e10261f1dd8a8af474e03.jpg';
 
 	let myHand = [];
 	let myPlayerList = [];
@@ -18,7 +26,6 @@
 	    //
 	    socket.emit('changeGameMaster')
 	}
-	const canvas = document.querySelector('canvas')
 	canvas.addEventListener('mousedown', e => onMouseClick(canvas, e))
 
 	const drawHand = () => {

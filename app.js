@@ -9,6 +9,16 @@ serv.listen(2000, () => console.log('Server started.'))
 
 const io = require('socket.io')(serv,{})
 
+const fs = require("fs"), { createCanvas } = require("canvas")
+
+// CONST
+
+const cardW = 100
+const cardH = 150
+const cardSpacing = 50
+
+const NB_CARDS_PER_HAND = 7
+
 // Utils
 
 const sendToAllSockets = (eventName, data) => {
@@ -18,12 +28,48 @@ const sendToAllSockets = (eventName, data) => {
 }
 
 const randomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+  const letters = '0123456789ABCDEF'
+  let color = '#'
+  for (let i = 0; i < 6; i++)
+    color += letters[Math.floor(Math.random() * 16)]
+  return color
+}
+
+const Path = require('path');
+const deleteFolderRecursive = (path) => {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach((file, index) => {
+      const curPath = Path.join(path, file);
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
   }
-  return color;
+};
+
+// Card Factory
+
+const cardObject = (url) => ({
+	url
+})
+
+const canvasToDrawCards = createCanvas(cardW, cardH);
+const ctxDC = canvasToDrawCards.getContext("2d");
+
+const createCardFor = (playerID, cardID) => {
+	// Drawing
+	ctxDC.fillStyle = randomColor()
+	ctxDC.fillRect(0, 0, cardW, cardH)
+	// Write file
+	const buffer = canvasToDrawCards.toBuffer("image/png")
+	const folder = "images/"+playerID
+	const url = folder+"/"+cardID+".png"
+	fs.mkdirSync(folder, { recursive: true })
+	fs.writeFileSync(url, buffer)
+	return cardObject(url)
 }
 
 //--------PLAYER------------
@@ -68,12 +114,16 @@ io.sockets.on('connection', socket => {
 	socketList[socket.id] = socket
 	// Create player
 	socket.player = createPlayer('Player'+randomColor())
+	// Draw a hand
+	for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
+		createCardFor(''+socket.id, ''+i)
 	// Send hand
 	socket.emit('HandChanged', {hand: socket.player.hand})
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On disconnect
 	socket.on('disconnect', () => {
+		deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
 		updatePlayerListsOfClients()
 	})
