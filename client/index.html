@@ -12,8 +12,8 @@
 
 	let myHand = []
 	let myPlayerList = []
-	let myPlayerID;
-	let myGameMasterIndex = 0
+	let myPlayerID
+	let myGameMasterID
 	let selectedImgID = null
 
 	const onImgClick = (id) => {
@@ -21,6 +21,9 @@
 			selectedImgID = null
 		else
 			selectedImgID = id
+		socket.emit('SelectedCardChanged', {
+			cardIndex: id
+		})
 		draw()
 	}
 
@@ -45,7 +48,7 @@
 	const displayStateMessage = () => {
 		html.innerHTML += 
 		"<p>"
-			+ 
+			+ ((myGameMasterID === myPlayerID) ? "Pick a card, dear Game Master" : "Waiting for the Game Master to pick a card")
 		+"</p>"
 	}
 
@@ -82,8 +85,12 @@
 	})
 
 	socket.on('GameMasterChanged', data => {
-		myGameMasterIndex = data.gameMasterIndex
+		myGameMasterID = data.gameMasterID
 		draw()
+	})
+
+	socket.on('ThisIsYourID', data => {
+		myPlayerID = data.id
 	})
 
 </script>

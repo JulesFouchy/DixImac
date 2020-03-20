@@ -113,9 +113,13 @@ const updatePlayerListsOfClients = () => {
 
 let currentGameMasterIndex = 0
 
+const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
+
 const changeGameMaster = () => {
 	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	sendToAllSockets('GameMasterChanged', {gameMasterIndex : currentGameMasterIndex})
+	sendToAllSockets('GameMasterChanged', {
+		gameMasterID : gameMasterIdFromIndex(currentGameMasterIndex)
+	})
 }
 
 // Sockets
@@ -128,14 +132,22 @@ io.sockets.on('connection', socket => {
 	socket.player = createPlayer('Player'+randomColor())
 	// Send hand
 	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
+	// Send socket id and gameMasterID
+	socket.emit('ThisIsYourID', {id: socket.id})
+	socket.emit('GameMasterChanged', {
+		gameMasterID : Object.values(socketList)[currentGameMasterIndex].id
+	})
 	// Update playerLists
 	updatePlayerListsOfClients();
+	// On card selection
+	socket.on('SelectedCardChanged', (data) => {
+		if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex))
+			console.log(data.cardIndex)
+	})
 	// On disconnect
 	socket.on('disconnect', () => {
 		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
 		updatePlayerListsOfClients()
 	})
-	// On changeGameMaster
-	socket.on('changeGameMaster', () => changeGameMaster())
 })
