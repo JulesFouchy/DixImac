@@ -13,9 +13,8 @@ const fs = require("fs"), { createCanvas } = require("canvas")
 
 // CONST
 
-const cardW = 100
-const cardH = 150
-const cardSpacing = 50
+const cardW = 1000
+const cardH = 1500
 
 const NB_CARDS_PER_HAND = 7
 
@@ -59,7 +58,7 @@ const cardObject = (url) => ({
 const canvasToDrawCards = createCanvas(cardW, cardH);
 const ctxDC = canvasToDrawCards.getContext("2d");
 
-const createCardFor = (playerID, cardID) => {
+/*const createCardFor = (playerID, cardID) => {
 	// Drawing
 	ctxDC.fillStyle = randomColor()
 	ctxDC.fillRect(0, 0, cardW, cardH)
@@ -70,6 +69,21 @@ const createCardFor = (playerID, cardID) => {
 	fs.mkdirSync(folder, { recursive: true })
 	fs.writeFileSync(url, buffer)
 	return cardObject(url)
+}*/
+
+const drawCard = () => {
+	// Drawing
+	ctxDC.fillStyle = randomColor()
+	ctxDC.fillRect(0, 0, cardW, cardH)
+	// Return data encrypted as string
+	return canvasToDrawCards.toDataURL("image/png")
+}
+
+const drawHand = () => {
+	let res = []
+	for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
+		res.push(drawCard())
+	return res
 }
 
 //--------PLAYER------------
@@ -78,10 +92,8 @@ const createPlayer = (name) => {
 	const player = {
 		name,
 		color : randomColor(),
-		hand:[]
+		hand: drawHand()
 	}
-	for(var i = 0; i < 7; ++i)
-		player.hand.push(randomColor())
 	return player
 }
 
@@ -114,16 +126,13 @@ io.sockets.on('connection', socket => {
 	socketList[socket.id] = socket
 	// Create player
 	socket.player = createPlayer('Player'+randomColor())
-	// Draw a hand
-	for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
-		createCardFor(''+socket.id, ''+i)
 	// Send hand
-	socket.emit('HandChanged', {hand: socket.player.hand})
+	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On disconnect
 	socket.on('disconnect', () => {
-		deleteFolderRecursive("images/"+socket.id)
+		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
 		updatePlayerListsOfClients()
 	})

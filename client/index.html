@@ -1,47 +1,56 @@
-<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas>
+<!---<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas><-->
+<div id="main"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <!---<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script><-->
 
 <script>
-	const ctx = document.getElementById("ctx").getContext("2d")
-	const canvas = document.querySelector('canvas')
+	//const ctx = document.getElementById("ctx").getContext("2d")
+	//const canvas = document.querySelector('canvas')
+	const html = document.getElementById("main")
 	const socket = io()
 
-	let img = new Image();
-	img.addEventListener('load', 
-		() => ctx.drawImage(img, 0, 0, 100, 100)
-	, false);
-	img.src = 'https://i.pinimg.com/originals/54/7a/9c/547a9cc6b93e10261f1dd8a8af474e03.jpg';
+	let myHand = []
+	let myPlayerList = []
+	let myPlayerID;
+	let myGameMasterIndex = 0
+	let selectedImgID = null
 
-	let myHand = [];
-	let myPlayerList = [];
-	let myGameMasterIndex = 0;
-
-	const onMouseClick = (canvas, event) => {
-		// Get x and y
-	    const rect = canvas.getBoundingClientRect()
-	    const x = event.clientX - rect.left
-	    const y = event.clientY - rect.top
-	    //
-	    socket.emit('changeGameMaster')
+	const onImgClick = (id) => {
+		if (id === selectedImgID)
+			selectedImgID = null
+		else
+			selectedImgID = id
+		draw()
 	}
-	canvas.addEventListener('mousedown', e => onMouseClick(canvas, e))
+
+	const selectedImgStyle = () => 'border: yellow thick solid'
 
 	const drawHand = () => {
 		for (let i = 0; i < myHand.length; ++i){
-			ctx.beginPath();
-			ctx.fillStyle = myHand[i];
-			const cardW = 50
+			html.innerHTML += '<img src = ' + myHand[i] 
+						    + ' width = 200'
+						    + (selectedImgID == i ? ' style = \"' + selectedImgStyle() + '\"' : '')
+						    + ' onclick = "onImgClick( '+ i + ')\"'
+						    + '></img>';
+			/*const cardW = 100
 			const cardH = 150
-			const margin = 20
-			ctx.rect(15 + i*(cardW+margin), 500 - 15 - cardH, cardW, cardH)
-			ctx.fill()
+			const cardSpacing = 0
+			const img = new Image()
+			img.onload = () => ctx.drawImage(img, i * (cardW+cardSpacing), 0)
+			img.src = myHand[i]*/
 		}
 	}
 
+	const displayStateMessage = () => {
+		html.innerHTML += 
+		"<p>"
+			+ 
+		+"</p>"
+	}
+
 	const drawPlayerList = () => {
-		ctx.font = '25pt Calibri';
+		/*ctx.font = '25pt Calibri';
 		for (let i = 0; i < myPlayerList.length; ++i){
 			const player = myPlayerList[i]
 			ctx.fillStyle = player.color;
@@ -51,17 +60,19 @@
 				ctx.arc(15, -10 + 30 + 40 * i, 10, 0, 2 * Math.PI);
 				ctx.fill();
 			}
-		}
+		}*/
 	}
 
 	const draw = () => {
-		ctx.clearRect(0, 0, 500, 500)
-		drawPlayerList()
+		html.innerHTML = ''
+		//ctx.clearRect(0, 0, 500, 500)
+		//drawPlayerList()
+		displayStateMessage()
 		drawHand()
 	}
 
 	socket.on('HandChanged', data => {
-		myHand = data.hand
+		myHand = data.cardsImgData
 		draw()
 	})
 
