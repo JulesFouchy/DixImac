@@ -65,13 +65,26 @@ const pickAHand = () => {
 
 // -------- CARDS LIST HANDLING --------
 
-const setSelectedCard = (socket, index) => {
-	socket.selectedCardIndex = index
+const setSelectedCardInHand = (socket, index) => {
+	socket.selectedCardInHandIndex = index
 }
 
-const allPLayersHaveSelectedACard = () => {
+const setSelectedCardAtPlay = (socket, index) => {
+	socket.selectedCardAtPlayIndex = index
+}
+
+const allPlayersHaveSelectedACardInHand = () => {
 	return Object.values(socketList).reduce(
-		(bool, socket) => socket.selectedCardIndex !== null && bool,
+		(bool, socket) => socket.selectedCardInHandIndex !== null && bool,
+		true
+	)
+}
+
+const allPlayersHaveSelectedACardAtPlay = () => {
+	return Object.values(socketList).reduce(
+		(bool, socket) =>
+			(socket.selectedCardAtPlayIndex !== null || socket.id === gameMasterID())
+			&& bool,
 		true
 	)
 }
@@ -79,8 +92,8 @@ const allPLayersHaveSelectedACard = () => {
 const getCardsAtPlay = () => {
 	let cards = []
 	applyToAllSockets( socket => {
-		if (socket.selectedCardIndex !== null)
-			cards.push(socket.hand[socket.selectedCardIndex])
+		if (socket.selectedCardInHandIndex !== null)
+			cards.push(socket.hand[socket.selectedCardInHandIndex])
 	})
 	return cards
 }
@@ -172,7 +185,8 @@ io.sockets.on('connection', socket => {
 
 	// -------- PLAYER --------
 	socket.player = createPlayer('Player'+randomColor())
-	socket.selectedCardIndex = null
+	setSelectedCardInHand(socket, null)
+	setSelectedCardAtPlay(socket, null)
 
 	// -------- HAND --------
 	socket.hand = pickAHand()
@@ -188,15 +202,15 @@ io.sockets.on('connection', socket => {
 	socket.on('SelectedCardChanged', (data) => {
 		switch(gamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
-			if (socket.id === gameMasterIdFromIndex(gameMasterIndex)) {
-				setSelectedCard(socket, data.cardIndex)
+			if (socket.id === gameMasterID()) {
+				setSelectedCardInHand(socket, data.cardIndex)
 				moveToNextPhase()
 			}
 		    break
 		  case OTHER_PLAYERS_PICKING_A_CARD:
-		    if (socket.id !== gameMasterIdFromIndex(gameMasterIndex)) {
-				setSelectedCard(socket, data.cardIndex)
-				if (allPLayersHaveSelectedACard()){
+		    if (socket.id !== gameMasterID()) {
+				setSelectedCardInHand(socket, data.cardIndex)
+				if (allPlayersHaveSelectedACardInHand()){
 					moveToNextPhase()
 					sendCardsAtPlayToAll()
 				}
@@ -207,6 +221,16 @@ io.sockets.on('connection', socket => {
 		  	break
 		  default:
 		    break
+		}
+	})
+
+	socket.on('SelectedCardAtPlayChanged', (data) => {
+		if (gamePhase === LOOKING_FOR_GAME_MASTER_CARD && socket.id !== gameMasterID()) {
+			setSelectedCardAtPlay(socket, data.cardIndex)
+			if (allPlayersHaveSelectedACardAtPlay()){
+				changeGameMaster()
+				moveToNextPhase()
+			}
 		}
 	})
 
