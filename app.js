@@ -168,20 +168,25 @@ const updatePlayerListsOfClients = () => {
 const socketList = {}
 
 io.sockets.on('connection', socket => {
+	// -------- ID --------
 	socketList[socket.id] = socket
-	// Create player
+	socket.emit('ThisIsYourID', {id: socket.id})
+
+	// -------- PLAYER --------
 	socket.player = createPlayer('Player'+randomColor())
 	socket.selectedCardIndex = null
+
 	// -------- HAND --------
 	socket.hand = pickAHand()
 	socket.emit('ThisIsYourHand', {cards: socket.hand})
-	// Send socket id and gameMasterID
-	socket.emit('ThisIsYourID', {id: socket.id})
+
+	// -------- GAME STATE --------
 	sendGameState(socket)
-	// Send hand
-	// Update playerLists
+
+	// -------- PLAYERS LIST --------
 	updatePlayerListsOfClients();
-	// On card selection
+
+	// -------- ON CARD SELECTION --------
 	socket.on('SelectedCardChanged', (data) => {
 		switch(gamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
@@ -206,7 +211,8 @@ io.sockets.on('connection', socket => {
 		    break
 		}
 	})
-	// On disconnect
+
+	// -------- ON DISCONNECT --------
 	socket.on('disconnect', () => {
 		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
