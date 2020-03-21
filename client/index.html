@@ -39,7 +39,7 @@
 
 	const GAME_MASTER_PICKING_A_CARD = 0
 	const OTHER_PLAYERS_PICKING_A_CARD = 1
-	const LOOKING_FOR_GAME_MASTER_CARD = 2
+	const VOTING_FOR_A_CARD = 2
 
 	const changeSelectedCardInHandFor = (index) => {
 		if (index === mySelectedCardInHandIndex)
@@ -71,7 +71,7 @@
 	}
 
 	const onCardAtPlayClick = (index) => {
-		if (myGamePhase === LOOKING_FOR_GAME_MASTER_CARD && !ImGameMaster()) {
+		if (myGamePhase === VOTING_FOR_A_CARD && !ImGameMaster()) {
 			changeSelectedCardAtPlayFor(index)
 		}
 		draw()
@@ -102,7 +102,7 @@
 		  case OTHER_PLAYERS_PICKING_A_CARD:
 		    message = ((myGameMasterID !== myPlayerID) ? 'Pick a card that would match the clue' : "Waiting for other players to pick a card")
 		    break
-		  case LOOKING_FOR_GAME_MASTER_CARD:
+		  case VOTING_FOR_A_CARD:
 		  	message = ((myGameMasterID !== myPlayerID) ? 'Vote for a card' : 'Waiting for the other players to vote for a card')
 		  	break
 		  default:

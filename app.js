@@ -104,7 +104,7 @@ const getCardsAtPlay = () => {
 
 const GAME_MASTER_PICKING_A_CARD = 0
 const OTHER_PLAYERS_PICKING_A_CARD = 1
-const LOOKING_FOR_GAME_MASTER_CARD = 2
+const VOTING_FOR_A_CARD = 2
 
 let gamePhase = GAME_MASTER_PICKING_A_CARD
 
@@ -216,7 +216,7 @@ io.sockets.on('connection', socket => {
 				}
 			}
 		    break
-		  case LOOKING_FOR_GAME_MASTER_CARD:
+		  case VOTING_FOR_A_CARD:
 
 		  	break
 		  default:
@@ -225,7 +225,7 @@ io.sockets.on('connection', socket => {
 	})
 
 	socket.on('SelectedCardAtPlayChanged', (data) => {
-		if (gamePhase === LOOKING_FOR_GAME_MASTER_CARD && socket.id !== gameMasterID()) {
+		if (gamePhase === VOTING_FOR_A_CARD && socket.id !== gameMasterID()) {
 			setSelectedCardAtPlay(socket, data.cardIndex)
 			if (allPlayersHaveSelectedACardAtPlay()){
 				changeGameMaster()
