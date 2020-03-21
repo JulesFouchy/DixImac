@@ -36,7 +36,6 @@ const sendToAllSockets = (eventName, data) => {
 	}
 }
 
-
 // -------- CARD FACTORY --------
 
 const canvasToDrawCards = createCanvas(cardW, cardH);
@@ -98,14 +97,22 @@ const moveToNextPhase = () => {
 }
 	// -------- GAME MASTER --------
 
-let currentGameMasterIndex = 0
+let gameMasterIndex = 0
 
 const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
 
 const changeGameMaster = () => {
-	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	sendToAllSockets('GameMasterChanged', {
-		gameMasterID : gameMasterIdFromIndex(currentGameMasterIndex)
+	gameMasterIndex = (gameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
+	sendToAllSockets('ThisIsGameMaster', {
+		gameMasterID : gameMasterIdFromIndex(gameMasterIndex)
+	})
+}
+
+	// -------- SENDING GAME STATE --------
+
+const sendGameMaster = (socket) => {
+	socket.emit('ThisIsGameMaster', {
+		gameMasterID : Object.values(socketList)[gameMasterIndex].id
 	})
 }
 
@@ -140,8 +147,8 @@ io.sockets.on('connection', socket => {
 	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
 	// Send socket id and gameMasterID
 	socket.emit('ThisIsYourID', {id: socket.id})
-	socket.emit('GameMasterChanged', {
-		gameMasterID : Object.values(socketList)[currentGameMasterIndex].id
+	socket.emit('ThisIsGameMaster', {
+		gameMasterID : Object.values(socketList)[gameMasterIndex].id
 	})
 	socket.emit('ThisIsGamePhase', {
 		gamePhase
@@ -153,13 +160,13 @@ io.sockets.on('connection', socket => {
 	socket.on('SelectedCardChanged', (data) => {
 		switch(gamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
-			if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex)) {
+			if (socket.id === gameMasterIdFromIndex(gameMasterIndex)) {
 				setSelectedCard(socket, data.cardIndex)
 				moveToNextPhase()
 			}
 		    break
 		  case OTHER_PLAYERS_PICKING_A_CARD:
-		    if (socket.id !== gameMasterIdFromIndex(currentGameMasterIndex)) {
+		    if (socket.id !== gameMasterIdFromIndex(gameMasterIndex)) {
 				setSelectedCard(socket, data.cardIndex)
 				if (allPLayersHaveSelectedACard()){
 					moveToNextPhase()

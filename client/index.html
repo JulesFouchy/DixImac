@@ -146,7 +146,7 @@
 		draw()
 	})
 
-	socket.on('GameMasterChanged', data => {
+	socket.on('ThisIsGameMaster', data => {
 		myGameMasterID = data.gameMasterID
 		draw()
 	})
