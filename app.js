@@ -76,12 +76,15 @@ const allPLayersHaveSelectedACard = () => {
 	)
 }
 
-const sendCardsAtPlay = () => {
-	let cards = []
-	for (socket of Object.values(socketList)){
-		cards.push(socket.player.hand[socket.selectedCardIndex])
+const computeCardsAtPlay = () => {
+	if (allPLayersHaveSelectedACard()){
+		let cards = []
+		applyToAllSockets( socket =>
+			cards.push(socket.player.hand[socket.selectedCardIndex])
+		)
+		return cards
 	}
-	sendToAllSockets('ThisIsCardsAtPlay', {cards})
+	return []
 }
 
 // -------- GAME STATE --------
@@ -111,6 +114,13 @@ const changeGameMaster = () => {
 }
 
 	// -------- SENDING GAME STATE --------
+	
+
+const sendGameState = (socket) => {
+	sendGamePhase  (socket)
+	sendGameMaster (socket)
+	sendCardsAtPlay(socket)
+}
 
 const sendGamePhase = (socket) => {
 	socket.emit('ThisIsGamePhase', {
@@ -124,9 +134,18 @@ const sendGameMaster = (socket) => {
 	})
 }
 
-const sendGameState = (socket) => {
-	sendGamePhase (socket)
-	sendGameMaster(socket)
+const sendCardsAtPlay = (socket) => {
+	const cardsAtPlay = computeCardsAtPlay()
+	socket.emit('ThisIsCardsAtPlay', {
+		cards: cardsAtPlay
+	})
+}
+
+const sendCardsAtPlayToAll = () => {
+	const cardsAtPlay = computeCardsAtPlay()
+	sendToAllSockets('ThisIsCardsAtPlay', {
+		cards: cardsAtPlay
+	})
 }
 
 // -------- PLAYER --------
@@ -177,7 +196,7 @@ io.sockets.on('connection', socket => {
 				setSelectedCard(socket, data.cardIndex)
 				if (allPLayersHaveSelectedACard()){
 					moveToNextPhase()
-					sendCardsAtPlay()
+					sendCardsAtPlayToAll()
 				}
 			}
 		    break
