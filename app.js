@@ -229,6 +229,7 @@ io.sockets.on('connection', socket => {
 			setSelectedCardAtPlay(socket, data.cardIndex)
 			if (allPlayersHaveSelectedACardAtPlay()){
 				changeGameMaster()
+				sendToAllSockets('NewRound', {})
 				moveToNextPhase()
 			}
 		}

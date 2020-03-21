@@ -133,6 +133,13 @@
 		drawHand()
 	}
 
+	socket.on('NewRound', data => {
+		selectedImgID = null
+		mySelectedCardAtPlay = null
+		myCardsAtPlay = []
+		draw()
+	})
+
 	socket.on('ThisIsYourHand', data => {
 		myHand = data.cards
 		draw()
