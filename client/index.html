@@ -3,9 +3,20 @@
 .selectedImage {
 	border: yellow thick solid;
 }
+.cardImg {
+	margin: 10px;
+}
+#cardsAtPlay {
+	background: red
+}
+#yourHand {
+	background: black
+}
 </style>
 
-<div id="main"></div>
+<div id="stateMessage"></div>
+<div id="cardsAtPlay"></div>
+<div id="yourHand"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <!---<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script><-->
@@ -13,7 +24,9 @@
 <script>
 	//const ctx = document.getElementById("ctx").getContext("2d")
 	//const canvas = document.querySelector('canvas')
-	const html = document.getElementById("main")
+	const htmlStateMessage = document.getElementById("stateMessage")
+	const htmlCardsAtPlay = document.getElementById("cardsAtPlay")
+	const htmlYourHand = document.getElementById("yourHand")
 	const socket = io()
 
 	let myHand = []
@@ -21,38 +34,67 @@
 	let myPlayerID
 	let myGameMasterID
 	let selectedImgID = null
-	let myGameState = 0
+	let mySelectedCardAtPlay = null
+	let myGameState
+	let myCardsAtPlay = []
+
+	const ImGameMaster = () => myPlayerID === myGameMasterID
 
 	const GAME_MASTER_PICKING_A_CARD = 0
 	const OTHER_PLAYERS_PICKING_A_CARD = 1
 	const LOOKING_FOR_GAME_MASTER_CARD = 2
 
-	const onImgClick = (id) => {
-		if (id === selectedImgID)
+	const changeSelectedCardInHandFor = (index) => {
+		if (index === selectedImgID)
 			selectedImgID = null
 		else
-			selectedImgID = id
+			selectedImgID = index
 		socket.emit('SelectedCardChanged', {
-			cardIndex: id
-		})
+			cardIndex: selectedImgID
+		})	
+	}
+
+	const changeSelectedCardAtPlayFor = (index) => {
+		if (index === mySelectedCardAtPlay)
+			mySelectedCardAtPlay = null
+		else
+			mySelectedCardAtPlay = index
+		socket.emit('SelectedCardAtPlayChanged', {
+			cardIndex: mySelectedCardAtPlay
+		})	
+	}
+
+	const onCardInHandClick = (index) => {
+		if (myGameState === GAME_MASTER_PICKING_A_CARD && ImGameMaster()
+		 || myGameState === OTHER_PLAYERS_PICKING_A_CARD && !ImGameMaster())
+		{
+				changeSelectedCardInHandFor(index)
+		}
 		draw()
 	}
 
-	const drawHand = () => {
-		for (let i = 0; i < myHand.length; ++i){
-			html.innerHTML += '<img src = ' + myHand[i] 
+	const onCardAtPlayClick = (index) => {
+		if (myGameState === LOOKING_FOR_GAME_MASTER_CARD && !ImGameMaster()) {
+			changeSelectedCardAtPlayFor(index)
+		}
+		draw()
+	}
+
+	const drawCardList = (html, list, onClick, selectedCardIndex) => {
+		html.innerHTML = ''
+		for (let i = 0; i < list.length; ++i){
+			html.innerHTML +=
+							 '<img src = ' + list[i] 
 						    + ' width = 200'
-						    + (selectedImgID == i ? ' class = selectedImage' : '')
-						    + ' onclick = "onImgClick( '+ i + ')\"'
+						    + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
+						    + ' onclick = "' + onClick + '( '+ i + ')\"'
 						    + '></img>';
-			/*const cardW = 100
-			const cardH = 150
-			const cardSpacing = 0
-			const img = new Image()
-			img.onload = () => ctx.drawImage(img, i * (cardW+cardSpacing), 0)
-			img.src = myHand[i]*/
 		}
 	}
+
+	const drawHand = () => drawCardList(htmlYourHand, myHand, "onCardInHandClick", selectedImgID)
+
+	const drawCardsAtPlay = () => drawCardList(htmlCardsAtPlay, myCardsAtPlay, "onCardAtPlayClick", mySelectedCardAtPlay)
 
 	const displayStateMessage = () => {
 		let message
@@ -69,7 +111,7 @@
 		  default:
 		    break
 		}
-		html.innerHTML += "<p>" + message + "</p>"
+		htmlStateMessage.innerHTML = "<p>" + message + "</p>"
 	}
 
 	const drawPlayerList = () => {
@@ -87,10 +129,10 @@
 	}
 
 	const draw = () => {
-		html.innerHTML = ''
 		//ctx.clearRect(0, 0, 500, 500)
 		//drawPlayerList()
 		displayStateMessage()
+		drawCardsAtPlay()
 		drawHand()
 	}
 
@@ -115,6 +157,11 @@
 
 	socket.on('GameStateChanged', data => {
 		myGameState = data.gameState
+		draw()
+	})
+
+	socket.on('ThisIsCardsAtPlay', data => {
+		myCardsAtPlay = data.cards
 		draw()
 	})
 

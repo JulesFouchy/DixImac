@@ -86,6 +86,25 @@ const drawHand = () => {
 	return res
 }
 
+const setSelectedCard = (socket, index) => {
+	socket.selectedCardIndex = index
+}
+
+const allPLayersHaveSelectedACard = () => {
+	return Object.values(socketList).reduce(
+		(bool, socket) => socket.selectedCardIndex !== null && bool,
+		true
+	)
+}
+
+const sendCardsAtPlay = () => {
+	let cards = []
+	for (socket of Object.values(socketList)){
+		cards.push(socket.player.hand[socket.selectedCardIndex])
+	}
+	sendToAllSockets('ThisIsCardsAtPlay', {cards})
+}
+
 //--------GAME STATE------------
 
 const GAME_MASTER_PICKING_A_CARD = 0
@@ -143,6 +162,7 @@ io.sockets.on('connection', socket => {
 	socketList[socket.id] = socket
 	// Create player
 	socket.player = createPlayer('Player'+randomColor())
+	socket.selectedCardIndex = null
 	// Send hand
 	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
 	// Send socket id and gameMasterID
@@ -150,6 +170,10 @@ io.sockets.on('connection', socket => {
 	socket.emit('GameMasterChanged', {
 		gameMasterID : Object.values(socketList)[currentGameMasterIndex].id
 	})
+	socket.emit('GameStateChanged', {
+		gameState
+	})
+	//socket.emit('This')
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On card selection
@@ -157,12 +181,18 @@ io.sockets.on('connection', socket => {
 		switch(gameState) {
 		  case GAME_MASTER_PICKING_A_CARD:
 			if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex)) {
-				gameMastersCardIndex = data.cardIndex
+				setSelectedCard(socket, data.cardIndex)
 				moveToNextState()
 			}
 		    break
 		  case OTHER_PLAYERS_PICKING_A_CARD:
-		    // code block
+		    if (socket.id !== gameMasterIdFromIndex(currentGameMasterIndex)) {
+				setSelectedCard(socket, data.cardIndex)
+				if (allPLayersHaveSelectedACard()){
+					moveToNextState()
+					sendCardsAtPlay()
+				}
+			}
 		    break
 		  case LOOKING_FOR_GAME_MASTER_CARD:
 
