@@ -30,10 +30,13 @@ const randomColor = () => {
 
 // -------- UTILS FOR SOCKETS --------
 
+const applyToAllSockets = (func) => {
+	for (const socket of Object.values(socketList))
+		func(socket)
+}
+
 const sendToAllSockets = (eventName, data) => {
-	for (const socket of Object.values(socketList)){
-		socket.emit(eventName, data)
-	}
+	applyToAllSockets( socket => socket.emit(eventName, data) )
 }
 
 // -------- CARD FACTORY --------
@@ -100,23 +103,33 @@ const moveToNextPhase = () => {
 let gameMasterIndex = 0
 
 const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
+const gameMasterID = () => gameMasterIdFromIndex(gameMasterIndex)
 
 const changeGameMaster = () => {
 	gameMasterIndex = (gameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	sendToAllSockets('ThisIsGameMaster', {
-		gameMasterID : gameMasterIdFromIndex(gameMasterIndex)
-	})
+	applyToAllSockets(sendGameMaster)
 }
 
 	// -------- SENDING GAME STATE --------
 
-const sendGameMaster = (socket) => {
-	socket.emit('ThisIsGameMaster', {
-		gameMasterID : Object.values(socketList)[gameMasterIndex].id
+const sendGamePhase = (socket) => {
+	socket.emit('ThisIsGamePhase', {
+		gamePhase
 	})
 }
 
-//--------PLAYER------------
+const sendGameMaster = (socket) => {
+	socket.emit('ThisIsGameMaster', {
+		gameMasterID : gameMasterID()
+	})
+}
+
+const sendGameState = (socket) => {
+	sendGamePhase (socket)
+	sendGameMaster(socket)
+}
+
+// -------- PLAYER --------
 
 const createPlayer = (name) => {
 	const player = {
@@ -134,7 +147,7 @@ const updatePlayerListsOfClients = () => {
 	}))})
 }
 
-// Sockets
+// -------- SOCKET --------
 
 const socketList = {}
 
@@ -147,13 +160,7 @@ io.sockets.on('connection', socket => {
 	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
 	// Send socket id and gameMasterID
 	socket.emit('ThisIsYourID', {id: socket.id})
-	socket.emit('ThisIsGameMaster', {
-		gameMasterID : Object.values(socketList)[gameMasterIndex].id
-	})
-	socket.emit('ThisIsGamePhase', {
-		gamePhase
-	})
-	//socket.emit('This')
+	sendGameState(socket)
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On card selection
