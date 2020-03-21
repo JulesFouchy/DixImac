@@ -84,15 +84,29 @@ const sendCardsAtPlay = () => {
 
 // -------- GAME STATE --------
 
+	// -------- GAME PHASE --------
+
 const GAME_MASTER_PICKING_A_CARD = 0
 const OTHER_PLAYERS_PICKING_A_CARD = 1
 const LOOKING_FOR_GAME_MASTER_CARD = 2
 
-let gamePhase = 0
+let gamePhase = GAME_MASTER_PICKING_A_CARD
 
-const moveToNextState = () => {
+const moveToNextPhase = () => {
 	gamePhase = (gamePhase + 1) % 3
 	sendToAllSockets('ThisIsGamePhase', {gamePhase})
+}
+	// -------- GAME MASTER --------
+
+let currentGameMasterIndex = 0
+
+const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
+
+const changeGameMaster = () => {
+	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
+	sendToAllSockets('GameMasterChanged', {
+		gameMasterID : gameMasterIdFromIndex(currentGameMasterIndex)
+	})
 }
 
 //--------PLAYER------------
@@ -106,29 +120,11 @@ const createPlayer = (name) => {
 	return player
 }
 
-const printPlayer = player => {
-	console.log(player.name)
-	console.log(player.hand)
-}
-
 const updatePlayerListsOfClients = () => {
 	sendToAllSockets('PlayerListChanged', {playerList: Object.values(socketList).map(el=>({
 			name: el.player.name,
 			color: el.player.color
 	}))})
-}
-
-// Game state
-
-let currentGameMasterIndex = 0
-
-const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
-
-const changeGameMaster = () => {
-	currentGameMasterIndex = (currentGameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	sendToAllSockets('GameMasterChanged', {
-		gameMasterID : gameMasterIdFromIndex(currentGameMasterIndex)
-	})
 }
 
 // Sockets
@@ -159,14 +155,14 @@ io.sockets.on('connection', socket => {
 		  case GAME_MASTER_PICKING_A_CARD:
 			if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex)) {
 				setSelectedCard(socket, data.cardIndex)
-				moveToNextState()
+				moveToNextPhase()
 			}
 		    break
 		  case OTHER_PLAYERS_PICKING_A_CARD:
 		    if (socket.id !== gameMasterIdFromIndex(currentGameMasterIndex)) {
 				setSelectedCard(socket, data.cardIndex)
 				if (allPLayersHaveSelectedACard()){
-					moveToNextState()
+					moveToNextPhase()
 					sendCardsAtPlay()
 				}
 			}
