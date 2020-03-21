@@ -11,20 +11,14 @@ const io = require('socket.io')(serv,{})
 
 const fs = require("fs"), { createCanvas } = require("canvas")
 
-// CONST
+// -------- CONSTANTS --------
 
 const cardW = 1000
 const cardH = 1500
 
 const NB_CARDS_PER_HAND = 7
 
-// Utils
-
-const sendToAllSockets = (eventName, data) => {
-	for (const socket of Object.values(socketList)){
-		socket.emit(eventName, data)
-	}
-}
+// -------- RANDOM --------
 
 const randomColor = () => {
   const letters = '0123456789ABCDEF'
@@ -34,44 +28,25 @@ const randomColor = () => {
   return color
 }
 
-const Path = require('path');
-const deleteFolderRecursive = (path) => {
-  if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach((file, index) => {
-      const curPath = Path.join(path, file);
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(path);
-  }
-};
+// -------- UTILS FOR SOCKETS --------
 
-// Card Factory
+const sendToAllSockets = (eventName, data) => {
+	for (const socket of Object.values(socketList)){
+		socket.emit(eventName, data)
+	}
+}
+
+
+// -------- CARD FACTORY --------
+
+const canvasToDrawCards = createCanvas(cardW, cardH);
+const ctxDC = canvasToDrawCards.getContext("2d");
 
 const cardObject = (url) => ({
 	url
 })
 
-const canvasToDrawCards = createCanvas(cardW, cardH);
-const ctxDC = canvasToDrawCards.getContext("2d");
-
-/*const createCardFor = (playerID, cardID) => {
-	// Drawing
-	ctxDC.fillStyle = randomColor()
-	ctxDC.fillRect(0, 0, cardW, cardH)
-	// Write file
-	const buffer = canvasToDrawCards.toBuffer("image/png")
-	const folder = "images/"+playerID
-	const url = folder+"/"+cardID+".png"
-	fs.mkdirSync(folder, { recursive: true })
-	fs.writeFileSync(url, buffer)
-	return cardObject(url)
-}*/
-
-const drawCard = () => {
+const pickACard = () => {
 	// Drawing
 	ctxDC.fillStyle = randomColor()
 	ctxDC.fillRect(0, 0, cardW, cardH)
@@ -79,12 +54,14 @@ const drawCard = () => {
 	return canvasToDrawCards.toDataURL("image/png")
 }
 
-const drawHand = () => {
+const pickAHand = () => {
 	let res = []
 	for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
-		res.push(drawCard())
+		res.push(pickACard())
 	return res
 }
+
+// -------- CARDS LIST HANDLING --------
 
 const setSelectedCard = (socket, index) => {
 	socket.selectedCardIndex = index
@@ -105,17 +82,17 @@ const sendCardsAtPlay = () => {
 	sendToAllSockets('ThisIsCardsAtPlay', {cards})
 }
 
-//--------GAME STATE------------
+// -------- GAME STATE --------
 
 const GAME_MASTER_PICKING_A_CARD = 0
 const OTHER_PLAYERS_PICKING_A_CARD = 1
 const LOOKING_FOR_GAME_MASTER_CARD = 2
 
-let gameState = 0
+let gamePhase = 0
 
 const moveToNextState = () => {
-	gameState = (gameState + 1) % 3
-	sendToAllSockets('GameStateChanged', {gameState})
+	gamePhase = (gamePhase + 1) % 3
+	sendToAllSockets('ThisIsGamePhase', {gamePhase})
 }
 
 //--------PLAYER------------
@@ -124,7 +101,7 @@ const createPlayer = (name) => {
 	const player = {
 		name,
 		color : randomColor(),
-		hand: drawHand()
+		hand: pickAHand()
 	}
 	return player
 }
@@ -170,15 +147,15 @@ io.sockets.on('connection', socket => {
 	socket.emit('GameMasterChanged', {
 		gameMasterID : Object.values(socketList)[currentGameMasterIndex].id
 	})
-	socket.emit('GameStateChanged', {
-		gameState
+	socket.emit('ThisIsGamePhase', {
+		gamePhase
 	})
 	//socket.emit('This')
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On card selection
 	socket.on('SelectedCardChanged', (data) => {
-		switch(gameState) {
+		switch(gamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
 			if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex)) {
 				setSelectedCard(socket, data.cardIndex)

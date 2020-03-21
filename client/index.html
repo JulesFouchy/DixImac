@@ -35,7 +35,7 @@
 	let myGameMasterID
 	let selectedImgID = null
 	let mySelectedCardAtPlay = null
-	let myGameState
+	let myGamePhase
 	let myCardsAtPlay = []
 
 	const ImGameMaster = () => myPlayerID === myGameMasterID
@@ -65,8 +65,8 @@
 	}
 
 	const onCardInHandClick = (index) => {
-		if (myGameState === GAME_MASTER_PICKING_A_CARD && ImGameMaster()
-		 || myGameState === OTHER_PLAYERS_PICKING_A_CARD && !ImGameMaster())
+		if (myGamePhase === GAME_MASTER_PICKING_A_CARD && ImGameMaster()
+		 || myGamePhase === OTHER_PLAYERS_PICKING_A_CARD && !ImGameMaster())
 		{
 				changeSelectedCardInHandFor(index)
 		}
@@ -74,7 +74,7 @@
 	}
 
 	const onCardAtPlayClick = (index) => {
-		if (myGameState === LOOKING_FOR_GAME_MASTER_CARD && !ImGameMaster()) {
+		if (myGamePhase === LOOKING_FOR_GAME_MASTER_CARD && !ImGameMaster()) {
 			changeSelectedCardAtPlayFor(index)
 		}
 		draw()
@@ -98,7 +98,7 @@
 
 	const displayStateMessage = () => {
 		let message
-		switch(myGameState) {
+		switch(myGamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
 			message = ((myGameMasterID === myPlayerID) ? "Pick a card, dear Game Master" : "Waiting for the Game Master to pick a card")
 		    break
@@ -155,8 +155,8 @@
 		myPlayerID = data.id
 	})
 
-	socket.on('GameStateChanged', data => {
-		myGameState = data.gameState
+	socket.on('ThisIsGamePhase', data => {
+		myGamePhase = data.gamePhase
 		draw()
 	})
 
