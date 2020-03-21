@@ -76,7 +76,7 @@ const allPLayersHaveSelectedACard = () => {
 	)
 }
 
-const computeCardsAtPlay = () => {
+const getCardsAtPlay = () => {
 	let cards = []
 	applyToAllSockets( socket => {
 		if (socket.selectedCardIndex !== null)
@@ -133,16 +133,14 @@ const sendGameMaster = (socket) => {
 }
 
 const sendCardsAtPlay = (socket) => {
-	const cardsAtPlay = computeCardsAtPlay()
 	socket.emit('ThisIsCardsAtPlay', {
-		cards: cardsAtPlay
+		cards: getCardsAtPlay()
 	})
 }
 
 const sendCardsAtPlayToAll = () => {
-	const cardsAtPlay = computeCardsAtPlay()
 	sendToAllSockets('ThisIsCardsAtPlay', {
-		cards: cardsAtPlay
+		cards: getCardsAtPlay()
 	})
 }
 

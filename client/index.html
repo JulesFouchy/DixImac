@@ -1,4 +1,3 @@
-<!---<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas><-->
 <style type="text/css">
 .selectedImage {
 	border: yellow thick solid;
@@ -19,14 +18,12 @@
 <div id="yourHand"></div>
 
 <script src="/socket.io/socket.io.js"></script>
-<!---<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script><-->
 
 <script>
-	//const ctx = document.getElementById("ctx").getContext("2d")
-	//const canvas = document.querySelector('canvas')
 	const htmlStateMessage = document.getElementById("stateMessage")
 	const htmlCardsAtPlay = document.getElementById("cardsAtPlay")
 	const htmlYourHand = document.getElementById("yourHand")
+	
 	const socket = io()
 
 	let myHand = []
