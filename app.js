@@ -199,7 +199,7 @@ io.sockets.on('connection', socket => {
 	updatePlayerListsOfClients();
 
 	// -------- ON CARD SELECTION --------
-	socket.on('SelectedCardChanged', (data) => {
+	socket.on('SelectedCardInHandChanged', (data) => {
 		switch(gamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
 			if (socket.id === gameMasterID()) {

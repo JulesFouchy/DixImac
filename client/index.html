@@ -30,8 +30,8 @@
 	let myPlayerList = []
 	let myPlayerID
 	let myGameMasterID
-	let selectedImgID = null
-	let mySelectedCardAtPlay = null
+	let mySelectedCardInHandIndex = null
+	let mySelectedCardAtPlayIndex = null
 	let myGamePhase
 	let myCardsAtPlay = []
 
@@ -42,22 +42,22 @@
 	const LOOKING_FOR_GAME_MASTER_CARD = 2
 
 	const changeSelectedCardInHandFor = (index) => {
-		if (index === selectedImgID)
-			selectedImgID = null
+		if (index === mySelectedCardInHandIndex)
+			mySelectedCardInHandIndex = null
 		else
-			selectedImgID = index
-		socket.emit('SelectedCardChanged', {
-			cardIndex: selectedImgID
+			mySelectedCardInHandIndex = index
+		socket.emit('SelectedCardInHandChanged', {
+			cardIndex: mySelectedCardInHandIndex
 		})	
 	}
 
 	const changeSelectedCardAtPlayFor = (index) => {
-		if (index === mySelectedCardAtPlay)
-			mySelectedCardAtPlay = null
+		if (index === mySelectedCardAtPlayIndex)
+			mySelectedCardAtPlayIndex = null
 		else
-			mySelectedCardAtPlay = index
+			mySelectedCardAtPlayIndex = index
 		socket.emit('SelectedCardAtPlayChanged', {
-			cardIndex: mySelectedCardAtPlay
+			cardIndex: mySelectedCardAtPlayIndex
 		})	
 	}
 
@@ -89,9 +89,9 @@
 		}
 	}
 
-	const drawHand = () => drawCardList(htmlYourHand, myHand, "onCardInHandClick", selectedImgID)
+	const drawHand = () => drawCardList(htmlYourHand, myHand, "onCardInHandClick", mySelectedCardInHandIndex)
 
-	const drawCardsAtPlay = () => drawCardList(htmlCardsAtPlay, myCardsAtPlay, "onCardAtPlayClick", mySelectedCardAtPlay)
+	const drawCardsAtPlay = () => drawCardList(htmlCardsAtPlay, myCardsAtPlay, "onCardAtPlayClick", mySelectedCardAtPlayIndex)
 
 	const displayStateMessage = () => {
 		let message
@@ -134,8 +134,8 @@
 	}
 
 	socket.on('NewRound', data => {
-		selectedImgID = null
-		mySelectedCardAtPlay = null
+		mySelectedCardInHandIndex = null
+		mySelectedCardAtPlayIndex = null
 		myCardsAtPlay = []
 		draw()
 	})
