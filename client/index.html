@@ -1,4 +1,10 @@
 <!---<canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas><-->
+<style type="text/css">
+.selectedImage {
+	border: yellow thick solid;
+}
+</style>
+
 <div id="main"></div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -27,13 +33,11 @@
 		draw()
 	}
 
-	const selectedImgStyle = () => 'border: yellow thick solid'
-
 	const drawHand = () => {
 		for (let i = 0; i < myHand.length; ++i){
 			html.innerHTML += '<img src = ' + myHand[i] 
 						    + ' width = 200'
-						    + (selectedImgID == i ? ' style = \"' + selectedImgStyle() + '\"' : '')
+						    + (selectedImgID == i ? ' class = selectedImage' : '')
 						    + ' onclick = "onImgClick( '+ i + ')\"'
 						    + '></img>';
 			/*const cardW = 100
