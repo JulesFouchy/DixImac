@@ -157,6 +157,10 @@ const sendCardsAtPlayToAll = () => {
 	})
 }
 
+const sendHand = (socket) => {
+	socket.emit('ThisIsYourHand', {cards: socket.hand})
+}
+
 // -------- PLAYER --------
 
 const createPlayer = (name) => {
@@ -190,7 +194,7 @@ io.sockets.on('connection', socket => {
 
 	// -------- HAND --------
 	socket.hand = pickAHand()
-	socket.emit('ThisIsYourHand', {cards: socket.hand})
+	sendHand(socket)
 
 	// -------- GAME STATE --------
 	sendGameState(socket)
@@ -230,6 +234,12 @@ io.sockets.on('connection', socket => {
 			if (allPlayersHaveSelectedACardAtPlay()){
 				changeGameMaster()
 				sendToAllSockets('NewRound', {})
+				// Draw a new card
+				applyToAllSockets((socket) => {
+					socket.hand[socket.selectedCardInHandIndex] = pickACard()
+					sendHand(socket)
+				})
+				//
 				moveToNextPhase()
 			}
 		}
