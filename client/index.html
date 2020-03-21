@@ -136,8 +136,8 @@
 		drawHand()
 	}
 
-	socket.on('HandChanged', data => {
-		myHand = data.cardsImgData
+	socket.on('ThisIsYourHand', data => {
+		myHand = data.cards
 		draw()
 	})
 

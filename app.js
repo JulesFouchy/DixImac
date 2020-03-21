@@ -80,7 +80,7 @@ const computeCardsAtPlay = () => {
 	let cards = []
 	applyToAllSockets( socket => {
 		if (socket.selectedCardIndex !== null)
-			cards.push(socket.player.hand[socket.selectedCardIndex])
+			cards.push(socket.hand[socket.selectedCardIndex])
 	})
 	return cards
 }
@@ -151,8 +151,7 @@ const sendCardsAtPlayToAll = () => {
 const createPlayer = (name) => {
 	const player = {
 		name,
-		color : randomColor(),
-		hand: pickAHand()
+		color : randomColor()
 	}
 	return player
 }
@@ -173,11 +172,13 @@ io.sockets.on('connection', socket => {
 	// Create player
 	socket.player = createPlayer('Player'+randomColor())
 	socket.selectedCardIndex = null
+	// -------- HAND --------
+	socket.hand = pickAHand()
+	socket.emit('ThisIsYourHand', {cards: socket.hand})
 	// Send socket id and gameMasterID
 	socket.emit('ThisIsYourID', {id: socket.id})
 	sendGameState(socket)
 	// Send hand
-	socket.emit('HandChanged', {cardsImgData: socket.player.hand})
 	// Update playerLists
 	updatePlayerListsOfClients();
 	// On card selection
