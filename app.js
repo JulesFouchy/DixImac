@@ -86,6 +86,19 @@ const drawHand = () => {
 	return res
 }
 
+//--------GAME STATE------------
+
+const GAME_MASTER_PICKING_A_CARD = 0
+const OTHER_PLAYERS_PICKING_A_CARD = 1
+const LOOKING_FOR_GAME_MASTER_CARD = 2
+
+let gameState = 0
+
+const moveToNextState = () => {
+	gameState = (gameState + 1) % 3
+	sendToAllSockets('GameStateChanged', {gameState})
+}
+
 //--------PLAYER------------
 
 const createPlayer = (name) => {
@@ -141,8 +154,22 @@ io.sockets.on('connection', socket => {
 	updatePlayerListsOfClients();
 	// On card selection
 	socket.on('SelectedCardChanged', (data) => {
-		if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex))
-			console.log(data.cardIndex)
+		switch(gameState) {
+		  case GAME_MASTER_PICKING_A_CARD:
+			if (socket.id === gameMasterIdFromIndex(currentGameMasterIndex)) {
+				gameMastersCardIndex = data.cardIndex
+				moveToNextState()
+			}
+		    break
+		  case OTHER_PLAYERS_PICKING_A_CARD:
+		    // code block
+		    break
+		  case LOOKING_FOR_GAME_MASTER_CARD:
+
+		  	break
+		  default:
+		    break
+		}
 	})
 	// On disconnect
 	socket.on('disconnect', () => {

@@ -21,6 +21,11 @@
 	let myPlayerID
 	let myGameMasterID
 	let selectedImgID = null
+	let myGameState = 0
+
+	const GAME_MASTER_PICKING_A_CARD = 0
+	const OTHER_PLAYERS_PICKING_A_CARD = 1
+	const LOOKING_FOR_GAME_MASTER_CARD = 2
 
 	const onImgClick = (id) => {
 		if (id === selectedImgID)
@@ -50,10 +55,21 @@
 	}
 
 	const displayStateMessage = () => {
-		html.innerHTML += 
-		"<p>"
-			+ ((myGameMasterID === myPlayerID) ? "Pick a card, dear Game Master" : "Waiting for the Game Master to pick a card")
-		+"</p>"
+		let message
+		switch(myGameState) {
+		  case GAME_MASTER_PICKING_A_CARD:
+			message = ((myGameMasterID === myPlayerID) ? "Pick a card, dear Game Master" : "Waiting for the Game Master to pick a card")
+		    break
+		  case OTHER_PLAYERS_PICKING_A_CARD:
+		    message = ((myGameMasterID !== myPlayerID) ? 'Pick a card that would match the clue' : "Waiting for other players to pick a card")
+		    break
+		  case LOOKING_FOR_GAME_MASTER_CARD:
+		  	message = ((myGameMasterID !== myPlayerID) ? 'Vote for a card' : 'Waiting for the other players to vote for a card')
+		  	break
+		  default:
+		    break
+		}
+		html.innerHTML += "<p>" + message + "</p>"
 	}
 
 	const drawPlayerList = () => {
@@ -95,6 +111,11 @@
 
 	socket.on('ThisIsYourID', data => {
 		myPlayerID = data.id
+	})
+
+	socket.on('GameStateChanged', data => {
+		myGameState = data.gameState
+		draw()
 	})
 
 </script>
