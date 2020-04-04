@@ -5,6 +5,9 @@
 .cardImg {
 	margin: 10px;
 }
+.gameMaster {
+	background-color: lightBlue;
+}
 #cardsAtPlay {
 	background: red
 }
@@ -124,7 +127,8 @@
 		htmlPLayersList.innerHTML = ""
 		for (let i = 0; i < myPlayersList.length; ++i){
 			const player = myPlayersList[i]
-			htmlPLayersList.innerHTML += "<p style = \"color : "+ player.color + "\">"+ player.name+" "+player.score+"pts </p>"
+			const isGameMaster = player.id === myGameMasterID ? " class = gameMaster " : ""
+			htmlPLayersList.innerHTML += "<p "+isGameMaster+"style = \"color : "+ player.color+"\">"+ player.name+" "+player.score+"pts </p>"
 		}
 	}
 

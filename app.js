@@ -324,7 +324,8 @@ const getPlayersList = () => {
 	return Object.values(socketList).map(socket=>({
 			name: socket.playerName,
 			color: socket.playerColor,
-			score: socket.score
+			score: socket.score,
+			id: socket.id
 	}))
 }
 
