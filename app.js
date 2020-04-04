@@ -29,6 +29,14 @@ const randomColor = () => {
   return color
 }
 
+const shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
 // -------- UTILS FOR SOCKETS --------
 
 const applyToAllSockets = (func) => {
@@ -39,6 +47,8 @@ const applyToAllSockets = (func) => {
 const sendToAllSockets = (eventName, data) => {
 	applyToAllSockets( socket => socket.emit(eventName, data) )
 }
+
+const getNbOfPlayers = () => Object.values(socketList).length
 
 // -------- UTILS FOR IMG FILES --------
 
@@ -128,13 +138,43 @@ const allPlayersHaveSelectedACardAtPlay = () => {
 	)
 }
 
-const getCardsAtPlay = () => {
+const computeCardsAtPlayAndTheirPlayers = () => {
 	let cards = []
 	applyToAllSockets( socket => {
 		if (socket.selectedCardInHandIndex !== null)
-			cards.push(socket.hand[socket.selectedCardInHandIndex])
+			cards.push({
+				card: socket.hand[socket.selectedCardInHandIndex],
+				player: socket
+			})
 	})
-	return cards
+	return shuffle(cards)
+}
+
+let cardsAtPlayAndTheirPlayers = []
+
+const getCardsAtPlay = () => cardsAtPlayAndTheirPlayers.map( el => el.card )
+
+const countPoints = () => {
+	let nbVotesForGameMaster = 0
+	applyToAllSockets( socket => {
+		if (socket.id !== gameMasterID()) {
+			const votedPlayer = cardsAtPlayAndTheirPlayers[socket.selectedCardAtPlayIndex].player
+			if (votedPlayer.id !== gameMasterID()) {
+				if (votedPlayer.id !== socket.id)
+					votedPlayer.score += 1
+				else
+					votedPlayer.score -= 2
+			}
+			else {
+				socket.score += 1
+				nbVotesForGameMaster++
+			}
+		}
+	})
+	if ((nbVotesForGameMaster != 0) && (nbVotesForGameMaster != getNbOfPlayers()-1))
+		socketList[gameMasterID()].score += 2
+	// Send new scores
+	applyToAllSockets(sendPlayersList)
 }
 
 // -------- GAME STATE --------
@@ -166,7 +206,6 @@ const gpOTHER_PLAYERS_PICKING_A_CARD = {
 			setSelectedCardInHand(socket, index)
 			if (allPlayersHaveSelectedACardInHand()){
 				moveToNextPhase()
-				sendCardsAtPlayToAll()
 			}
 		}
 	},
@@ -174,7 +213,8 @@ const gpOTHER_PLAYERS_PICKING_A_CARD = {
 		
 	},
 	onExit: () => {
-		
+		cardsAtPlayAndTheirPlayers = computeCardsAtPlayAndTheirPlayers()
+		sendCardsAtPlayToAll()
 	}
 }
 
@@ -192,6 +232,8 @@ const gpVOTING_FOR_A_CARD = {
 		}
 	},
 	onExit: () => {
+		countPoints()
+		cardsAtPlayAndTheirPlayers = []
 		changeGameMaster()
 		sendToAllSockets('NewRound', {})
 		// Draw a new card
