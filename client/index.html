@@ -12,7 +12,7 @@
 	background: black
 }
 </style>
-
+<input type="text" value = "RandomPlayer" onchange = "onMyNameChange(this.value)">
 <div id="stateMessage"></div>
 <div id="playersList"></div>
 <div id="cardsAtPlay"></div>
@@ -27,6 +27,7 @@
 	
 	const socket = io()
 
+	let iHaveChosenMyName = false
 	let myHand = []
 	let myPlayersList = []
 	let myPlayerID
@@ -35,6 +36,13 @@
 	let mySelectedCardAtPlayIndex = null
 	let myGamePhase
 	let myCardsAtPlay = []
+
+	const onMyNameChange = (newName) => {
+		iHaveChosenMyName = true
+		socket.emit('ThisIsMyName', {
+			name: newName
+		})
+	}
 
 	const ImGameMaster = () => myPlayerID === myGameMasterID
 
@@ -121,11 +129,12 @@
 	}
 
 	const draw = () => {
-		//ctx.clearRect(0, 0, 500, 500)
-		drawPlayersList()
-		displayStateMessage()
-		drawCardsAtPlay()
-		drawHand()
+		if (iHaveChosenMyName) {
+			drawPlayersList()
+			displayStateMessage()
+			drawCardsAtPlay()
+			drawHand()
+		}
 	}
 
 	socket.on('NewRound', data => {

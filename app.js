@@ -248,6 +248,12 @@ io.sockets.on('connection', socket => {
 	setSelectedCardInHand(socket, null)
 	setSelectedCardAtPlay(socket, null)
 
+	// -------- NAME --------
+	socket.on('ThisIsMyName', data => {
+		socket.player.name = data.name
+		applyToAllSockets(sendPlayersList)
+	})
+
 	// -------- HAND --------
 	socket.hand = pickAHand()
 	sendHand(socket)
