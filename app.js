@@ -153,6 +153,9 @@ const gpGAME_MASTER_PICKING_A_CARD = {
 	},
 	onSelectedCardAtPlayChanged: (socket, index) => {
 
+	},
+	onExit: () => {
+
 	}
 }
 
@@ -169,6 +172,9 @@ const gpOTHER_PLAYERS_PICKING_A_CARD = {
 	},
 	onSelectedCardAtPlayChanged: (socket, index) => {
 		
+	},
+	onExit: () => {
+		
 	}
 }
 
@@ -181,17 +187,18 @@ const gpVOTING_FOR_A_CARD = {
 		if (socket.id !== gameMasterID()) {
 			setSelectedCardAtPlay(socket, index)
 			if (allPlayersHaveSelectedACardAtPlay()){
-				changeGameMaster()
-				sendToAllSockets('NewRound', {})
-				// Draw a new card
-				applyToAllSockets((socket) => {
-					socket.hand[socket.selectedCardInHandIndex] = pickACard()
-					sendHand(socket)
-				})
-				//
 				moveToNextPhase()
 			}
 		}
+	},
+	onExit: () => {
+		changeGameMaster()
+		sendToAllSockets('NewRound', {})
+		// Draw a new card
+		applyToAllSockets((socket) => {
+			socket.hand[socket.selectedCardInHandIndex] = pickACard()
+			sendHand(socket)
+		})
 	}
 }
 
@@ -202,6 +209,7 @@ const getGamePhase = () => gamePhases[gamePhaseIndex]
 
 
 const moveToNextPhase = () => {
+	getGamePhase().onExit()	
 	gamePhaseIndex = (gamePhaseIndex + 1) % 3
 	applyToAllSockets(sendGamePhase)
 	getGamePhase().onEnter()		
