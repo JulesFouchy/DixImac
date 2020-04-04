@@ -141,17 +141,70 @@ const getCardsAtPlay = () => {
 
 	// -------- GAME PHASE --------
 
-const GAME_MASTER_PICKING_A_CARD = 0
-const OTHER_PLAYERS_PICKING_A_CARD = 1
-const VOTING_FOR_A_CARD = 2
+const gpGAME_MASTER_PICKING_A_CARD = {
+	onEnter: () => {
+		resetSelectedCards()
+	},
+	onSelectedCardInHandChanged: (socket, index) => {
+		if (socket.id === gameMasterID()) {
+			setSelectedCardInHand(socket, index)
+			moveToNextPhase()
+		}
+	},
+	onSelectedCardAtPlayChanged: (socket, index) => {
 
-let gamePhase = GAME_MASTER_PICKING_A_CARD
+	}
+}
+
+const gpOTHER_PLAYERS_PICKING_A_CARD = {
+	onEnter: () => {},
+	onSelectedCardInHandChanged: (socket, index) => {
+	    if (socket.id !== gameMasterID()) {
+			setSelectedCardInHand(socket, index)
+			if (allPlayersHaveSelectedACardInHand()){
+				moveToNextPhase()
+				sendCardsAtPlayToAll()
+			}
+		}
+	},
+	onSelectedCardAtPlayChanged: (socket, index) => {
+		
+	}
+}
+
+const gpVOTING_FOR_A_CARD = {
+	onEnter: () => {},
+	onSelectedCardInHandChanged: (socket, index) => {
+
+	},
+	onSelectedCardAtPlayChanged: (socket, index) => {
+		if (socket.id !== gameMasterID()) {
+			setSelectedCardAtPlay(socket, index)
+			if (allPlayersHaveSelectedACardAtPlay()){
+				changeGameMaster()
+				sendToAllSockets('NewRound', {})
+				// Draw a new card
+				applyToAllSockets((socket) => {
+					socket.hand[socket.selectedCardInHandIndex] = pickACard()
+					sendHand(socket)
+				})
+				//
+				moveToNextPhase()
+			}
+		}
+	}
+}
+
+
+let gamePhaseIndex = 0
+let gamePhases = [gpGAME_MASTER_PICKING_A_CARD, gpOTHER_PLAYERS_PICKING_A_CARD, gpVOTING_FOR_A_CARD]
+const getGamePhase = () => gamePhases[gamePhaseIndex]
+
 
 const moveToNextPhase = () => {
-	gamePhase = (gamePhase + 1) % 3
-	sendToAllSockets('ThisIsGamePhase', {gamePhase})
-	if (gamePhase === GAME_MASTER_PICKING_A_CARD)
-		resetSelectedCards()
+	gamePhaseIndex = (gamePhaseIndex + 1) % 3
+	applyToAllSockets(sendGamePhase)
+	getGamePhase().onEnter()		
 }
 
 const resetSelectedCards = () => {
@@ -185,7 +238,7 @@ const sendGameState = (socket) => {
 
 const sendGamePhase = (socket) => {
 	socket.emit('ThisIsGamePhase', {
-		gamePhase
+		gamePhase: gamePhaseIndex
 	})
 }
 
@@ -262,45 +315,11 @@ const onPlayerArrival = (socket, name) => {
 
 	// -------- ON CARD SELECTION --------
 	socket.on('SelectedCardInHandChanged', (data) => {
-		switch(gamePhase) {
-		  case GAME_MASTER_PICKING_A_CARD:
-			if (socket.id === gameMasterID()) {
-				setSelectedCardInHand(socket, data.cardIndex)
-				moveToNextPhase()
-			}
-		    break
-		  case OTHER_PLAYERS_PICKING_A_CARD:
-		    if (socket.id !== gameMasterID()) {
-				setSelectedCardInHand(socket, data.cardIndex)
-				if (allPlayersHaveSelectedACardInHand()){
-					moveToNextPhase()
-					sendCardsAtPlayToAll()
-				}
-			}
-		    break
-		  case VOTING_FOR_A_CARD:
-
-		  	break
-		  default:
-		    break
-		}
+		getGamePhase().onSelectedCardInHandChanged(socket, data.cardIndex)
 	})
 
 	socket.on('SelectedCardAtPlayChanged', (data) => {
-		if (gamePhase === VOTING_FOR_A_CARD && socket.id !== gameMasterID()) {
-			setSelectedCardAtPlay(socket, data.cardIndex)
-			if (allPlayersHaveSelectedACardAtPlay()){
-				changeGameMaster()
-				sendToAllSockets('NewRound', {})
-				// Draw a new card
-				applyToAllSockets((socket) => {
-					socket.hand[socket.selectedCardInHandIndex] = pickACard()
-					sendHand(socket)
-				})
-				//
-				moveToNextPhase()
-			}
-		}
+		getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
 	})
 
 	// -------- ON DISCONNECT --------
