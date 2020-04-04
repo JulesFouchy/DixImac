@@ -8,6 +8,9 @@
 .gameMaster {
 	background-color: lightBlue;
 }
+#gameMastersCard {
+	border: blue thick solid;
+}
 #cardsAtPlay {
 	background: red
 }
@@ -37,6 +40,7 @@
 	let myGameMasterID
 	let mySelectedCardInHandIndex = null
 	let mySelectedCardAtPlayIndex = null
+	let myGameMastersCardIndex = null
 	let myGamePhase
 	let myCardsAtPlay = []
 
@@ -52,6 +56,7 @@
 	const GAME_MASTER_PICKING_A_CARD = 0
 	const OTHER_PLAYERS_PICKING_A_CARD = 1
 	const VOTING_FOR_A_CARD = 2
+	const VIEWING_VOTES = 3
 
 	const changeSelectedCardInHandFor = (index) => {
 		if (index === mySelectedCardInHandIndex)
@@ -96,6 +101,7 @@
 							 '<img src = ' + list[i] 
 						    + ' width = 200'
 						    + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
+						    + (html === htmlCardsAtPlay && i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
 						    + ' onclick = "' + onClick + '( '+ i + ')\"'
 						    + '></img>';
 		}
@@ -116,6 +122,9 @@
 		    break
 		  case VOTING_FOR_A_CARD:
 		  	message = ((myGameMasterID !== myPlayerID) ? 'Vote for a card' : 'Waiting for the other players to vote for a card')
+		  	break
+		  case VIEWING_VOTES:
+		  	message = ''
 		  	break
 		  default:
 		    break
@@ -144,6 +153,7 @@
 	socket.on('NewRound', data => {
 		mySelectedCardInHandIndex = null
 		mySelectedCardAtPlayIndex = null
+		myGameMastersCardIndex = null
 		myCardsAtPlay = []
 		draw()
 	})
@@ -175,6 +185,11 @@
 
 	socket.on('ThisIsCardsAtPlay', data => {
 		myCardsAtPlay = data.cards
+		draw()
+	})
+
+	socket.on('ThisIsGameMastersCardIndex', data => {
+		myGameMastersCardIndex = data.cardIndex
 		draw()
 	})
 

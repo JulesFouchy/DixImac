@@ -177,6 +177,13 @@ const countPoints = () => {
 	applyToAllSockets(sendPlayersList)
 }
 
+const getGameMastersCardIndex = () => {
+	for (let i = 0; i < cardsAtPlayAndTheirPlayers.length; ++i) {
+		if (cardsAtPlayAndTheirPlayers[i].player.id === gameMasterID())
+			return i
+	}
+}
+
 // -------- GAME STATE --------
 
 	// -------- GAME PHASE --------
@@ -233,6 +240,23 @@ const gpVOTING_FOR_A_CARD = {
 	},
 	onExit: () => {
 		countPoints()
+	}
+}
+
+const gpVIEWING_VOTES = {
+	onEnter: () => {
+		sendToAllSockets('ThisIsGameMastersCardIndex', {
+			cardIndex: getGameMastersCardIndex()
+		})
+		setTimeout(moveToNextPhase, 8 * 1000);
+	},
+	onSelectedCardInHandChanged: (socket, index) => {
+
+	},
+	onSelectedCardAtPlayChanged: (socket, index) => {
+
+	},
+	onExit: () => {
 		cardsAtPlayAndTheirPlayers = []
 		changeGameMaster()
 		sendToAllSockets('NewRound', {})
@@ -246,13 +270,19 @@ const gpVOTING_FOR_A_CARD = {
 
 
 let gamePhaseIndex = 0
-let gamePhases = [gpGAME_MASTER_PICKING_A_CARD, gpOTHER_PLAYERS_PICKING_A_CARD, gpVOTING_FOR_A_CARD]
+let gamePhases = 
+[
+	gpGAME_MASTER_PICKING_A_CARD,
+	gpOTHER_PLAYERS_PICKING_A_CARD,
+	gpVOTING_FOR_A_CARD,
+	gpVIEWING_VOTES
+]
 const getGamePhase = () => gamePhases[gamePhaseIndex]
 
 
 const moveToNextPhase = () => {
 	getGamePhase().onExit()	
-	gamePhaseIndex = (gamePhaseIndex + 1) % 3
+	gamePhaseIndex = (gamePhaseIndex + 1) % 4
 	applyToAllSockets(sendGamePhase)
 	getGamePhase().onEnter()		
 }
