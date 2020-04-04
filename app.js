@@ -17,7 +17,7 @@ const path = require('path')
 const cardW = 1000
 const cardH = 1500
 
-const NB_CARDS_PER_HAND = 5
+const NB_CARDS_PER_HAND = 7
 
 // -------- RANDOM --------
 
@@ -218,9 +218,10 @@ const sendPlayersList = (socket) => {
 }
 
 const getPlayersList = () => {
-	return Object.values(socketList).map(el=>({
-			name: el.playerName,
-			color: el.playerColor
+	return Object.values(socketList).map(socket=>({
+			name: socket.playerName,
+			color: socket.playerColor,
+			score: socket.score
 	}))
 }
 
@@ -237,6 +238,7 @@ const onPlayerArrival = (socket, name) => {
 	socket.playerName = name
 	socket.playerColor = randomColor()
 	applyToAllSockets(sendPlayersList)
+	socket.score = 0
 
 	setSelectedCardInHand(socket, null)
 	setSelectedCardAtPlay(socket, null)
