@@ -180,6 +180,7 @@ const sendGameState = (socket) => {
 	sendGamePhase  (socket)
 	sendGameMaster (socket)
 	sendCardsAtPlay(socket)
+	sendPlayersList(socket)
 }
 
 const sendGamePhase = (socket) => {
@@ -210,6 +211,19 @@ const sendHand = (socket) => {
 	socket.emit('ThisIsYourHand', {cards: socket.hand})
 }
 
+const sendPlayersList = (socket) => {
+	socket.emit('ThisIsPlayersList', {
+		playersList: getPlayersList()
+	})
+}
+
+const getPlayersList = () => {
+	return Object.values(socketList).map(el=>({
+			name: el.player.name,
+			color: el.player.color
+	}))
+}
+
 // -------- PLAYER --------
 
 const createPlayer = (name) => {
@@ -218,13 +232,6 @@ const createPlayer = (name) => {
 		color : randomColor()
 	}
 	return player
-}
-
-const updatePlayerListsOfClients = () => {
-	sendToAllSockets('PlayerListChanged', {playerList: Object.values(socketList).map(el=>({
-			name: el.player.name,
-			color: el.player.color
-	}))})
 }
 
 // -------- SOCKET --------
@@ -249,7 +256,7 @@ io.sockets.on('connection', socket => {
 	sendGameState(socket)
 
 	// -------- PLAYERS LIST --------
-	updatePlayerListsOfClients();
+	applyToAllSockets(sendPlayersList)
 
 	// -------- ON CARD SELECTION --------
 	socket.on('SelectedCardInHandChanged', (data) => {
@@ -298,6 +305,6 @@ io.sockets.on('connection', socket => {
 	socket.on('disconnect', () => {
 		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
-		updatePlayerListsOfClients()
+		applyToAllSockets(sendPlayersList)
 	})
 })

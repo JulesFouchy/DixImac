@@ -14,19 +14,21 @@
 </style>
 
 <div id="stateMessage"></div>
+<div id="playersList"></div>
 <div id="cardsAtPlay"></div>
 <div id="yourHand"></div>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
 	const htmlStateMessage = document.getElementById("stateMessage")
+	const htmlPLayersList = document.getElementById("playersList")
 	const htmlCardsAtPlay = document.getElementById("cardsAtPlay")
 	const htmlYourHand = document.getElementById("yourHand")
 	
 	const socket = io()
 
 	let myHand = []
-	let myPlayerList = []
+	let myPlayersList = []
 	let myPlayerID
 	let myGameMasterID
 	let mySelectedCardInHandIndex = null
@@ -110,23 +112,17 @@
 		htmlStateMessage.innerHTML = "<p>" + message + "</p>"
 	}
 
-	const drawPlayerList = () => {
-		/*ctx.font = '25pt Calibri';
-		for (let i = 0; i < myPlayerList.length; ++i){
-			const player = myPlayerList[i]
-			ctx.fillStyle = player.color;
-			ctx.fillText(player.name, 30, 30 + 40 * i)
-			if (i == myGameMasterIndex) {
-				ctx.beginPath();
-				ctx.arc(15, -10 + 30 + 40 * i, 10, 0, 2 * Math.PI);
-				ctx.fill();
-			}
-		}*/
+	const drawPlayersList = () => {
+		htmlPLayersList.innerHTML = ""
+		for (let i = 0; i < myPlayersList.length; ++i){
+			const player = myPlayersList[i]
+			htmlPLayersList.innerHTML += "<p>"+ player.name +"</p>"
+		}
 	}
 
 	const draw = () => {
 		//ctx.clearRect(0, 0, 500, 500)
-		//drawPlayerList()
+		drawPlayersList()
 		displayStateMessage()
 		drawCardsAtPlay()
 		drawHand()
@@ -144,8 +140,9 @@
 		draw()
 	})
 
-	socket.on('PlayerListChanged', data => {
-		myPlayerList = data.playerList
+	socket.on('ThisIsPlayersList', data => {
+		console.log(data.playersList)
+		myPlayersList = data.playersList
 		draw()
 	})
 
