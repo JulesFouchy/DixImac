@@ -10,13 +10,14 @@ serv.listen(2000, () => console.log('Server started.'))
 const io = require('socket.io')(serv,{})
 
 const fs = require("fs"), { createCanvas } = require("canvas")
+const path = require('path')
 
 // -------- CONSTANTS --------
 
 const cardW = 1000
 const cardH = 1500
 
-const NB_CARDS_PER_HAND = 7
+const NB_CARDS_PER_HAND = 5
 
 // -------- RANDOM --------
 
@@ -39,21 +40,59 @@ const sendToAllSockets = (eventName, data) => {
 	applyToAllSockets( socket => socket.emit(eventName, data) )
 }
 
+// -------- UTILS FOR IMG FILES --------
+
+const base64FromFile = (file) => {
+    // read binary data
+    console.log(file)
+    var bitmap = fs.readFileSync(file);
+    // convert binary data to base64 encoded string
+    return new Buffer(bitmap).toString('base64');
+}
+
 // -------- CARD FACTORY --------
 
 const canvasToDrawCards = createCanvas(cardW, cardH);
 const ctxDC = canvasToDrawCards.getContext("2d");
+
+let deck = []
+
+const refillDeck = () => {
+	const directoryPath = path.join(__dirname, 'client/cards/originalCards')
+	fs.readdir(directoryPath, function (err, files) {
+	    //handling error
+	    if (err) {
+	        return console.log('Unable to scan directory: ' + err);
+	    } 
+	    //listing all files using forEach
+	    files.forEach(function (file) {
+	        // Do whatever you want to do with the file
+	        deck.push('client/cards/originalCards/'+file); 
+	    });
+	    console.log('Deck ready !')
+	});
+}
+
+refillDeck()
 
 const cardObject = (url) => ({
 	url
 })
 
 const pickACard = () => {
-	// Drawing
+	/*// Drawing
 	ctxDC.fillStyle = randomColor()
 	ctxDC.fillRect(0, 0, cardW, cardH)
 	// Return data encrypted as string
-	return canvasToDrawCards.toDataURL("image/png")
+	return canvasToDrawCards.toDataURL("image/png")*/
+
+	if (deck.length === 0)
+		refillDeck()
+	const index = Math.floor(Math.random() * deck.length)
+	const cardFile = deck[index]
+	deck.splice(index, 1)
+	return cardFile
+	//return base64FromFile(cardFile)
 }
 
 const pickAHand = () => {
