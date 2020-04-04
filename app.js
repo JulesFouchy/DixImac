@@ -150,7 +150,17 @@ let gamePhase = GAME_MASTER_PICKING_A_CARD
 const moveToNextPhase = () => {
 	gamePhase = (gamePhase + 1) % 3
 	sendToAllSockets('ThisIsGamePhase', {gamePhase})
+	if (gamePhase === GAME_MASTER_PICKING_A_CARD)
+		resetSelectedCards()
 }
+
+const resetSelectedCards = () => {
+	applyToAllSockets( socket => {
+		setSelectedCardInHand(socket, null)
+		setSelectedCardAtPlay(socket, null)
+	})
+}
+
 	// -------- GAME MASTER --------
 
 let gameMasterIndex = 0
