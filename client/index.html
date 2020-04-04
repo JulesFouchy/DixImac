@@ -12,7 +12,7 @@
 	background: black
 }
 </style>
-<input type="text" value = "RandomPlayer" onchange = "onMyNameChange(this.value)">
+<input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
 <div id="stateMessage"></div>
 <div id="playersList"></div>
 <div id="cardsAtPlay"></div>
@@ -124,7 +124,7 @@
 		htmlPLayersList.innerHTML = ""
 		for (let i = 0; i < myPlayersList.length; ++i){
 			const player = myPlayersList[i]
-			htmlPLayersList.innerHTML += "<p>"+ player.name +"</p>"
+			htmlPLayersList.innerHTML += "<p style = \"color : "+ player.color + "\">"+ player.name +"</p>"
 		}
 	}
 
