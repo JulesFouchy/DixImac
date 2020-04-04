@@ -219,38 +219,32 @@ const sendPlayersList = (socket) => {
 
 const getPlayersList = () => {
 	return Object.values(socketList).map(el=>({
-			name: el.player.name,
-			color: el.player.color
+			name: el.playerName,
+			color: el.playerColor
 	}))
-}
-
-// -------- PLAYER --------
-
-const createPlayer = (name) => {
-	const player = {
-		name,
-		color : randomColor()
-	}
-	return player
 }
 
 // -------- SOCKET --------
 
 const socketList = {}
 
-io.sockets.on('connection', socket => {
+const onPlayerArrival = (socket, name) => {
 	// -------- ID --------
 	socketList[socket.id] = socket
 	socket.emit('ThisIsYourID', {id: socket.id})
 
 	// -------- PLAYER --------
-	socket.player = createPlayer('Player'+randomColor())
+	socket.playerName = name
+	socket.playerColor = randomColor()
+	applyToAllSockets(sendPlayersList)
+
 	setSelectedCardInHand(socket, null)
 	setSelectedCardAtPlay(socket, null)
 
 	// -------- NAME --------
 	socket.on('ThisIsMyName', data => {
-		socket.player.name = data.name
+		console.log("Name change")
+		socket.playerName = data.name
 		applyToAllSockets(sendPlayersList)
 	})
 
@@ -312,5 +306,14 @@ io.sockets.on('connection', socket => {
 		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
 		applyToAllSockets(sendPlayersList)
+	})
+}
+
+io.sockets.on('connection', socket => {
+	socket.on('ThisIsMyName', data => {
+		if (!socketList[socket.id]) {
+			console.log("Name NEEEW")
+			onPlayerArrival(socket, data.name)
+		}
 	})
 })
