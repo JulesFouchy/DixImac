@@ -27,6 +27,16 @@
 .cardOwner {
 	font-size: 25px;
 }
+.cardAndVotesResult {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+#cardsAtPlay {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+}
 .gameMaster {
 	background-color: lightBlue;
 }
