@@ -36,6 +36,16 @@
 
 	const drawCardsAtPlay = () => drawCardList(htmlCardsAtPlay, myCardsAtPlay, "onCardAtPlayClick", mySelectedCardAtPlayIndex)
 
+	const getSpanOfCardVoters = (cardAtPLayIndex) => {
+		const list = myVoteResults[cardAtPLayIndex]
+		let res = '<span class = "cardVoters">'
+		for (let i = 0; i < list.length; ++i) {
+			 res += '<span class = "cardVoter" style = "color : '+ list[i].color+'">'+list[i].name+'</span>'
+			}
+		res += '</span>'
+		return res
+	}
+
 	const drawCardsAtPlayAndVotesResult = () => {
 		const html = htmlCardsAtPlay
 		const list = myCardsAtPlayAndTheirPlayers
@@ -48,9 +58,9 @@
 			    + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
 			    + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
 			    + '></img>'
+			    + getSpanOfCardVoters(i)
 			    + "</span>";
 		}
-		console.log(html.innerHTML)
 	}
 
 	const displayStateMessage = () => {

@@ -32,6 +32,14 @@
 	flex-wrap: wrap;
 	flex-direction: column;
 }
+.cardVoters {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+.cardVoter {
+	font-size: 25px;
+}
 #cardsAtPlay {
 	display: flex;
 	flex-wrap: wrap;

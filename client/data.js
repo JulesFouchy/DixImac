@@ -11,6 +11,7 @@ let myGameMastersCardIndex = null
 let myGamePhase
 let myCardsAtPlay = []
 let myCardsAtPlayAndTheirPlayers = []
+let myVoteResults = []
 
 const onMyNameChange = (newName) => {
 	iHaveChosenMyName = true
@@ -68,6 +69,7 @@ socket.on('NewRound', data => {
 	myGameMastersCardIndex = null
 	myCardsAtPlay = []
 	myCardsAtPlayAndTheirPlayers = []
+	myVoteResults = []
 	draw()
 })
 
@@ -77,7 +79,6 @@ socket.on('ThisIsYourHand', data => {
 })
 
 socket.on('ThisIsPlayersList', data => {
-	console.log(data.playersList)
 	myPlayersList = data.playersList
 	draw()
 })
@@ -108,5 +109,11 @@ socket.on('ThisIsGameMastersCardIndex', data => {
 
 socket.on('ThisIsCardsAtPlayAndTheirPlayers', data => {
 	myCardsAtPlayAndTheirPlayers = data.list
+	draw()
+})
+
+socket.on('ThisIsTheVotes', data => {
+	myVoteResults = data.votes
+	console.log(myVoteResults)
 	draw()
 })

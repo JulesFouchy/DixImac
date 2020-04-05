@@ -177,6 +177,21 @@ const countPoints = () => {
 	applyToAllSockets(sendPlayersList)
 }
 
+const getVotesPerCard = () => {
+	let res = Array(getNbOfPlayers())
+	for (let i = 0; i < res.length; ++i)
+		res[i] = new Array()
+	applyToAllSockets(socket => {
+		if (socket.id !== gameMasterID()) {
+			res[socket.selectedCardAtPlayIndex].push({
+				name: socket.playerName,
+				color: socket.playerColor
+			})
+		}
+	})
+	return res
+}
+
 const getGameMastersCardIndex = () => {
 	for (let i = 0; i < cardsAtPlayAndTheirPlayers.length; ++i) {
 		if (cardsAtPlayAndTheirPlayers[i].player.id === gameMasterID())
@@ -249,7 +264,7 @@ const gpVIEWING_VOTES = {
 			cardIndex: getGameMastersCardIndex()
 		})
 		sendToAllSockets('ThisIsTheVotes', {
-			
+			votes: getVotesPerCard()
 		})
 
 		sendToAllSockets('ThisIsCardsAtPlayAndTheirPlayers', {
