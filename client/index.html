@@ -3,7 +3,20 @@
 	border: yellow thick solid;
 }
 .cardImg {
-	margin: 10px;
+	/*margin: 10px;*/
+	/*position:absolute;*/
+	/*top: 0;
+	left: auto;*/
+}
+.cardImg:hover {
+	position:relative;
+    width:500px;
+    height:auto;
+    z-index:999;
+    /*transform: scale(2.5);*/
+}
+.cardsList {
+	/*position:relative;*/
 }
 .gameMaster {
 	background-color: lightBlue;
@@ -21,8 +34,8 @@
 <input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
 <div id="stateMessage"></div>
 <div id="playersList"></div>
-<div id="cardsAtPlay"></div>
-<div id="yourHand"></div>
+<div id="cardsAtPlay" class="cardsList"></div>
+<div id="yourHand" class="cardsList"></div>
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
@@ -97,8 +110,7 @@
 	const drawCardList = (html, list, onClick, selectedCardIndex) => {
 		html.innerHTML = ''
 		for (let i = 0; i < list.length; ++i){
-			html.innerHTML +=
-							 '<img src = ' + list[i] 
+			html.innerHTML += '<img src = ' + list[i] 
 						    + ' width = 200'
 						    + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
 						    + (html === htmlCardsAtPlay && i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')

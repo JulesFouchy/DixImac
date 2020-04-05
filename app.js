@@ -248,6 +248,9 @@ const gpVIEWING_VOTES = {
 		sendToAllSockets('ThisIsGameMastersCardIndex', {
 			cardIndex: getGameMastersCardIndex()
 		})
+		sendToAllSockets('ThisIsTheVotes', {
+			
+		})
 		setTimeout(moveToNextPhase, 8 * 1000);
 	},
 	onSelectedCardInHandChanged: (socket, index) => {
