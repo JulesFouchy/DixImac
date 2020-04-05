@@ -57,7 +57,7 @@
 		let message
 		switch(myGamePhase) {
 		  case GAME_MASTER_PICKING_A_CARD:
-			message = ((myGameMasterID === myPlayerID) ? "Pick a card, dear Game Master" : "Waiting for the Game Master to pick a card")
+			message = ((myGameMasterID === myPlayerID) ? "Pick a card, dear Story Teller" : "Waiting for the Story Teller to pick a card")
 		    break
 		  case OTHER_PLAYERS_PICKING_A_CARD:
 		    message = ((myGameMasterID !== myPlayerID) ? 'Pick a card that would match the hint' : "Waiting for other players to pick a card")
