@@ -19,10 +19,13 @@
 	/*position:relative;*/
 }
 #cardsAtPlay {
-	background: red
+	background: pink
 }
 #yourHand {
 	background: black
+}
+.cardOwner {
+	font-size: 25px;
 }
 .gameMaster {
 	background-color: lightBlue;

@@ -42,13 +42,13 @@
 		html.innerHTML = ''
 		for (let i = 0; i < list.length; ++i){
 			html.innerHTML = html.innerHTML
-				+ '<div class = cardAndVotesResult>'
-				+ '<div>'+list[i].playerName+'</div>'
+				+ '<span class = cardAndVotesResult>'
+				+ '<span class = "cardOwner" style = "color : '+ list[i].playerColor+'">'+list[i].playerName+'</span>'
 				+ '<img src = ' + list[i].card
 			    + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
 			    + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
 			    + '></img>'
-			    + "</div>";
+			    + "</span>";
 		}
 		console.log(html.innerHTML)
 	}
