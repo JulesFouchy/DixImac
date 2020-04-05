@@ -25,10 +25,10 @@
 	const drawCardList = (html, list, onClick, selectedCardIndex) => {
 		html.innerHTML = ''
 		for (let i = 0; i < list.length; ++i){
-			html.innerHTML += '<img src = ' + list[i]
+			html.innerHTML += '<span><img src = ' + list[i]
 						    + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
 						    + ' onclick = "' + onClick + '( '+ i + ')\"'
-						    + '></img>';
+						    + '></img></span>';
 		}
 	}
 
