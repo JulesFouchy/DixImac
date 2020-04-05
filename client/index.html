@@ -27,7 +27,6 @@
 		for (let i = 0; i < list.length; ++i){
 			html.innerHTML += '<img src = ' + list[i]
 						    + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
-						    + (html === htmlCardsAtPlay && i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
 						    + ' onclick = "' + onClick + '( '+ i + ')\"'
 						    + '></img>';
 		}
@@ -36,6 +35,23 @@
 	const drawHand = () => drawCardList(htmlYourHand, myHand, "onCardInHandClick", mySelectedCardInHandIndex)
 
 	const drawCardsAtPlay = () => drawCardList(htmlCardsAtPlay, myCardsAtPlay, "onCardAtPlayClick", mySelectedCardAtPlayIndex)
+
+	const drawCardsAtPlayAndVotesResult = () => {
+		const html = htmlCardsAtPlay
+		const list = myCardsAtPlayAndTheirPlayers
+		html.innerHTML = ''
+		for (let i = 0; i < list.length; ++i){
+			html.innerHTML = html.innerHTML
+				+ '<div class = cardAndVotesResult>'
+				+ '<div>'+list[i].playerName+'</div>'
+				+ '<img src = ' + list[i].card
+			    + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
+			    + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
+			    + '></img>'
+			    + "</div>";
+		}
+		console.log(html.innerHTML)
+	}
 
 	const displayStateMessage = () => {
 		let message
@@ -71,7 +87,10 @@
 		if (iHaveChosenMyName) {
 			drawPlayersList()
 			displayStateMessage()
-			drawCardsAtPlay()
+			if (myGamePhase !== VIEWING_VOTES)
+				drawCardsAtPlay()
+			else
+				drawCardsAtPlayAndVotesResult()
 			drawHand()
 		}
 	}

@@ -251,6 +251,14 @@ const gpVIEWING_VOTES = {
 		sendToAllSockets('ThisIsTheVotes', {
 			
 		})
+
+		sendToAllSockets('ThisIsCardsAtPlayAndTheirPlayers', {
+			list: cardsAtPlayAndTheirPlayers.map(el=>({
+				card: el.card,
+				playerName: el.player.playerName,
+				playerColor: el.player.playerColor
+			}))
+		})
 		setTimeout(moveToNextPhase, 8 * 1000);
 	},
 	onSelectedCardInHandChanged: (socket, index) => {
