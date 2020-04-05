@@ -17,15 +17,15 @@
 .cardsList {
 	/*position:relative;*/
 }
-.gameMaster {
-	background-color: lightBlue;
-}
-#gameMastersCard {
-	border: blue thick solid;
-}
 #cardsAtPlay {
 	background: red
 }
 #yourHand {
 	background: black
+}
+.gameMaster {
+	background-color: lightBlue;
+}
+#gameMastersCard {
+	border: blue thick solid;
 }
