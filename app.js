@@ -21,11 +21,21 @@ const NB_CARDS_PER_HAND = 7
 
 // -------- RANDOM --------
 
-const randomColor = () => {
+/*const randomColor = () => {
   const letters = '0123456789ABCDEF'
   let color = '#'
   for (let i = 0; i < 6; i++)
     color += letters[Math.floor(Math.random() * 16)]
+  return color
+}*/
+
+const randomColor = () => {
+  const letters = '0123456789ABCDEF'
+  let color = '#'
+  for (let i = 0; i < 3; i++) {
+  	const nb = Math.floor(Math.random()*150)
+    color += letters[Math.floor(nb/16)] + letters[nb%16]
+  }
   return color
 }
 
@@ -274,7 +284,7 @@ const gpVIEWING_VOTES = {
 				playerColor: el.player.playerColor
 			}))
 		})
-		setTimeout(moveToNextPhase, 8 * 1000);
+		setTimeout(moveToNextPhase, 15 * 1000);
 	},
 	onSelectedCardInHandChanged: (socket, index) => {
 
