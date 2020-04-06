@@ -217,6 +217,9 @@ const gpGAME_MASTER_PICKING_A_CARD = {
 	onEnter: () => {
 		resetSelectedCards()
 	},
+	checkForEndOfPhase: () => {
+		
+	},
 	onSelectedCardInHandChanged: (socket, index) => {
 		if (socket.id === gameMasterID()) {
 			setSelectedCardInHand(socket, index)
@@ -233,12 +236,15 @@ const gpGAME_MASTER_PICKING_A_CARD = {
 
 const gpOTHER_PLAYERS_PICKING_A_CARD = {
 	onEnter: () => {},
+	checkForEndOfPhase: () => {
+		if (allPlayersHaveSelectedACardInHand()){
+				moveToNextPhase()
+		}
+	},
 	onSelectedCardInHandChanged: (socket, index) => {
 	    if (socket.id !== gameMasterID()) {
 			setSelectedCardInHand(socket, index)
-			if (allPlayersHaveSelectedACardInHand()){
-				moveToNextPhase()
-			}
+			gpOTHER_PLAYERS_PICKING_A_CARD.checkForEndOfPhase()
 		}
 	},
 	onSelectedCardAtPlayChanged: (socket, index) => {
@@ -252,15 +258,18 @@ const gpOTHER_PLAYERS_PICKING_A_CARD = {
 
 const gpVOTING_FOR_A_CARD = {
 	onEnter: () => {},
+	checkForEndOfPhase: () => {
+		if (allPlayersHaveSelectedACardAtPlay()){
+			moveToNextPhase()
+		}
+	},
 	onSelectedCardInHandChanged: (socket, index) => {
 
 	},
 	onSelectedCardAtPlayChanged: (socket, index) => {
 		if (socket.id !== gameMasterID()) {
 			setSelectedCardAtPlay(socket, index)
-			if (allPlayersHaveSelectedACardAtPlay()){
-				moveToNextPhase()
-			}
+			gpVOTING_FOR_A_CARD.checkForEndOfPhase()
 		}
 	},
 	onExit: () => {
@@ -285,6 +294,9 @@ const gpVIEWING_VOTES = {
 			}))
 		})
 		setTimeout(moveToNextPhase, 15 * 1000);
+	},
+	checkForEndOfPhase: () => {
+		
 	},
 	onSelectedCardInHandChanged: (socket, index) => {
 
@@ -442,10 +454,16 @@ const onPlayerArrival = (socket, name) => {
 	// -------- ON DISCONNECT --------
 	socket.on('disconnect', () => {
 		//deleteFolderRecursive("images/"+socket.id)
+		const id = socket.id
 		delete socketList[socket.id]
 		applyToAllSockets(sendPlayersList)
-		gamePhaseIndex = 3
-		moveToNextPhase()
+		if (id === gameMasterID()) {
+			gamePhaseIndex = 3
+			moveToNextPhase()
+		}
+		else {
+			getGamePhase().checkForEndOfPhase()
+		}
 	})
 }
 
