@@ -444,6 +444,8 @@ const onPlayerArrival = (socket, name) => {
 		//deleteFolderRecursive("images/"+socket.id)
 		delete socketList[socket.id]
 		applyToAllSockets(sendPlayersList)
+		gamePhaseIndex = 3
+		moveToNextPhase()
 	})
 }
 
