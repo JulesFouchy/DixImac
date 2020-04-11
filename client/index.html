@@ -107,6 +107,13 @@
 		}
 	}
 
+	const refreshDraw = () => {
+		draw()
+		setTimeout(refreshDraw, 3 * 1000);
+	}
+
+	refreshDraw()
+
 </script>
 
   </body>

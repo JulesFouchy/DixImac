@@ -106,7 +106,7 @@ const pickACard = () => {
 	// Return data encrypted as string
 	return canvasToDrawCards.toDataURL("image/png")*/
 
-	if (Math.random() < 0.5) {
+	if (Math.random() < 1.0) {
 		return {
 			script: 'background(random(0, 255), random(0, 255), random(0, 255))',
 			seed: Math.floor(1000000*Math.random())
