@@ -51,3 +51,8 @@
 #gameMastersCard {
 	border: lightBlue thick solid;
 }
+
+
+#defaultCanvas0 {
+	visibility: hidden;
+}

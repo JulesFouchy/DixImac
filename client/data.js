@@ -63,6 +63,12 @@ const onCardAtPlayClick = (index) => {
 	draw()
 }
 
+convertCardToHTMLFormat = (card) => {
+	if (card.script)
+		return imageFromP5script(card.script, card.seed)
+	return card
+}
+
 socket.on('NewRound', data => {
 	mySelectedCardInHandIndex = null
 	mySelectedCardAtPlayIndex = null
@@ -75,6 +81,9 @@ socket.on('NewRound', data => {
 
 socket.on('ThisIsYourHand', data => {
 	myHand = data.cards
+	for (let i = 0; i < myHand.length; ++i) {
+		myHand[i] = convertCardToHTMLFormat(myHand[i])
+	}
 	draw()
 })
 
@@ -99,6 +108,9 @@ socket.on('ThisIsGamePhase', data => {
 
 socket.on('ThisIsCardsAtPlay', data => {
 	myCardsAtPlay = data.cards
+	for (let i = 0; i < myCardsAtPlay.length; ++i) {
+		myCardsAtPlay[i] = convertCardToHTMLFormat(myCardsAtPlay[i])
+	}
 	draw()
 })
 
@@ -109,6 +121,9 @@ socket.on('ThisIsGameMastersCardIndex', data => {
 
 socket.on('ThisIsCardsAtPlayAndTheirPlayers', data => {
 	myCardsAtPlayAndTheirPlayers = data.list
+	for (let i = 0; i < myCardsAtPlayAndTheirPlayers.length; ++i) {
+		myCardsAtPlayAndTheirPlayers[i].card = convertCardToHTMLFormat(myCardsAtPlayAndTheirPlayers[i].card)
+	}
 	draw()
 })
 

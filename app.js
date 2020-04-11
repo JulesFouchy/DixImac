@@ -106,6 +106,13 @@ const pickACard = () => {
 	// Return data encrypted as string
 	return canvasToDrawCards.toDataURL("image/png")*/
 
+	if (Math.random() < 0.5) {
+		return {
+			script: 'background(200, 15, 60)',
+			seed: 125
+		}
+	}
+
 	if (deck.length === 0)
 		refillDeck()
 	const index = Math.floor(Math.random() * deck.length)
