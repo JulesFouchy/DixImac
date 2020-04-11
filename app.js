@@ -78,19 +78,28 @@ const ctxDC = canvasToDrawCards.getContext("2d");
 let deck = []
 
 const refillDeck = () => {
-	const directoryPath = path.join(__dirname, 'client/cards/originalCards')
-	fs.readdir(directoryPath, function (err, files) {
-	    //handling error
-	    if (err) {
-	        return console.log('Unable to scan directory: ' + err);
-	    } 
-	    //listing all files using forEach
+	// JPG / PNG images
+	const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
+	fs.readdir(fixedImgDir, function (err, files) {
+	    if (err) return console.log('Unable to scan directory: ' + err)
+
 	    files.forEach(function (file) {
-	        // Do whatever you want to do with the file
-	        deck.push('client/cards/originalCards/'+file); 
-	    });
-	    console.log('Deck ready !')
-	});
+	        deck.push('client/cards/originalCards/'+file);
+	    })
+	})
+	// P5 scripts
+	const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
+	fs.readdir(p5ScriptsDir, function (err, files) {
+	    if (err) return console.log('Unable to scan directory: ' + err)
+
+	    files.forEach(function (file) {
+		    deck.push({
+				script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
+				seed: Math.floor(1000000*Math.random())
+			})
+	    })
+	})
+	console.log('Deck ready !')
 }
 
 refillDeck()
@@ -105,13 +114,6 @@ const pickACard = () => {
 	ctxDC.fillRect(0, 0, cardW, cardH)
 	// Return data encrypted as string
 	return canvasToDrawCards.toDataURL("image/png")*/
-
-	if (Math.random() < 1.0) {
-		return {
-			script: 'background(random(0, 255), random(0, 255), random(0, 255))',
-			seed: Math.floor(1000000*Math.random())
-		}
-	}
 
 	if (deck.length === 0)
 		refillDeck()
