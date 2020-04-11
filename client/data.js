@@ -81,9 +81,9 @@ socket.on('NewRound', data => {
 
 socket.on('ThisIsYourHand', data => {
 	myHand = data.cards
-	for (let i = 0; i < myHand.length; ++i) {
-		myHand[i] = convertCardToHTMLFormat(myHand[i])
-	}
+	// for (let i = 0; i < myHand.length; ++i) {
+	// 	myHand[i] = convertCardToHTMLFormat(myHand[i])
+	// }
 	draw()
 })
 
@@ -108,9 +108,9 @@ socket.on('ThisIsGamePhase', data => {
 
 socket.on('ThisIsCardsAtPlay', data => {
 	myCardsAtPlay = data.cards
-	for (let i = 0; i < myCardsAtPlay.length; ++i) {
-		myCardsAtPlay[i] = convertCardToHTMLFormat(myCardsAtPlay[i])
-	}
+	// for (let i = 0; i < myCardsAtPlay.length; ++i) {
+	// 	myCardsAtPlay[i] = convertCardToHTMLFormat(myCardsAtPlay[i])
+	// }
 	draw()
 })
 
@@ -121,14 +121,13 @@ socket.on('ThisIsGameMastersCardIndex', data => {
 
 socket.on('ThisIsCardsAtPlayAndTheirPlayers', data => {
 	myCardsAtPlayAndTheirPlayers = data.list
-	for (let i = 0; i < myCardsAtPlayAndTheirPlayers.length; ++i) {
-		myCardsAtPlayAndTheirPlayers[i].card = convertCardToHTMLFormat(myCardsAtPlayAndTheirPlayers[i].card)
-	}
+	// for (let i = 0; i < myCardsAtPlayAndTheirPlayers.length; ++i) {
+	// 	myCardsAtPlayAndTheirPlayers[i].card = convertCardToHTMLFormat(myCardsAtPlayAndTheirPlayers[i].card)
+	// }
 	draw()
 })
 
 socket.on('ThisIsTheVotes', data => {
 	myVoteResults = data.votes
-	console.log(myVoteResults)
 	draw()
 })

@@ -6,6 +6,8 @@ function setup() {
 }
 
 imageFromP5script = (scriptStr, seed) => {
-	background(200, 15, 60)
+	background(0)
+	randomSeed(seed)
+	eval(scriptStr)
 	return oCanvas.toDataURL("image/png")
 }

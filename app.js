@@ -108,8 +108,8 @@ const pickACard = () => {
 
 	if (Math.random() < 0.5) {
 		return {
-			script: 'background(200, 15, 60)',
-			seed: 125
+			script: 'background(random(0, 255), random(0, 255), random(0, 255))',
+			seed: Math.floor(1000000*Math.random())
 		}
 	}
 
