@@ -19,6 +19,7 @@ const onMyNameChange = (newName) => {
 	socket.emit('ThisIsMyName', {
 		name: newName
 	})
+	draw()
 }
 
 const ImGameMaster = () => myPlayerID === myGameMasterID
