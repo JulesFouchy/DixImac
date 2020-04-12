@@ -325,7 +325,12 @@ const createRoom = () => {
 
 			// -------- GAME MASTER --------
 
-		gameMasterIdFromIndex: (index) => Object.values(room.socketList)[index].id,
+		gameMasterIdFromIndex: (index) => {
+			const list = Object.values(room.socketList)
+			if (index >= list.length)
+				index = list.length - 1
+			return list[index].id
+		},
 		gameMasterID: () => room.gameMasterIdFromIndex(room.gameMasterIndex),
 
 			// -------- SENDING GAME STATE --------
@@ -385,6 +390,7 @@ const createRoom = () => {
 			// -------- ID --------
 			room.socketList[socket.id] = socket
 			socket.emit('ThisIsYourID', {id: socket.id})
+			socket.emit('ThisIsRoomID', {id: room.id})
 
 			// -------- PLAYER --------
 			//socket.playerName = name

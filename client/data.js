@@ -1,6 +1,7 @@
 const socket = io()
 
 let iHaveChosenMyName = false
+let myRoomID = null
 let myHand = []
 let myPlayersList = []
 let myPlayerID
@@ -68,6 +69,11 @@ convertCardToHTMLFormat = (card) => {
 		return imageFromP5script(card.script, card.seed)
 	return card
 }
+
+socket.on('ThisIsRoomID', data => {
+	myRoomID = data.id
+	draw()
+})
 
 socket.on('NewRound', data => {
 	mySelectedCardInHandIndex = null

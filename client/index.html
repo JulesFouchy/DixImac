@@ -8,7 +8,7 @@
   <body>
 
 <input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
-<div id="roomSelection">
+<div id="roomSelection" style = "visibility: hidden;">
 	<button id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
 	<button id="buttonJoinTheRoom" onclick="joinRoom()">Join the Room</button>
 	<input type="text" value = "" id="roomToJoinID" placeholder="RoomID">
@@ -107,13 +107,19 @@
 
 	const draw = () => {
 		if (iHaveChosenMyName) {
-			drawPlayersList()
-			displayStateMessage()
-			if (myGamePhase !== VIEWING_VOTES)
-				drawCardsAtPlay()
-			else
-				drawCardsAtPlayAndVotesResult()
-			drawHand()
+			if (myRoomID) {
+				document.getElementById("roomSelection").style = "visibility: hidden;"
+				drawPlayersList()
+				displayStateMessage()
+				if (myGamePhase !== VIEWING_VOTES)
+					drawCardsAtPlay()
+				else
+					drawCardsAtPlayAndVotesResult()
+				drawHand()
+			}
+			else {
+				document.getElementById("roomSelection").style = "visibility: visible;"
+			}
 		}
 	}
 
