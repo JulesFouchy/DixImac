@@ -8,10 +8,7 @@
   <body>
 
 <input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
-<div id="roomSelection" style = "visibility: hidden;">
-	<button id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
-	<button id="buttonJoinTheRoom" onclick="joinRoom()">Join the Room</button>
-	<input type="text" value = "" id="roomToJoinID" placeholder="RoomID">
+<div id="roomSelection">
 </div>
 <div id="stateMessage"></div>
 <div id="playersList"></div>
@@ -105,10 +102,23 @@
 		}
 	}
 
+	const drawRoomInfo = () => {
+		const htmlEl = document.getElementById("roomSelection")
+		if (myRoomID) {
+			htmlEl.innerHTML = '<p> You are in room '+myRoomID+'</p>'
+		}
+		else {
+			htmlEl.innerHTML = 
+				 '<button id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>'
+				+'<button id="buttonJoinTheRoom" onclick="joinRoom()">Join the Room</button>'
+				+'<input type="text" value = "" id="roomToJoinID" placeholder="RoomID">'
+		}
+	}
+
 	const draw = () => {
 		if (iHaveChosenMyName) {
 			if (myRoomID) {
-				document.getElementById("roomSelection").style = "visibility: hidden;"
+				drawRoomInfo()
 				drawPlayersList()
 				displayStateMessage()
 				if (myGamePhase !== VIEWING_VOTES)
@@ -118,7 +128,7 @@
 				drawHand()
 			}
 			else {
-				document.getElementById("roomSelection").style = "visibility: visible;"
+				drawRoomInfo()
 			}
 		}
 	}
