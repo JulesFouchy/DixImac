@@ -8,8 +8,7 @@
   <body>
 
 <input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
-<div id="roomSelection">
-</div>
+<div id="roomSelection"></div>
 <div id="stateMessage"></div>
 <div id="playersList"></div>
 <div id="cardsAtPlay" class="cardsList"></div>
@@ -110,8 +109,7 @@
 		else {
 			htmlEl.innerHTML = 
 				 '<button id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>'
-				+'<button id="buttonJoinTheRoom" onclick="joinRoom()">Join the Room</button>'
-				+'<input type="text" value = "" id="roomToJoinID" placeholder="RoomID">'
+				+'<input type="text" value = "" id="roomToJoinID" placeholder="Join a Room : enter its ID" onchange = joinRoom()>'
 		}
 	}
 
