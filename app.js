@@ -100,6 +100,7 @@ const createRoom = () => {
 	const id = randomIntID(6)
 	const room = {
 		// DATA
+		id: id,
 		socketList: {},
 		deck: [],
 		gamePhaseIndex: 0,
@@ -421,16 +422,20 @@ const createRoom = () => {
 
 			// -------- ON DISCONNECT --------
 			socket.on('disconnect', () => {
-				//deleteFolderRecursive("images/"+socket.id)
 				const id = socket.id
 				delete room.socketList[socket.id]
-				applyToAllSockets(room.socketList, room.sendPlayersList)
-				if (id === room.gameMasterID()) {
-					room.gamePhaseIndex = 3
-					room.moveToNextPhase()
+				if (room.getNbOfPlayers() === 0) {
+					delete roomsList[room.id]
 				}
 				else {
-					room.getGamePhase().checkForEndOfPhase()
+					applyToAllSockets(room.socketList, room.sendPlayersList)
+					if (id === room.gameMasterID()) {
+						room.gamePhaseIndex = 3
+						room.moveToNextPhase()
+					}
+					else {
+						room.getGamePhase().checkForEndOfPhase()
+					}
 				}
 			})
 		},
