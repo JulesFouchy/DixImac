@@ -460,13 +460,15 @@ const createRoom = () => {
 			// -------- ON DISCONNECT --------
 			socket.on('disconnect', () => {
 				const id = socket.id
+				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
 				if (room.getNbOfPlayers() === 0) {
 					delete roomsList[room.id]
 				}
 				else {
 					applyToAllSockets(room.socketList, room.sendPlayersList)
-					if (id === room.gameMasterID()) {
+					if (wasGameMaster) {
+						room.gameMasterIndex -= 1
 						room.gamePhaseIndex = 3
 						room.moveToNextPhase()
 					}
