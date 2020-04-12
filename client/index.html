@@ -20,6 +20,7 @@
 <script src="client/imageFromP5.js"></script>
 <script src="client/data.js"></script>
 <script>
+	window.onfocus = () => draw()
 	const emitCreateRoom = () => socket.emit('CreateRoom')
 	const joinRoom = () => {
 		const roomID = document.getElementById("roomToJoinID").value
@@ -136,12 +137,12 @@
 		}
 	}
 
-	const refreshDraw = () => {
-		draw()
-		setTimeout(refreshDraw, 3 * 1000);
-	}
+	// const refreshDraw = () => {
+	// 	draw()
+	// 	setTimeout(refreshDraw, 3 * 1000);
+	// }
 
-	refreshDraw()
+	// refreshDraw()
 
 </script>
 
