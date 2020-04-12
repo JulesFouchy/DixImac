@@ -545,7 +545,9 @@ const joinRoom = (socket, roomID) => {
 	console.log('joining room')
 	if (roomsList[roomID]) {
 		console.log('found room !')
-		roomsList[roomID].onPlayerArrival(socket) 
+		roomsList[roomID].onPlayerArrival(socket)
+		socket.removeAllListeners('CreateRoom')
+		socket.removeAllListeners('JoinRoom')
 	}
 	else
 		console.log('No room with this ID : ' + roomID)
