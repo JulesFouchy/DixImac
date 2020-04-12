@@ -532,10 +532,9 @@ io.sockets.on('connection', socket => {
 	})
 	socket.on('CreateRoom', () => {
 		const roomID = createRoom()
-		console.log(roomID)
 		setTimeout(() => {
 			joinRoom(socket, roomID)
-		}, 2 * 1000);
+		}, 100);
 	})
 
 	socket.on('JoinRoom', (data) => {
