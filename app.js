@@ -103,6 +103,7 @@ const createRoom = () => {
 		id: id,
 		socketList: {},
 		deck: [],
+		hint: '',
 		gamePhaseIndex: 0,
 		gameMasterIndex: 0,
 		cardsAtPlayAndTheirPlayers: [],
@@ -321,6 +322,7 @@ const createRoom = () => {
 			},
 			onExit: () => {
 				room.cardsAtPlayAndTheirPlayers = []
+				room.hint = ''
 				room.changeGameMaster()
 				sendToAllSockets(room.socketList, 'NewRound', {})
 				// Draw a new card
@@ -369,6 +371,7 @@ const createRoom = () => {
 			room.sendGameMaster (socket)
 			room.sendCardsAtPlay(socket)
 			room.sendPlayersList(socket)
+			room.sendHint       (socket)
 		},
 
 		sendGamePhase: (socket) => {
@@ -402,6 +405,12 @@ const createRoom = () => {
 		sendPlayersList: (socket) => {
 			socket.emit('ThisIsPlayersList', {
 				playersList: room.getPlayersList()
+			})
+		},
+
+		sendHint: (socket) => {
+			socket.emit('ThisIsTheHint', {
+				hint: room.hint
 			})
 		},
 
@@ -455,6 +464,13 @@ const createRoom = () => {
 			socket.on('SelectedCardAtPlayChanged', (data) => {
 				room.getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
 				applyToAllSockets(room.socketList, room.sendPlayersList)
+			})
+
+			// -------- HINT --------
+
+			socket.on('ThisIsTheHint', (data) => {
+				room.hint = data.hint
+				applyToAllSockets(room.socketList, room.sendHint)
 			})
 
 			// -------- ON DISCONNECT --------

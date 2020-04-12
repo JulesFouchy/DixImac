@@ -10,6 +10,7 @@ let mySelectedCardInHandIndex = null
 let mySelectedCardAtPlayIndex = null
 let myGameMastersCardIndex = null
 let myGamePhase
+let myHint = ''
 let myCardsAtPlay = []
 let myCardsAtPlayAndTheirPlayers = []
 let myVoteResults = []
@@ -83,6 +84,7 @@ socket.on('NewRound', data => {
 	myCardsAtPlay = []
 	myCardsAtPlayAndTheirPlayers = []
 	myVoteResults = []
+	myHint = ''
 	draw()
 })
 
@@ -136,5 +138,10 @@ socket.on('ThisIsCardsAtPlayAndTheirPlayers', data => {
 
 socket.on('ThisIsTheVotes', data => {
 	myVoteResults = data.votes
+	draw()
+})
+
+socket.on('ThisIsTheHint', (data) => {
+	myHint = data.hint
 	draw()
 })

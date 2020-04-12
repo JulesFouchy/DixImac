@@ -10,6 +10,7 @@
 <input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')">
 <div id="roomSelection"></div>
 <div id="stateMessage"></div>
+<div id="hint"></div>
 <div id="playersList"></div>
 <div id="cardsAtPlay" class="cardsList"></div>
 <div id="yourHand" class="cardsList"></div>
@@ -119,10 +120,30 @@
 		}
 	}
 
+	const drawHint = () => {
+		const html = document.getElementById("hint")
+		html.innerHTML = ''
+		if (myPlayerID === myGameMasterID) {
+			html.innerHTML = '<input type="text" value = "'+myHint+'" id="hintInput" placeholder="My Hint is . . ." onchange = emitHint()>'
+		}
+		else {
+			if (myHint) {
+				html.innerHTML = '<p id="hintText">«'+myHint+'»</p>'
+			}
+		}
+	}
+
+	const emitHint = () => {
+		socket.emit('ThisIsTheHint', {
+			hint: document.getElementById("hintInput").value
+		})
+	}
+
 	const draw = () => {
 		if (iHaveChosenMyName) {
 			if (myRoomID) {
 				drawRoomInfo()
+				drawHint()
 				drawPlayersList()
 				displayStateMessage()
 				if (myGamePhase !== VIEWING_VOTES)
