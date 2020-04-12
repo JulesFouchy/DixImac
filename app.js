@@ -498,25 +498,17 @@ const createRoom = () => {
 		refillDeck: () => {
 			// JPG / PNG images
 			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
-			fs.readdir(fixedImgDir, function (err, files) {
-			    if (err) return console.log('Unable to scan directory: ' + err)
-
-			    files.forEach(function (file) {
-			        room.deck.push('client/cards/originalCards/'+file)
-			        //console.log('client/cards/originalCards/'+file)
-			    })
+			fs.readdirSync(fixedImgDir).forEach(function (file) {
+		        room.deck.push('client/cards/originalCards/'+file)
+		        //console.log('client/cards/originalCards/'+file)
 			})
 			// P5 scripts
 			const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
-			fs.readdir(p5ScriptsDir, function (err, files) {
-			    if (err) return console.log('Unable to scan directory: ' + err)
-
-			    files.forEach(function (file) {
-				    room.deck.push({
-						script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
-						seed: Math.floor(1000000*Math.random())
-					})
-			    })
+			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
+			    room.deck.push({
+					script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
+					seed: Math.floor(1000000*Math.random())
+				})
 			})
 			console.log('Deck ready !')
 		}
@@ -548,9 +540,7 @@ io.sockets.on('connection', socket => {
 	})
 	socket.on('CreateRoom', () => {
 		const roomID = createRoom()
-		setTimeout(() => {
-			joinRoom(socket, roomID)
-		}, 100);
+		joinRoom(socket, roomID)
 	})
 
 	socket.on('JoinRoom', (data) => {
