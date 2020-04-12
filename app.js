@@ -39,6 +39,14 @@ const randomColor = () => {
   return color
 }
 
+const randomIntID = (nbDigits) => {
+  const letters = '0123456789'
+  let ID = ''
+  for (let i = 0; i < nbDigits; i++)
+    ID += letters[Math.floor(Math.random()*10)]
+  return ID
+}
+
 const shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -49,16 +57,14 @@ const shuffle = (arr) => {
 
 // -------- UTILS FOR SOCKETS --------
 
-const applyToAllSockets = (func) => {
+const applyToAllSockets = (socketList, func) => {
 	for (const socket of Object.values(socketList))
 		func(socket)
 }
 
-const sendToAllSockets = (eventName, data) => {
-	applyToAllSockets( socket => socket.emit(eventName, data) )
+const sendToAllSockets = (socketList, eventName, data) => {
+	applyToAllSockets(socketList, socket => socket.emit(eventName, data) )
 }
-
-const getNbOfPlayers = () => Object.values(socketList).length
 
 // -------- UTILS FOR IMG FILES --------
 
@@ -75,62 +81,6 @@ const base64FromFile = (file) => {
 const canvasToDrawCards = createCanvas(cardW, cardH);
 const ctxDC = canvasToDrawCards.getContext("2d");
 
-let deck = []
-
-const refillDeck = () => {
-	// JPG / PNG images
-	const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
-	fs.readdir(fixedImgDir, function (err, files) {
-	    if (err) return console.log('Unable to scan directory: ' + err)
-
-	    files.forEach(function (file) {
-	        deck.push('client/cards/originalCards/'+file);
-	    })
-	})
-	// P5 scripts
-	const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
-	fs.readdir(p5ScriptsDir, function (err, files) {
-	    if (err) return console.log('Unable to scan directory: ' + err)
-
-	    files.forEach(function (file) {
-		    deck.push({
-				script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
-				seed: Math.floor(1000000*Math.random())
-			})
-	    })
-	})
-	console.log('Deck ready !')
-}
-
-refillDeck()
-
-const cardObject = (url) => ({
-	url
-})
-
-const pickACard = () => {
-	/*// Drawing
-	ctxDC.fillStyle = randomColor()
-	ctxDC.fillRect(0, 0, cardW, cardH)
-	// Return data encrypted as string
-	return canvasToDrawCards.toDataURL("image/png")*/
-
-	if (deck.length === 0)
-		refillDeck()
-	const index = Math.floor(Math.random() * deck.length)
-	const cardFile = deck[index]
-	deck.splice(index, 1)
-	return cardFile
-	//return base64FromFile(cardFile)
-}
-
-const pickAHand = () => {
-	let res = []
-	for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
-		res.push(pickACard())
-	return res
-}
-
 // -------- CARDS LIST HANDLING --------
 
 const setSelectedCardInHand = (socket, index) => {
@@ -141,346 +91,410 @@ const setSelectedCardAtPlay = (socket, index) => {
 	socket.selectedCardAtPlayIndex = index
 }
 
-const allPlayersHaveSelectedACardInHand = () => {
-	return Object.values(socketList).reduce(
-		(bool, socket) => socket.selectedCardInHandIndex !== null && bool,
-		true
-	)
-}
+// -------- SOCKETS AND ROOMS --------
 
-const allPlayersHaveSelectedACardAtPlay = () => {
-	return Object.values(socketList).reduce(
-		(bool, socket) =>
-			(socket.selectedCardAtPlayIndex !== null || socket.id === gameMasterID())
-			&& bool,
-		true
-	)
-}
+const roomsList = {}
 
-const computeCardsAtPlayAndTheirPlayers = () => {
-	let cards = []
-	applyToAllSockets( socket => {
-		if (socket.selectedCardInHandIndex !== null)
-			cards.push({
-				card: socket.hand[socket.selectedCardInHandIndex],
-				player: socket
+const createRoom = () => {
+	console.log('Creating a room !')
+	const id = randomIntID(6)
+	const room = {
+		// DATA
+		socketList: {},
+		deck: [],
+		gamePhaseIndex: 0,
+		gameMasterIndex: 0,
+		cardsAtPlayAndTheirPlayers: [],
+		// FUNCTIONS
+		pickACard: () => {
+			if (room.deck.length === 0)
+				room.refillDeck()
+			const index = Math.floor(Math.random() * room.deck.length)
+			const cardFile = room.deck[index]
+			room.deck.splice(index, 1)
+			return cardFile
+		},
+		pickAHand: () => {
+			let res = []
+			for (let i = 0; i < NB_CARDS_PER_HAND; ++i)
+				res.push(room.pickACard())
+			return res
+		},
+		changeGameMaster: () => {
+			room.gameMasterIndex = (room.gameMasterIndex+1) % Math.max( Object.keys(room.socketList).length, 1)
+			applyToAllSockets(room.socketList, room.sendGameMaster)
+		},
+		// -------- CARDS LIST HANDLING --------
+
+
+		getNbOfPlayers: () => Object.values(room.socketList).length,
+
+		allPlayersHaveSelectedACardInHand: () => {
+			return Object.values(room.socketList).reduce(
+				(bool, socket) => socket.selectedCardInHandIndex !== null && bool,
+				true
+			)
+		},
+		allPlayersHaveSelectedACardAtPlay: () => {
+			return Object.values(room.socketList).reduce(
+				(bool, socket) =>
+					(socket.selectedCardAtPlayIndex !== null || socket.id === room.gameMasterID())
+					&& bool,
+				true
+			)
+		},
+		computeCardsAtPlayAndTheirPlayers: () => {
+			let cards = []
+			applyToAllSockets(room.socketList, socket => {
+				if (socket.selectedCardInHandIndex !== null)
+					cards.push({
+						card: socket.hand[socket.selectedCardInHandIndex],
+						player: socket
+					})
 			})
-	})
-	return shuffle(cards)
-}
-
-let cardsAtPlayAndTheirPlayers = []
-
-const getCardsAtPlay = () => cardsAtPlayAndTheirPlayers.map( el => el.card )
-
-const countPoints = () => {
-	let nbVotesForGameMaster = 0
-	applyToAllSockets( socket => {
-		if (socket.id !== gameMasterID()) {
-			const votedPlayer = cardsAtPlayAndTheirPlayers[socket.selectedCardAtPlayIndex].player
-			if (votedPlayer.id !== gameMasterID()) {
-				if (votedPlayer.id !== socket.id)
-					votedPlayer.score += 1
-				else
-					votedPlayer.score -= 2
-			}
-			else {
-				socket.score += 1
-				nbVotesForGameMaster++
-			}
-		}
-	})
-	if ((nbVotesForGameMaster != 0) && (nbVotesForGameMaster != getNbOfPlayers()-1))
-		socketList[gameMasterID()].score += 2
-	// Send new scores
-	applyToAllSockets(sendPlayersList)
-}
-
-const getVotesPerCard = () => {
-	let res = Array(getNbOfPlayers())
-	for (let i = 0; i < res.length; ++i)
-		res[i] = new Array()
-	applyToAllSockets(socket => {
-		if (socket.id !== gameMasterID()) {
-			res[socket.selectedCardAtPlayIndex].push({
-				name: socket.playerName,
-				color: socket.playerColor
+			return shuffle(cards)
+		},
+		getCardsAtPlay: () => room.cardsAtPlayAndTheirPlayers.map( el => el.card ),
+		countPoints: () => {
+			let nbVotesForGameMaster = 0
+			applyToAllSockets(room.socketList, socket => {
+				if (socket.id !== room.gameMasterID()) {
+					const votedPlayer = room.cardsAtPlayAndTheirPlayers[socket.selectedCardAtPlayIndex].player
+					if (votedPlayer.id !== room.gameMasterID()) {
+						if (votedPlayer.id !== socket.id)
+							votedPlayer.score += 1
+						else
+							votedPlayer.score -= 2
+					}
+					else {
+						socket.score += 1
+						nbVotesForGameMaster++
+					}
+				}
 			})
-		}
-	})
-	return res
-}
+			if ((nbVotesForGameMaster != 0) && (nbVotesForGameMaster != room.getNbOfPlayers()-1))
+				room.socketList[room.gameMasterID()].score += 2
+			// Send new scores
+			applyToAllSockets(room.socketList, room.sendPlayersList)
+		},
+		getVotesPerCard: () => {
+			let res = Array(room.getNbOfPlayers())
+			for (let i = 0; i < res.length; ++i)
+				res[i] = new Array()
+			applyToAllSockets(room.socketList, socket => {
+				if (socket.id !== room.gameMasterID()) {
+					res[socket.selectedCardAtPlayIndex].push({
+						name: socket.playerName,
+						color: socket.playerColor
+					})
+				}
+			})
+			return res
+		},
+		getGameMastersCardIndex: () => {
+			for (let i = 0; i < room.cardsAtPlayAndTheirPlayers.length; ++i) {
+				if (room.cardsAtPlayAndTheirPlayers[i].player.id === room.gameMasterID())
+					return i
+			}
+		},
 
-const getGameMastersCardIndex = () => {
-	for (let i = 0; i < cardsAtPlayAndTheirPlayers.length; ++i) {
-		if (cardsAtPlayAndTheirPlayers[i].player.id === gameMasterID())
-			return i
-	}
-}
+		// -------- GAME STATE --------
 
-// -------- GAME STATE --------
+			// -------- GAME PHASE --------
 
-	// -------- GAME PHASE --------
+		gpGAME_MASTER_PICKING_A_CARD: {
+			onEnter: () => {
+				room.resetSelectedCards()
+			},
+			checkForEndOfPhase: () => {
+				
+			},
+			onSelectedCardInHandChanged: (socket, index) => {
+				if (socket.id === room.gameMasterID()) {
+					setSelectedCardInHand(socket, index)
+					room.moveToNextPhase()
+				}
+			},
+			onSelectedCardAtPlayChanged: (socket, index) => {
 
-const gpGAME_MASTER_PICKING_A_CARD = {
-	onEnter: () => {
-		resetSelectedCards()
-	},
-	checkForEndOfPhase: () => {
-		
-	},
-	onSelectedCardInHandChanged: (socket, index) => {
-		if (socket.id === gameMasterID()) {
-			setSelectedCardInHand(socket, index)
-			moveToNextPhase()
-		}
-	},
-	onSelectedCardAtPlayChanged: (socket, index) => {
+			},
+			onExit: () => {
 
-	},
-	onExit: () => {
+			}
+		},
 
-	}
-}
+		gpOTHER_PLAYERS_PICKING_A_CARD: {
+			onEnter: () => {},
+			checkForEndOfPhase: () => {
+				if (room.allPlayersHaveSelectedACardInHand()){
+						room.moveToNextPhase()
+				}
+			},
+			onSelectedCardInHandChanged: (socket, index) => {
+			    if (socket.id !== room.gameMasterID()) {
+					setSelectedCardInHand(socket, index)
+					room.gpOTHER_PLAYERS_PICKING_A_CARD.checkForEndOfPhase()
+				}
+			},
+			onSelectedCardAtPlayChanged: (socket, index) => {
+				
+			},
+			onExit: () => {
+				room.cardsAtPlayAndTheirPlayers = room.computeCardsAtPlayAndTheirPlayers()
+				room.sendCardsAtPlayToAll()
+			}
+		},
 
-const gpOTHER_PLAYERS_PICKING_A_CARD = {
-	onEnter: () => {},
-	checkForEndOfPhase: () => {
-		if (allPlayersHaveSelectedACardInHand()){
-				moveToNextPhase()
-		}
-	},
-	onSelectedCardInHandChanged: (socket, index) => {
-	    if (socket.id !== gameMasterID()) {
-			setSelectedCardInHand(socket, index)
-			gpOTHER_PLAYERS_PICKING_A_CARD.checkForEndOfPhase()
-		}
-	},
-	onSelectedCardAtPlayChanged: (socket, index) => {
-		
-	},
-	onExit: () => {
-		cardsAtPlayAndTheirPlayers = computeCardsAtPlayAndTheirPlayers()
-		sendCardsAtPlayToAll()
-	}
-}
+		gpVOTING_FOR_A_CARD: {
+			onEnter: () => {},
+			checkForEndOfPhase: () => {
+				if (room.allPlayersHaveSelectedACardAtPlay()){
+					room.moveToNextPhase()
+				}
+			},
+			onSelectedCardInHandChanged: (socket, index) => {
 
-const gpVOTING_FOR_A_CARD = {
-	onEnter: () => {},
-	checkForEndOfPhase: () => {
-		if (allPlayersHaveSelectedACardAtPlay()){
-			moveToNextPhase()
-		}
-	},
-	onSelectedCardInHandChanged: (socket, index) => {
+			},
+			onSelectedCardAtPlayChanged: (socket, index) => {
+				if (socket.id !== room.gameMasterID()) {
+					setSelectedCardAtPlay(socket, index)
+					room.gpVOTING_FOR_A_CARD.checkForEndOfPhase()
+				}
+			},
+			onExit: () => {
+				room.countPoints()
+			}
+		},
 
-	},
-	onSelectedCardAtPlayChanged: (socket, index) => {
-		if (socket.id !== gameMasterID()) {
-			setSelectedCardAtPlay(socket, index)
-			gpVOTING_FOR_A_CARD.checkForEndOfPhase()
-		}
-	},
-	onExit: () => {
-		countPoints()
-	}
-}
+		gpVIEWING_VOTES: {
+			onEnter: () => {
+				sendToAllSockets(room.socketList, 'ThisIsGameMastersCardIndex', {
+					cardIndex: room.getGameMastersCardIndex()
+				})
+				sendToAllSockets(room.socketList, 'ThisIsTheVotes', {
+					votes: room.getVotesPerCard()
+				})
 
-const gpVIEWING_VOTES = {
-	onEnter: () => {
-		sendToAllSockets('ThisIsGameMastersCardIndex', {
-			cardIndex: getGameMastersCardIndex()
-		})
-		sendToAllSockets('ThisIsTheVotes', {
-			votes: getVotesPerCard()
-		})
+				sendToAllSockets(room.socketList, 'ThisIsCardsAtPlayAndTheirPlayers', {
+					list: room.cardsAtPlayAndTheirPlayers.map(el=>({
+						card: el.card,
+						playerName: el.player.playerName,
+						playerColor: el.player.playerColor
+					}))
+				})
+				setTimeout(room.moveToNextPhase, 15 * 1000);
+			},
+			checkForEndOfPhase: () => {
+				
+			},
+			onSelectedCardInHandChanged: (socket, index) => {
 
-		sendToAllSockets('ThisIsCardsAtPlayAndTheirPlayers', {
-			list: cardsAtPlayAndTheirPlayers.map(el=>({
-				card: el.card,
-				playerName: el.player.playerName,
-				playerColor: el.player.playerColor
+			},
+			onSelectedCardAtPlayChanged: (socket, index) => {
+
+			},
+			onExit: () => {
+				room.cardsAtPlayAndTheirPlayers = []
+				room.changeGameMaster()
+				sendToAllSockets(room.socketList, 'NewRound', {})
+				// Draw a new card
+				applyToAllSockets(room.socketList, (socket) => {
+					socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
+					room.sendHand(socket)
+				})
+			}
+		},
+
+		gamePhases: [],
+
+		getGamePhase: () => room.gamePhases[room.gamePhaseIndex],
+
+		moveToNextPhase: () => {
+			room.getGamePhase().onExit()	
+			room.gamePhaseIndex = (room.gamePhaseIndex + 1) % 4
+			applyToAllSockets(room.socketList, room.sendGamePhase)
+			room.getGamePhase().onEnter()		
+		},
+		resetSelectedCards: () => {
+			applyToAllSockets(room.socketList, socket => {
+				setSelectedCardInHand(socket, null)
+				setSelectedCardAtPlay(socket, null)
+			})
+		},
+
+			// -------- GAME MASTER --------
+
+		gameMasterIdFromIndex: (index) => Object.values(room.socketList)[index].id,
+		gameMasterID: () => room.gameMasterIdFromIndex(room.gameMasterIndex),
+
+			// -------- SENDING GAME STATE --------
+
+
+		sendGameState: (socket) => {
+			room.sendGamePhase  (socket)
+			room.sendGameMaster (socket)
+			room.sendCardsAtPlay(socket)
+			room.sendPlayersList(socket)
+		},
+
+		sendGamePhase: (socket) => {
+			socket.emit('ThisIsGamePhase', {
+				gamePhase: room.gamePhaseIndex
+			})
+		},
+
+		sendGameMaster: (socket) => {
+			socket.emit('ThisIsGameMaster', {
+				gameMasterID : room.gameMasterID()
+			})
+		},
+
+		sendCardsAtPlay: (socket) => {
+			socket.emit('ThisIsCardsAtPlay', {
+				cards: room.getCardsAtPlay()
+			})
+		},
+
+		sendCardsAtPlayToAll: () => {
+			sendToAllSockets(room.socketList, 'ThisIsCardsAtPlay', {
+				cards: room.getCardsAtPlay()
+			})
+		},
+
+		sendHand: (socket) => {
+			socket.emit('ThisIsYourHand', {cards: socket.hand})
+		},
+
+		sendPlayersList: (socket) => {
+			socket.emit('ThisIsPlayersList', {
+				playersList: room.getPlayersList()
+			})
+		},
+
+		getPlayersList: () => {
+			return Object.values(room.socketList).map(socket=>({
+					name: socket.playerName,
+					color: socket.playerColor,
+					score: socket.score,
+					id: socket.id
 			}))
-		})
-		setTimeout(moveToNextPhase, 15 * 1000);
-	},
-	checkForEndOfPhase: () => {
-		
-	},
-	onSelectedCardInHandChanged: (socket, index) => {
+		},
 
-	},
-	onSelectedCardAtPlayChanged: (socket, index) => {
+		onPlayerArrival: (socket) => {
+			// -------- ID --------
+			room.socketList[socket.id] = socket
+			socket.emit('ThisIsYourID', {id: socket.id})
 
-	},
-	onExit: () => {
-		cardsAtPlayAndTheirPlayers = []
-		changeGameMaster()
-		sendToAllSockets('NewRound', {})
-		// Draw a new card
-		applyToAllSockets((socket) => {
-			socket.hand[socket.selectedCardInHandIndex] = pickACard()
-			sendHand(socket)
-		})
+			// -------- PLAYER --------
+			//socket.playerName = name
+			socket.playerColor = randomColor()
+			applyToAllSockets(room.socketList, room.sendPlayersList)
+			socket.score = 0
+
+			setSelectedCardInHand(socket, null)
+			setSelectedCardAtPlay(socket, null)
+
+			// -------- NAME --------
+			socket.on('ThisIsMyName', data => {
+				socket.playerName = data.name
+				applyToAllSockets(room.socketList, room.sendPlayersList)
+			})
+
+			// -------- HAND --------
+			socket.hand = room.pickAHand()
+			room.sendHand(socket)
+
+			// -------- GAME STATE --------
+			room.sendGameState(socket)
+
+			// -------- PLAYERS LIST --------
+			applyToAllSockets(room.socketList, room.sendPlayersList)
+
+			// -------- ON CARD SELECTION --------
+			socket.on('SelectedCardInHandChanged', (data) => {
+				room.getGamePhase().onSelectedCardInHandChanged(socket, data.cardIndex)
+			})
+
+			socket.on('SelectedCardAtPlayChanged', (data) => {
+				room.getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
+			})
+
+			// -------- ON DISCONNECT --------
+			socket.on('disconnect', () => {
+				//deleteFolderRecursive("images/"+socket.id)
+				const id = socket.id
+				delete room.socketList[socket.id]
+				applyToAllSockets(room.socketList, room.sendPlayersList)
+				if (id === room.gameMasterID()) {
+					room.gamePhaseIndex = 3
+					room.moveToNextPhase()
+				}
+				else {
+					room.getGamePhase().checkForEndOfPhase()
+				}
+			})
+		},
+
+		refillDeck: () => {
+			// JPG / PNG images
+			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
+			fs.readdir(fixedImgDir, function (err, files) {
+			    if (err) return console.log('Unable to scan directory: ' + err)
+
+			    files.forEach(function (file) {
+			        room.deck.push('client/cards/originalCards/'+file)
+			        //console.log('client/cards/originalCards/'+file)
+			    })
+			})
+			// P5 scripts
+			const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
+			fs.readdir(p5ScriptsDir, function (err, files) {
+			    if (err) return console.log('Unable to scan directory: ' + err)
+
+			    files.forEach(function (file) {
+				    room.deck.push({
+						script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
+						seed: Math.floor(1000000*Math.random())
+					})
+			    })
+			})
+			console.log('Deck ready !')
+		}
 	}
+	room.gamePhases = [
+			room.gpGAME_MASTER_PICKING_A_CARD,
+			room.gpOTHER_PLAYERS_PICKING_A_CARD,
+			room.gpVOTING_FOR_A_CARD,
+			room.gpVIEWING_VOTES
+	]
+	room.refillDeck()
+	roomsList[id] = room
+	return id
 }
 
-
-let gamePhaseIndex = 0
-let gamePhases = 
-[
-	gpGAME_MASTER_PICKING_A_CARD,
-	gpOTHER_PLAYERS_PICKING_A_CARD,
-	gpVOTING_FOR_A_CARD,
-	gpVIEWING_VOTES
-]
-const getGamePhase = () => gamePhases[gamePhaseIndex]
-
-
-const moveToNextPhase = () => {
-	getGamePhase().onExit()	
-	gamePhaseIndex = (gamePhaseIndex + 1) % 4
-	applyToAllSockets(sendGamePhase)
-	getGamePhase().onEnter()		
-}
-
-const resetSelectedCards = () => {
-	applyToAllSockets( socket => {
-		setSelectedCardInHand(socket, null)
-		setSelectedCardAtPlay(socket, null)
-	})
-}
-
-	// -------- GAME MASTER --------
-
-let gameMasterIndex = 0
-
-const gameMasterIdFromIndex = (index) => Object.values(socketList)[index].id
-const gameMasterID = () => gameMasterIdFromIndex(gameMasterIndex)
-
-const changeGameMaster = () => {
-	gameMasterIndex = (gameMasterIndex+1) % Math.max( Object.keys(socketList).length, 1)
-	applyToAllSockets(sendGameMaster)
-}
-
-	// -------- SENDING GAME STATE --------
-
-
-const sendGameState = (socket) => {
-	sendGamePhase  (socket)
-	sendGameMaster (socket)
-	sendCardsAtPlay(socket)
-	sendPlayersList(socket)
-}
-
-const sendGamePhase = (socket) => {
-	socket.emit('ThisIsGamePhase', {
-		gamePhase: gamePhaseIndex
-	})
-}
-
-const sendGameMaster = (socket) => {
-	socket.emit('ThisIsGameMaster', {
-		gameMasterID : gameMasterID()
-	})
-}
-
-const sendCardsAtPlay = (socket) => {
-	socket.emit('ThisIsCardsAtPlay', {
-		cards: getCardsAtPlay()
-	})
-}
-
-const sendCardsAtPlayToAll = () => {
-	sendToAllSockets('ThisIsCardsAtPlay', {
-		cards: getCardsAtPlay()
-	})
-}
-
-const sendHand = (socket) => {
-	socket.emit('ThisIsYourHand', {cards: socket.hand})
-}
-
-const sendPlayersList = (socket) => {
-	socket.emit('ThisIsPlayersList', {
-		playersList: getPlayersList()
-	})
-}
-
-const getPlayersList = () => {
-	return Object.values(socketList).map(socket=>({
-			name: socket.playerName,
-			color: socket.playerColor,
-			score: socket.score,
-			id: socket.id
-	}))
-}
-
-// -------- SOCKET --------
-
-const socketList = {}
-
-const onPlayerArrival = (socket, name) => {
-	// -------- ID --------
-	socketList[socket.id] = socket
-	socket.emit('ThisIsYourID', {id: socket.id})
-
-	// -------- PLAYER --------
-	socket.playerName = name
-	socket.playerColor = randomColor()
-	applyToAllSockets(sendPlayersList)
-	socket.score = 0
-
-	setSelectedCardInHand(socket, null)
-	setSelectedCardAtPlay(socket, null)
-
-	// -------- NAME --------
-	socket.on('ThisIsMyName', data => {
-		console.log("Name change")
-		socket.playerName = data.name
-		applyToAllSockets(sendPlayersList)
-	})
-
-	// -------- HAND --------
-	socket.hand = pickAHand()
-	sendHand(socket)
-
-	// -------- GAME STATE --------
-	sendGameState(socket)
-
-	// -------- PLAYERS LIST --------
-	applyToAllSockets(sendPlayersList)
-
-	// -------- ON CARD SELECTION --------
-	socket.on('SelectedCardInHandChanged', (data) => {
-		getGamePhase().onSelectedCardInHandChanged(socket, data.cardIndex)
-	})
-
-	socket.on('SelectedCardAtPlayChanged', (data) => {
-		getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
-	})
-
-	// -------- ON DISCONNECT --------
-	socket.on('disconnect', () => {
-		//deleteFolderRecursive("images/"+socket.id)
-		const id = socket.id
-		delete socketList[socket.id]
-		applyToAllSockets(sendPlayersList)
-		if (id === gameMasterID()) {
-			gamePhaseIndex = 3
-			moveToNextPhase()
-		}
-		else {
-			getGamePhase().checkForEndOfPhase()
-		}
-	})
+const joinRoom = (socket, roomID) => {
+	console.log('joining room')
+	if (roomsList[roomID]) {
+		console.log('found room !')
+		roomsList[roomID].onPlayerArrival(socket) 
+	}
+	else
+		console.log('No room with this ID : ' + roomID)
 }
 
 io.sockets.on('connection', socket => {
 	socket.on('ThisIsMyName', data => {
-		if (!socketList[socket.id]) {
-			console.log("Name NEEEW")
-			onPlayerArrival(socket, data.name)
-		}
+		socket.playerName = data.name
+	})
+	socket.on('CreateRoom', () => {
+		const roomID = createRoom()
+		console.log(roomID)
+		setTimeout(() => {
+			joinRoom(socket, roomID)
+		}, 2 * 1000);
+	})
+
+	socket.on('JoinRoom', (data) => {
+		joinRoom(socket, data.roomID)
 	})
 })
