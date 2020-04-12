@@ -55,6 +55,17 @@ const shuffle = (arr) => {
     return arr;
 }
 
+// ---------- STFU (rpz Amalia) -----------
+
+const escapeHtml = (unsafe) => {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;")
+ }
+
 // -------- UTILS FOR SOCKETS --------
 
 const applyToAllSockets = (socketList, func) => {
@@ -441,7 +452,7 @@ const createRoom = () => {
 
 			// -------- NAME --------
 			socket.on('ThisIsMyName', data => {
-				socket.playerName = data.name
+				socket.playerName = escapeHtml(data.name)
 				applyToAllSockets(room.socketList, room.sendPlayersList)
 			})
 
@@ -469,7 +480,7 @@ const createRoom = () => {
 			// -------- HINT --------
 
 			socket.on('ThisIsTheHint', (data) => {
-				room.hint = data.hint
+				room.hint = escapeHtml(data.hint)
 				applyToAllSockets(room.socketList, room.sendHint)
 			})
 
@@ -536,7 +547,7 @@ const joinRoom = (socket, roomID) => {
 
 io.sockets.on('connection', socket => {
 	socket.on('ThisIsMyName', data => {
-		socket.playerName = data.name
+		socket.playerName = escapeHtml(data.name)
 	})
 	socket.on('CreateRoom', () => {
 		const roomID = createRoom()
