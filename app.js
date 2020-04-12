@@ -468,13 +468,19 @@ const createRoom = () => {
 
 			// -------- ON CARD SELECTION --------
 			socket.on('SelectedCardInHandChanged', (data) => {
-				room.getGamePhase().onSelectedCardInHandChanged(socket, data.cardIndex)
-				applyToAllSockets(room.socketList, room.sendPlayersList)
+				const index = data.cardIndex
+				if (typeof index === "number" && index >= 0 && index < NB_CARDS_PER_HAND) {
+					room.getGamePhase().onSelectedCardInHandChanged(socket, index)
+					applyToAllSockets(room.socketList, room.sendPlayersList)
+				}
 			})
 
 			socket.on('SelectedCardAtPlayChanged', (data) => {
-				room.getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
-				applyToAllSockets(room.socketList, room.sendPlayersList)
+				const index = data.cardIndex
+				if (typeof index === "number" && index >= 0 && index < room.cardsAtPlayAndTheirPlayers.length) {
+					room.getGamePhase().onSelectedCardAtPlayChanged(socket, index)
+					applyToAllSockets(room.socketList, room.sendPlayersList)
+				}
 			})
 
 			// -------- HINT --------
