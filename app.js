@@ -173,13 +173,13 @@ const createRoom = () => {
 							votedPlayer.score -= 2
 					}
 					else {
-						socket.score += 1
+						socket.score += 2
 						nbVotesForGameMaster++
 					}
 				}
 			})
 			if ((nbVotesForGameMaster != 0) && (nbVotesForGameMaster != room.getNbOfPlayers()-1))
-				room.socketList[room.gameMasterID()].score += 2
+				room.socketList[room.gameMasterID()].score += 3
 			// Send new scores
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 		},
