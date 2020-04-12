@@ -130,6 +130,10 @@ const createRoom = () => {
 
 		getNbOfPlayers: () => Object.values(room.socketList).length,
 
+		hasPlayed: (socket) => {
+			return true
+		},
+
 		allPlayersHaveSelectedACardInHand: () => {
 			return Object.values(room.socketList).reduce(
 				(bool, socket) => socket.selectedCardInHandIndex !== null && bool,
@@ -382,6 +386,7 @@ const createRoom = () => {
 					name: socket.playerName,
 					color: socket.playerColor,
 					score: socket.score,
+					hasPlayed: room.hasPlayed(socket),
 					id: socket.id
 			}))
 		},

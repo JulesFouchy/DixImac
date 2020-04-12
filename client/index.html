@@ -97,7 +97,12 @@
 		for (let i = 0; i < myPlayersList.length; ++i){
 			const player = myPlayersList[i]
 			const isGameMaster = player.id === myGameMasterID ? " class = gameMaster " : ""
-			htmlPLayersList.innerHTML += "<p "+isGameMaster+"style = \"color : "+ player.color+"\">"+ player.name+" "+player.score+"pts </p>"
+			htmlPLayersList.innerHTML += "<div>"
+			htmlPLayersList.innerHTML += "<span "+isGameMaster+"style = \"color : "+ player.color+"\">"+ player.name+" "+player.score+"pts </span>"
+			if (player.hasPlayed) {
+				htmlPLayersList.innerHTML += '<img src = "client/img/check.png" class = "hasPlayedIcon" />'
+			}
+			htmlPLayersList.innerHTML += "</div>"
 		}
 	}
 

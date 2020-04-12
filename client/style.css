@@ -24,6 +24,9 @@
 #yourHand {
 	background: black
 }
+.hasPlayedIcon {
+	width: 16px;
+}
 .cardOwner {
 	font-size: 25px;
 }
