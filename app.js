@@ -131,7 +131,7 @@ const createRoom = () => {
 		getNbOfPlayers: () => Object.values(room.socketList).length,
 
 		hasPlayed: (socket) => {
-			return true
+			return room.getGamePhase().hasPlayed(socket)
 		},
 
 		allPlayersHaveSelectedACardInHand: () => {
@@ -210,6 +210,8 @@ const createRoom = () => {
 		gpGAME_MASTER_PICKING_A_CARD: {
 			onEnter: () => {
 				room.resetSelectedCards()
+				// Reset hasPlayed checks
+				applyToAllSockets(room.socketList, room.sendPlayersList)
 			},
 			checkForEndOfPhase: () => {
 				
@@ -225,6 +227,9 @@ const createRoom = () => {
 			},
 			onExit: () => {
 
+			},
+			hasPlayed: (socket) => {
+				return false
 			}
 		},
 
@@ -247,6 +252,14 @@ const createRoom = () => {
 			onExit: () => {
 				room.cardsAtPlayAndTheirPlayers = room.computeCardsAtPlayAndTheirPlayers()
 				room.sendCardsAtPlayToAll()
+			},
+			hasPlayed: (socket) => {
+				if (socket.id === room.gameMasterID()) {
+					return true
+				}
+				else {
+					return socket.selectedCardInHandIndex !== null
+				}
 			}
 		},
 
@@ -268,6 +281,14 @@ const createRoom = () => {
 			},
 			onExit: () => {
 				room.countPoints()
+			},
+			hasPlayed: (socket) => {
+				if (socket.id === room.gameMasterID()) {
+					return true
+				}
+				else {
+					return socket.selectedCardAtPlayIndex !== null
+				}
 			}
 		},
 
@@ -307,6 +328,9 @@ const createRoom = () => {
 					socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
 					room.sendHand(socket)
 				})
+			},
+			hasPlayed: (socket) => {
+				return true
 			}
 		},
 
@@ -425,10 +449,12 @@ const createRoom = () => {
 			// -------- ON CARD SELECTION --------
 			socket.on('SelectedCardInHandChanged', (data) => {
 				room.getGamePhase().onSelectedCardInHandChanged(socket, data.cardIndex)
+				applyToAllSockets(room.socketList, room.sendPlayersList)
 			})
 
 			socket.on('SelectedCardAtPlayChanged', (data) => {
 				room.getGamePhase().onSelectedCardAtPlayChanged(socket, data.cardIndex)
+				applyToAllSockets(room.socketList, room.sendPlayersList)
 			})
 
 			// -------- ON DISCONNECT --------
