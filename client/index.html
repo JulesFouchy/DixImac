@@ -124,12 +124,10 @@
 		const html = document.getElementById("hint")
 		html.innerHTML = ''
 		if (myPlayerID === myGameMasterID) {
-			html.innerHTML = '<input type="text" value = "'+myHint+'" id="hintInput" placeholder="My Hint is . . ." onchange = emitHint()>'
+			html.innerHTML += '<input type="text" value = "'+myHint+'" id="hintInput" placeholder="My Hint is . . ." onchange = emitHint()>'
 		}
-		else {
-			if (myHint) {
-				html.innerHTML = '<p id="hintText">«'+myHint+'»</p>'
-			}
+		if (myHint) {
+			html.innerHTML += '<p id="hintText">«'+myHint+'»</p>'
 		}
 	}
 
