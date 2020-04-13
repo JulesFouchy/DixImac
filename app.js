@@ -179,24 +179,29 @@ const createRoom = () => {
 		getCardsAtPlay: () => room.cardsAtPlayAndTheirPlayers.map( el => el.card ),
 		countPoints: () => {
 			let nbVotesForGameMaster = 0
+			// Reset point delta
+			applyToAllSockets(room.socketList, socket => {
+				socket.scoreDelta = 0
+			})
+			// Count points
 			applyToAllSockets(room.socketList, socket => {
 				if (socket.id !== room.gameMasterID()) {
 					const votedPlayer = room.cardsAtPlayAndTheirPlayers[socket.selectedCardAtPlayIndex].player
 					if (votedPlayer.id !== room.gameMasterID()) {
 						if (votedPlayer.id !== socket.id)
-							votedPlayer.score += 1
+							votedPlayer.scoreDelta += 1
 						else
-							votedPlayer.score -= 2
+							votedPlayer.scoreDelta -= 2
 					}
 					else {
-						socket.score += 2
+						socket.scoreDelta += 2
 						nbVotesForGameMaster++
 					}
 				}
 			})
 			if ((nbVotesForGameMaster != 0) && (nbVotesForGameMaster != room.getNbOfPlayers()-1))
-				room.socketList[room.gameMasterID()].score += 3
-			// Send new scores
+				room.socketList[room.gameMasterID()].scoreDelta += 3
+			// Send score deltas
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 		},
 		getVotesPerCard: () => {
@@ -365,6 +370,10 @@ const createRoom = () => {
 					socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
 					room.sendHand(socket)
 				})
+				// Update scores
+				applyToAllSockets(room.socketList, socket => {
+					socket.score += socket.scoreDelta
+				})
 			},
 			hasPlayed: (socket) => {
 				return true
@@ -454,6 +463,7 @@ const createRoom = () => {
 					name: socket.playerName,
 					color: socket.playerColor,
 					score: socket.score,
+					scoreDelta: socket.scoreDelta,
 					hasPlayed: room.hasPlayed(socket),
 					id: socket.id
 			}))
@@ -487,6 +497,7 @@ const createRoom = () => {
 			socket.playerColor = randomColor()
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 			socket.score = room.computeScoreNewPlayer()
+			socket.scoreDelta = 0
 
 			setSelectedCardInHand(socket, null)
 			setSelectedCardAtPlay(socket, null)
