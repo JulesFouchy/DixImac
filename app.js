@@ -107,7 +107,6 @@ const setSelectedCardAtPlay = (socket, index) => {
 const roomsList = {}
 
 const createRoom = () => {
-	console.log('Creating a room !')
 	const id = randomIntID(6)
 	const room = {
 		// DATA
@@ -115,6 +114,7 @@ const createRoom = () => {
 		socketList: {},
 		deck: [],
 		discardPile: [],
+		scoresOfPlayersWhoLeftRecently: {},
 		hint: '',
 		gamePhaseIndex: 0,
 		gameMasterIndex: 0,
@@ -439,6 +439,23 @@ const createRoom = () => {
 			}))
 		},
 
+		computeScoreNewPlayer: () => {
+			if (room.getNbOfPlayers() <= 1)
+				return 0
+			else {
+				let minScore = 1000000
+				applyToAllSockets(room.socketList, (socket) => {
+					if (socket.score < minScore)
+						minScore = socket.score
+				})
+				for (score of Object.values(room.scoresOfPlayersWhoLeftRecently)) {
+					if (score < minScore)
+						minScore = score
+				}
+				return minScore
+			}
+		},
+
 		onPlayerArrival: (socket) => {
 			// -------- ID --------
 			room.socketList[socket.id] = socket
@@ -449,7 +466,7 @@ const createRoom = () => {
 			//socket.playerName = name
 			socket.playerColor = randomColor()
 			applyToAllSockets(room.socketList, room.sendPlayersList)
-			socket.score = 0
+			socket.score = room.computeScoreNewPlayer()
 
 			setSelectedCardInHand(socket, null)
 			setSelectedCardAtPlay(socket, null)
@@ -496,6 +513,11 @@ const createRoom = () => {
 
 			// -------- ON DISCONNECT --------
 			socket.on('disconnect', () => {
+				room.scoresOfPlayersWhoLeftRecently[socket.id] = socket.score
+				setTimeout( () => { 
+					if (room.scoresOfPlayersWhoLeftRecently[socket.id])
+						delete room.scoresOfPlayersWhoLeftRecently[socket.id]
+				}, 60 * 1000)
 				const id = socket.id
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
@@ -531,7 +553,6 @@ const createRoom = () => {
 					seed: Math.floor(1000000*Math.random())
 				})
 			})
-			console.log('Deck ready !')
 		}
 	}
 	room.gamePhases = [
@@ -546,9 +567,7 @@ const createRoom = () => {
 }
 
 const joinRoom = (socket, roomID) => {
-	console.log('joining room')
 	if (roomsList[roomID]) {
-		console.log('found room !')
 		roomsList[roomID].onPlayerArrival(socket)
 		socket.removeAllListeners('CreateRoom')
 		socket.removeAllListeners('JoinRoom')
