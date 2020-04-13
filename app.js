@@ -116,6 +116,7 @@ const createRoom = () => {
 		discardPile: [],
 		scoresOfPlayersWhoLeftRecently: {},
 		hint: '',
+		hashChangeGP: null,
 		gamePhaseIndex: 0,
 		gameMasterIndex: 0,
 		cardsAtPlayAndTheirPlayers: [],
@@ -252,12 +253,17 @@ const createRoom = () => {
 			onEnter: () => {},
 			checkForEndOfPhase: () => {
 				if (room.allPlayersHaveSelectedACardInHand()){
-						room.moveToNextPhase()
+					const myHash = room.hashChangeGP
+					setTimeout( () => {
+						if (room.hashChangeGP === myHash)
+							room.moveToNextPhase()
+					}, 2 * 1000)
 				}
 			},
 			onSelectedCardInHandChanged: (socket, index) => {
 			    if (socket.id !== room.gameMasterID()) {
 					setSelectedCardInHand(socket, index)
+					room.hashChangeGP = Math.random()
 					room.gpOTHER_PLAYERS_PICKING_A_CARD.checkForEndOfPhase()
 				}
 			},
@@ -359,7 +365,7 @@ const createRoom = () => {
 			room.getGamePhase().onExit()	
 			room.gamePhaseIndex = (room.gamePhaseIndex + 1) % 4
 			applyToAllSockets(room.socketList, room.sendGamePhase)
-			room.getGamePhase().onEnter()		
+			room.getGamePhase().onEnter()
 		},
 		resetSelectedCards: () => {
 			applyToAllSockets(room.socketList, socket => {
@@ -490,7 +496,7 @@ const createRoom = () => {
 			// -------- ON CARD SELECTION --------
 			socket.on('SelectedCardInHandChanged', (data) => {
 				const index = data.cardIndex
-				if (typeof index === "number" && index >= 0 && index < NB_CARDS_PER_HAND) {
+				if (typeof index === "number" && index >= 0 && index < NB_CARDS_PER_HAND || index === null) {
 					room.getGamePhase().onSelectedCardInHandChanged(socket, index)
 					applyToAllSockets(room.socketList, room.sendPlayersList)
 				}
@@ -498,7 +504,7 @@ const createRoom = () => {
 
 			socket.on('SelectedCardAtPlayChanged', (data) => {
 				const index = data.cardIndex
-				if (typeof index === "number" && index >= 0 && index < room.cardsAtPlayAndTheirPlayers.length) {
+				if (typeof index === "number" && index >= 0 && index < room.cardsAtPlayAndTheirPlayers.length || index === null) {
 					room.getGamePhase().onSelectedCardAtPlayChanged(socket, index)
 					applyToAllSockets(room.socketList, room.sendPlayersList)
 				}
