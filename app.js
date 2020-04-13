@@ -16,6 +16,7 @@ const path = require('path')
 
 const cardW = 1000
 const cardH = 1500
+const DELAY_TO_CHANGE_YOUR_MIND_IN_SEC = 2
 
 const NB_CARDS_PER_HAND = 7
 
@@ -235,7 +236,15 @@ const createRoom = () => {
 			onSelectedCardInHandChanged: (socket, index) => {
 				if (socket.id === room.gameMasterID()) {
 					setSelectedCardInHand(socket, index)
-					room.moveToNextPhase()
+
+					room.hashChangeGP = Math.random()
+					if (socket.selectedCardInHandIndex) {
+						const myHash = room.hashChangeGP
+						setTimeout( () => {
+							if (room.hashChangeGP === myHash)
+								room.moveToNextPhase()
+						}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
+					}
 				}
 			},
 			onSelectedCardAtPlayChanged: (socket, index) => {
@@ -257,7 +266,7 @@ const createRoom = () => {
 					setTimeout( () => {
 						if (room.hashChangeGP === myHash)
 							room.moveToNextPhase()
-					}, 2 * 1000)
+					}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
 				}
 			},
 			onSelectedCardInHandChanged: (socket, index) => {
@@ -288,7 +297,11 @@ const createRoom = () => {
 			onEnter: () => {},
 			checkForEndOfPhase: () => {
 				if (room.allPlayersHaveSelectedACardAtPlay()){
-					room.moveToNextPhase()
+					const myHash = room.hashChangeGP
+					setTimeout( () => {
+						if (room.hashChangeGP === myHash)
+							room.moveToNextPhase()
+					}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
 				}
 			},
 			onSelectedCardInHandChanged: (socket, index) => {
@@ -297,6 +310,7 @@ const createRoom = () => {
 			onSelectedCardAtPlayChanged: (socket, index) => {
 				if (socket.id !== room.gameMasterID()) {
 					setSelectedCardAtPlay(socket, index)
+					room.hashChangeGP = Math.random()
 					room.gpVOTING_FOR_A_CARD.checkForEndOfPhase()
 				}
 			},
