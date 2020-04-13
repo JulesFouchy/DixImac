@@ -114,14 +114,17 @@ const createRoom = () => {
 		id: id,
 		socketList: {},
 		deck: [],
+		discardPile: [],
 		hint: '',
 		gamePhaseIndex: 0,
 		gameMasterIndex: 0,
 		cardsAtPlayAndTheirPlayers: [],
 		// FUNCTIONS
 		pickACard: () => {
-			if (room.deck.length === 0)
-				room.refillDeck()
+			if (room.deck.length === 0) {
+				room.deck = [...room.discardPile]
+				room.discardPile = []
+			}
 			const index = Math.floor(Math.random() * room.deck.length)
 			const cardFile = room.deck[index]
 			room.deck.splice(index, 1)
@@ -338,6 +341,7 @@ const createRoom = () => {
 				sendToAllSockets(room.socketList, 'NewRound', {})
 				// Draw a new card
 				applyToAllSockets(room.socketList, (socket) => {
+					room.discardPile.push(socket.hand[socket.selectedCardInHandIndex])
 					socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
 					room.sendHand(socket)
 				})
@@ -512,7 +516,7 @@ const createRoom = () => {
 			})
 		},
 
-		refillDeck: () => {
+		initializeDeck: () => {
 			// JPG / PNG images
 			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
 			fs.readdirSync(fixedImgDir).forEach(function (file) {
@@ -536,7 +540,7 @@ const createRoom = () => {
 			room.gpVOTING_FOR_A_CARD,
 			room.gpVIEWING_VOTES
 	]
-	room.refillDeck()
+	room.initializeDeck()
 	roomsList[id] = room
 	return id
 }
