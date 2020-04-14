@@ -245,10 +245,11 @@ const createRoom = () => {
 					room.hashChangeGP = Math.random()
 					if (socket.selectedCardInHandIndex) {
 						const myHash = room.hashChangeGP
-						setTimeout( () => {
-							if (room.hashChangeGP === myHash)
-								room.moveToNextPhase()
-						}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
+						room.moveToNextPhase()
+						// setTimeout( () => {
+						// 	if (room.hashChangeGP === myHash)
+						// 		room.moveToNextPhase()
+						// }, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
 					}
 				}
 			},
@@ -268,10 +269,11 @@ const createRoom = () => {
 			checkForEndOfPhase: () => {
 				if (room.allPlayersHaveSelectedACardInHand()){
 					const myHash = room.hashChangeGP
-					setTimeout( () => {
-						if (room.hashChangeGP === myHash)
-							room.moveToNextPhase()
-					}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
+					room.moveToNextPhase()
+					// setTimeout( () => {
+					// 	if (room.hashChangeGP === myHash)
+					// 		room.moveToNextPhase()
+					// }, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
 				}
 			},
 			onSelectedCardInHandChanged: (socket, index) => {
@@ -303,10 +305,11 @@ const createRoom = () => {
 			checkForEndOfPhase: () => {
 				if (room.allPlayersHaveSelectedACardAtPlay()){
 					const myHash = room.hashChangeGP
-					setTimeout( () => {
-						if (room.hashChangeGP === myHash)
-							room.moveToNextPhase()
-					}, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
+					room.moveToNextPhase()
+					// setTimeout( () => {
+					// 	if (room.hashChangeGP === myHash)
+					// 		room.moveToNextPhase()
+					// }, DELAY_TO_CHANGE_YOUR_MIND_IN_SEC * 1000)
 				}
 			},
 			onSelectedCardInHandChanged: (socket, index) => {
