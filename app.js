@@ -243,7 +243,7 @@ const createRoom = () => {
 					setSelectedCardInHand(socket, index)
 
 					room.hashChangeGP = Math.random()
-					if (socket.selectedCardInHandIndex) {
+					if (socket.selectedCardInHandIndex !== null) {
 						const myHash = room.hashChangeGP
 						setTimeout( () => {
 							if (room.hashChangeGP === myHash)
