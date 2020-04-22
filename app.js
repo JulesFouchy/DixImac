@@ -581,6 +581,10 @@ const createRoom = () => {
 		        room.deck.push('client/cards/originalCards/'+file)
 		        //console.log('client/cards/originalCards/'+file)
 			})
+			const ourCardsDir = path.join(__dirname, 'client/cards/ourCards')
+			fs.readdirSync(ourCardsDir).forEach(function (file) {
+		        room.deck.push('client/cards/ourCards/' +file)
+			})
 			// P5 scripts
 			const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
 			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
