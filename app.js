@@ -124,10 +124,11 @@ const createRoom = () => {
 		// FUNCTIONS
 		pickACard: () => {
 			if (room.deck.length === 0) {
-				room.deck = [...room.discardPile]
+				room.deck = shuffle([...room.discardPile])
 				room.discardPile = []
 			}
-			const index = Math.floor(Math.random() * room.deck.length)
+			// const index = Math.floor(Math.random() * room.deck.length)
+			const index = 0
 			const cardFile = room.deck[index]
 			room.deck.splice(index, 1)
 			return cardFile
@@ -544,11 +545,15 @@ const createRoom = () => {
 
 			// -------- ON DISCONNECT --------
 			socket.on('disconnect', () => {
+				// Put cards back in the deck
+				socket.hand.reverse().forEach( card => room.deck.unshift(card) )
+				// Store score to avoid cheats
 				room.scoresOfPlayersWhoLeftRecently[socket.id] = socket.score
 				setTimeout( () => { 
 					if (room.scoresOfPlayersWhoLeftRecently[socket.id])
 						delete room.scoresOfPlayersWhoLeftRecently[socket.id]
 				}, 60 * 1000)
+				//
 				const id = socket.id
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
@@ -584,6 +589,8 @@ const createRoom = () => {
 					seed: Math.floor(1000000*Math.random())
 				})
 			})
+			// Shuffle
+			room.deck = shuffle(room.deck)
 		}
 	}
 	room.gamePhases = [
