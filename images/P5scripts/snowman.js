@@ -1,5 +1,6 @@
   const EPSILON = 0.00001
 
+  background(220)
   push()
   translate(width/2, height)
   scale(2.4, 2.4)
