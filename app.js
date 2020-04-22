@@ -14,8 +14,6 @@ const path = require('path')
 
 // -------- CONSTANTS --------
 
-const cardW = 1000
-const cardH = 1500
 const DELAY_TO_CHANGE_YOUR_MIND_IN_SEC = 2
 
 const NB_CARDS_PER_HAND = 7
@@ -87,11 +85,6 @@ const base64FromFile = (file) => {
     // convert binary data to base64 encoded string
     return new Buffer(bitmap).toString('base64');
 }
-
-// -------- CARD FACTORY --------
-
-const canvasToDrawCards = createCanvas(cardW, cardH);
-const ctxDC = canvasToDrawCards.getContext("2d");
 
 // -------- CARDS LIST HANDLING --------
 
