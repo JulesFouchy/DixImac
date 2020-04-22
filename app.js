@@ -585,8 +585,16 @@ const createRoom = () => {
 			const p5ScriptsDir = path.join(__dirname, 'images/P5scripts')
 			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
 			    room.deck.push({
-					script: fs.readFileSync(p5ScriptsDir+"/"+file, 'utf8'),
+					script: fs.readFileSync(p5ScriptsDir+'/'+file, 'utf8'),
 					seed: Math.floor(1000000*Math.random())
+				})
+			})
+			// Fragment Shaders
+			const shadersDir = path.join(__dirname, 'client/cards/fragmentShaders')
+			fs.readdirSync(shadersDir).forEach(function (file) {
+			    room.deck.push({
+					fragmentSource: fs.readFileSync(shadersDir+'/'+file, 'utf8'),
+					rand: Math.random()
 				})
 			})
 			// Shuffle

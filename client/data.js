@@ -69,6 +69,8 @@ const onCardAtPlayClick = (index) => {
 convertCardToHTMLFormat = (card) => {
 	if (card.script)
 		return imageFromP5script(card.script, card.seed)
+	if (card.fragmentSource)
+		return imageFromFragmentShader(card.fragmentSource, card.rand)
 	return card
 }
 
