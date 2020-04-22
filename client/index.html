@@ -24,11 +24,45 @@
 
 			<script src="client/main.js"></script>
 		</div>
-		
+
 		<footer class = "footer">
-			This application was developed by <a href = "https://github.com/JulesFouchy">Jules Fouchy</a> and designed by Laura Dietsch.
-			Feel free to send us any feedback, suggestion, bug report or happy messages at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a>
-			You can also send us your own cards and we will add them to the game ! : See here for more details
+			<span class="linkToPopup" onclick="openModal('modalDixitRules')">Rules of Dixit</span>
+			<div id="modalDixitRules" class="modal">
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<p class="modalText">
+						<h3>The Rules of Dixit :</h3>
+					</p>
+				</div>
+			</div>
+			<p>
+				This application was developed by <a href = "https://github.com/JulesFouchy">Jules Fouchy</a> and designed by Laura Dietsch. <br/>
+				Feel free to send us any feedback, suggestion, bug report or happy reaction at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a><br/>
+				You can also <span class="linkToPopup" onclick="openModal('modalHowToSendUsACard')">send us your own cards</span> and we will add them to the game !
+			</p>
+			<div id="modalHowToSendUsACard" class="modal">
+				<div class="modal-content">
+					<span class="close">&times;</span>
+					<p class="modalText">
+						<h3>Send us your own custom cards :</h3>
+						Please make sure your card is vertical with a 2/3 ratio. <em>500x750</em> pixels is a good size.<br/>
+						Also make sure you have all the rights on the image ^^<br/>
+						Then send at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a> either :
+						<ul>
+							<li>
+								Your image in png or jpeg format
+							</li>
+							<li>
+								For the code artists : you can also send us a p5 script ! It will be run each time the card is drawn and if it involves some randomness the card will be different each time !
+							</li>
+							<li>
+								You can also send us a fragment shader written in glsl ;) (feature incoming)
+							</li>
+						</ul>
+					</p>
+				</div>
+			</div>
 		</footer>
+		<script src="client/modals.js"></script>
   </body>
 </html>
