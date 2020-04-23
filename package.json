@@ -8,6 +8,7 @@
     "express": "^4.17.1",
     "fetch-inject": "^1.7.2",
     "mkdirp": "^1.0.3",
+    "nodemailer": "^6.4.6",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {},

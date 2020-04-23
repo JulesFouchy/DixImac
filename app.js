@@ -12,6 +12,8 @@ const io = require('socket.io')(serv,{})
 const fs = require("fs"), { createCanvas } = require("canvas")
 const path = require('path')
 
+const nodemailer = require('nodemailer')
+
 // -------- CONSTANTS --------
 
 const DELAY_TO_CHANGE_YOUR_MIND_IN_SEC = 2
@@ -114,6 +116,7 @@ const createRoom = () => {
 		gamePhaseIndex: 0,
 		gameMasterIndex: 0,
 		cardsAtPlayAndTheirPlayers: [],
+		playersWhoConnected: '',
 		// FUNCTIONS
 		pickACard: () => {
 			if (room.deck.length === 0) {
@@ -480,6 +483,7 @@ const createRoom = () => {
 		},
 
 		onPlayerArrival: (socket) => {
+			room.playersWhoConnected += socket.playerName + '\n'
 			// -------- ID --------
 			room.socketList[socket.id] = socket
 			socket.emit('ThisIsYourID', {id: socket.id})
@@ -550,6 +554,7 @@ const createRoom = () => {
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
 				if (room.getNbOfPlayers() === 0) {
+					sendGameReport(room.playersWhoConnected)
 					delete roomsList[room.id]
 				}
 				else {
@@ -632,3 +637,31 @@ io.sockets.on('connection', socket => {
 		joinRoom(socket, data.roomID)
 	})
 })
+
+const sendGameReport = (playersList) => {
+	const transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'imac.dixit@gmail.com',
+			pass: 'f,3s4df5,r1vfFAdfLH?'
+		},
+		tls: {
+			rejectUnauthorized: false
+		}
+	})
+	  
+	const mailOptions = {
+		from: 'imac.dixit@gmail.com',
+		to: 'jules.fouchy@ntymail.com',
+		subject: 'Another game !',
+		text: playersList
+	}
+	  
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+		  	console.log(error);
+		} else {
+		  	console.log('Email sent: ' + info.response);
+		}
+	})
+}
