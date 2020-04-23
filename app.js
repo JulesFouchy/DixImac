@@ -356,9 +356,11 @@ const createRoom = () => {
 				sendToAllSockets(room.socketList, 'NewRound', {})
 				// Draw a new card
 				applyToAllSockets(room.socketList, (socket) => {
-					room.discardPile.push(socket.hand[socket.selectedCardInHandIndex])
-					socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
-					room.sendHand(socket)
+					if (socket.selectedCardInHandIndex !== null) {
+						room.discardPile.push(socket.hand[socket.selectedCardInHandIndex])
+						socket.hand[socket.selectedCardInHandIndex] = room.pickACard()
+						room.sendHand(socket)
+					}
 				})
 				// Update scores
 				applyToAllSockets(room.socketList, socket => {
@@ -552,9 +554,10 @@ const createRoom = () => {
 				}
 				else {
 					applyToAllSockets(room.socketList, room.sendPlayersList)
-					if (wasGameMaster) {
+					if (wasGameMaster && room.gamePhaseIndex < 3) {
 						room.gameMasterIndex -= 1
 						room.gamePhaseIndex = 3
+						room.resetSelectedCards()
 						room.moveToNextPhase()
 					}
 					else {
