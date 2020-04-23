@@ -173,10 +173,6 @@ const createRoom = () => {
 		getCardsAtPlay: () => room.cardsAtPlayAndTheirPlayers.map( el => el.card ),
 		countPoints: () => {
 			let nbVotesForGameMaster = 0
-			// Reset point delta
-			applyToAllSockets(room.socketList, socket => {
-				socket.scoreDelta = 0
-			})
 			// Count points
 			applyToAllSockets(room.socketList, socket => {
 				if (socket.id !== room.gameMasterID()) {
@@ -367,6 +363,7 @@ const createRoom = () => {
 				// Update scores
 				applyToAllSockets(room.socketList, socket => {
 					socket.score += socket.scoreDelta
+					socket.scoreDelta = 0
 				})
 			},
 			hasPlayed: (socket) => {
