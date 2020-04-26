@@ -106,6 +106,7 @@ const createRoom = () => {
 	const id = randomIntID(6)
 	const room = {
 		// DATA
+		dateBegin: new Date(),
 		id: id,
 		socketList: {},
 		deck: [],
@@ -554,7 +555,7 @@ const createRoom = () => {
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
 				if (room.getNbOfPlayers() === 0) {
-					sendGameReport(room.playersWhoConnected)
+					sendGameReport(room.playersWhoConnected, room.dateBegin)
 					delete roomsList[room.id]
 				}
 				else {
@@ -638,7 +639,7 @@ io.sockets.on('connection', socket => {
 	})
 })
 
-const sendGameReport = (playersList) => {
+const sendGameReport = (playersList, dateBegin) => {
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
@@ -649,12 +650,16 @@ const sendGameReport = (playersList) => {
 			rejectUnauthorized: false
 		}
 	})
+
+	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
+	const gameDurationTxt = Math.floor(duration / 60) + ' min' + (duration % 60) + ' sec'
+	console.log(gameDurationTxt)
 	  
 	const mailOptions = {
 		from: 'imac.dixit@gmail.com',
 		to: 'jules.fouchy@ntymail.com',
 		subject: 'Another game !',
-		text: playersList
+		text: 'Played for ' + gameDurationTxt + '\n' + playersList
 	}
 	  
 	transporter.sendMail(mailOptions, function(error, info){
