@@ -652,8 +652,7 @@ const sendGameReport = (playersList, dateBegin) => {
 	})
 
 	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
-	const gameDurationTxt = Math.floor(duration / 60) + ' min' + (duration % 60) + ' sec'
-	console.log(gameDurationTxt)
+	const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec'
 	  
 	const mailOptions = {
 		from: 'imac.dixit@gmail.com',
