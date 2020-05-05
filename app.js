@@ -7,6 +7,8 @@ app.use('/client', express.static(__dirname + '/client'))
 
 serv.listen(process.env.PORT || 2000, () => console.log('Server started.'))
 
+console.log('Hello Heroku')
+
 const io = require('socket.io')(serv,{})
 
 const fs = require("fs"), { createCanvas } = require("canvas")
