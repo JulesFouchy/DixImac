@@ -17,14 +17,20 @@ require('dotenv/config')
 const MongoClient = require('mongodb').MongoClient;
 const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true });
 client.connect(err => {
-    const collection = client.db("diximac").collection("authors")
-    //console.log(collection.find())
-    console.log('dsf')
-    collection.find({}, (err, docs) => {
-        docs.each( (err, doc) => {
-            console.log(doc)
+    if (err) {
+        console.log('----------err-----------')
+        console.log(err)
+    }
+    else {
+        const collection = client.db("diximac").collection("authors")
+        //console.log(collection.find())
+        console.log('dsf')
+        collection.find({}, (err, docs) => {
+            docs.each( (err, doc) => {
+                console.log(doc)
+            })
         })
-    })
+    }
     // perform actions on the collection object
     client.close();
 });
