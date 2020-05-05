@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
+  "engines": {
+    "node": "12.16.0"
+  },
   "dependencies": {
     "canvas": "^2.6.1",
     "express": "^4.17.1",
