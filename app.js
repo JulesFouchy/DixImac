@@ -4,8 +4,10 @@ const serv = require('http').Server(app)
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/client/index.html'))
 app.use('/client', express.static(__dirname + '/client'))
+app.use('/api', require('./api/api'))
 
-serv.listen(process.env.PORT || 2000, () => console.log('Server started.'))
+const PORT = process.env.PORT || 2000
+serv.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 
 console.log('Hello Heroku')
 

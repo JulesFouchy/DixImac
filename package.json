@@ -2,21 +2,29 @@
   "name": "diximac",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "12.16.x"
+  },
   "main": "app.js",
   "engines": {
     "node": "12.16.0"
   },
   "dependencies": {
     "canvas": "^2.6.1",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fetch-inject": "^1.7.2",
     "mkdirp": "^1.0.3",
+    "mongoose": "^5.9.12",
     "nodemailer": "^6.4.6",
     "socket.io": "^2.3.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "",
   "license": "ISC"
