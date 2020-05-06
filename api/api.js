@@ -42,7 +42,7 @@ router.get('/cards/:id', (req, res) => {
     })
 })
 
-router.get('/cardFile/:id', (req, res) => {
+router.get('/cardRenderInfo/:id', (req, res) => {
     dbRequest( db => {
         db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, card) => {
             if (err) {
@@ -51,7 +51,10 @@ router.get('/cardFile/:id', (req, res) => {
             }
             else {
                 if (card) {
-                    res.send(webCardsLocation + '/' + card.fileFolder + '/' + card.fileName)
+                    res.json({
+                        url: webCardsLocation + '/' + card.fileFolder + '/' + card.fileName,
+                        generationMethod: card.generationMethod,
+                    })
                 }
                 else {
                     res.send('No card with such id found !')
