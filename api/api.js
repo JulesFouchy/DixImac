@@ -20,18 +20,23 @@ const dbRequest = (req) => {
     }
 }
 
-dbRequest( db => {
-    db.collection('authors').find().toArray( (err, result) => {
-        if (err) console.log(err)
-        else {
-            console.log(result);
-        }
-    })
-})
-
 router.get('/cardSrc/:id', (req, res) => {
     dbRequest( db => {
         db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, result) => {
+            if (err) {
+                console.log('ERR')
+                res.json(err)
+            }
+            else {
+                res.json(result)
+            }
+        })
+    })
+})
+
+router.get('/authors', (req, res) => {
+    dbRequest( db => {
+        db.collection('authors').find({}).toArray( (err, result) => {
             if (err) {
                 console.log('ERR')
                 res.json(err)
