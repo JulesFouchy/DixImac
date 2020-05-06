@@ -38,7 +38,27 @@ router.get('/cardSrc/:id', (req, res) => {
                             res.send(path.join(webCardsLocation, card.fileFolder, card.fileName))
                         break
                         case 1:
-                            res.json(card)
+                            const seed = 0
+                            const scriptStr = `
+                                fill(255, 0, 0)
+                                ellipse(200, 200, 100, 100)
+                            `
+                            res.send(`
+                                <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+                                <script>
+                                function setup() {
+                                    createCanvas(500, 750)
+                                    background(0)
+                                    randomSeed(${seed})
+                                    ${scriptStr}
+                                
+                                    const oCanvas = document.getElementById("defaultCanvas0")
+                                    const data = oCanvas.toDataURL("image/png")
+                                    oCanvas.remove()
+                                    document.body.innerHTML = data
+                                }
+                                </script>
+                            `)
                         break
                         case 2:
                             res.json(card)
