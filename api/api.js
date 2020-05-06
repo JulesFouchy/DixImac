@@ -15,25 +15,37 @@ require('dotenv/config')
 
 
 const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true });
-client.connect(err => {
-    if (err) {
-        console.log('----------err-----------')
-        console.log(err)
-    }
-    else {
-        const collection = client.db("diximac").collection("authors")
-        //console.log(collection.find())
-        console.log('dsf')
-        collection.find({}, (err, docs) => {
-            docs.each( (err, doc) => {
-                console.log(doc)
-            })
-        })
-    }
-    // perform actions on the collection object
-    client.close();
-});
+const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect().then((client)=>{
+    const db = client.db('diximac')
+    db.collection('authors').find().toArray( (err, result) => {
+        if (err) {
+            console.log('----------err-----------')
+            console.log(err)
+        }
+        else {
+            console.log(result);
+        }
+    })
+})
+// client.connect(err => {
+//     if (err) {
+//         console.log('----------err-----------')
+//         console.log(err)
+//     }
+//     else {
+//         const collection = client.db("diximac").collection("authors")
+//         //console.log(collection.find())
+//         console.log('dsf')
+//         collection.find({}, (err, docs) => {
+//             docs.each( (err, doc) => {
+//                 console.log(doc)
+//             })
+//         })
+//     }
+//     // perform actions on the collection object
+//     client.close();
+// });
 
 
 // mongoose.connect(
