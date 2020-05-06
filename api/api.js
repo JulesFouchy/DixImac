@@ -1,6 +1,10 @@
 const express = require('express')
+const path = require('path')
 const router = express.Router()
 require('dotenv/config')
+const cardRendering = require('../cardRendering')
+
+const webCardsLocation = 'http://diximac.herokuapp.com/client/cards'
 
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
@@ -22,13 +26,28 @@ const dbRequest = (req) => {
 
 router.get('/cardSrc/:id', (req, res) => {
     dbRequest( db => {
-        db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, result) => {
+        db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, card) => {
             if (err) {
                 console.log('ERR')
                 res.json(err)
             }
             else {
-                res.json(result)
+                if (card) {
+                    switch (card.generationMethod) {
+                        case 0:
+                            res.send(path.join(webCardsLocation, card.fileFolder, card.fileName))
+                        break
+                        case 1:
+                            res.json(card)
+                        break
+                        case 2:
+                            res.json(card)
+                        break
+                    }
+                }
+                else {
+                    res.send('No card with such id found !')
+                }
             }
         })
     })
