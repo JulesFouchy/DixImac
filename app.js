@@ -583,12 +583,12 @@ const createRoom = () => {
 		        room.deck.push('client/cards/originalCards/'+file)
 		        //console.log('client/cards/originalCards/'+file)
 			})
-			const ourCardsDir = path.join(__dirname, 'client/cards/ourCards')
+			const ourCardsDir = path.join(__dirname, 'client/cards/static')
 			fs.readdirSync(ourCardsDir).forEach(function (file) {
-		        room.deck.push('client/cards/ourCards/' +file)
+		        room.deck.push('client/cards/static/' +file)
 			})
 			// P5 scripts
-			const p5ScriptsDir = path.join(__dirname, 'client/cards/P5scripts')
+			const p5ScriptsDir = path.join(__dirname, 'client/cards/P5script')
 			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
 			    room.deck.push({
 					script: fs.readFileSync(p5ScriptsDir+'/'+file, 'utf8'),
@@ -596,7 +596,7 @@ const createRoom = () => {
 				})
 			})
 			// Fragment Shaders
-			const shadersDir = path.join(__dirname, 'client/cards/fragmentShaders')
+			const shadersDir = path.join(__dirname, 'client/cards/fragmentShader')
 			fs.readdirSync(shadersDir).forEach(function (file) {
 			    room.deck.push({
 					fragmentSource: fs.readFileSync(shadersDir+'/'+file, 'utf8'),
