@@ -2,9 +2,18 @@ const express = require('express')
 const app = express()
 const serv = require('http').Server(app)
 
+// Allow CORS
+app.use((req, res, next) => {
+	console.log(req)
+	res.header('Access-Control-Allow-Origin', '*')
+	next()
+})
+
 app.get('/', (req, res) => res.sendFile(__dirname + '/client/index.html'))
 app.use('/client', express.static(__dirname + '/client'))
 app.use('/api', require('./api/api'))
+
+
 
 const PORT = process.env.PORT || 2000
 serv.listen(PORT, () => console.log(`Server started on port ${PORT}`))
@@ -15,12 +24,6 @@ const fs = require("fs"), { createCanvas } = require("canvas")
 const path = require('path')
 
 const nodemailer = require('nodemailer')
-
-// Allow CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  next()
-})
 
 // -------- CONSTANTS --------
 
