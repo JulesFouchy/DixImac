@@ -34,10 +34,10 @@ router.get('/cardSrc/:id', (req, res) => {
         db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, result) => {
             if (err) {
                 console.log('ERR')
-                res.send(err)
+                res.json(err)
             }
             else {
-                res.send(result)
+                res.json(result)
             }
         })
     })
