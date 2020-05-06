@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "set DEBUG=true&& nodemon app.js"
   },
   "author": "",
   "license": "ISC"

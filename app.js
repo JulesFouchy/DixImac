@@ -9,8 +9,6 @@ app.use('/api', require('./api/api'))
 const PORT = process.env.PORT || 2000
 serv.listen(PORT, () => console.log(`Server started on port ${PORT}`))
 
-console.log('Hello Heroku')
-
 const io = require('socket.io')(serv,{})
 
 const fs = require("fs"), { createCanvas } = require("canvas")
@@ -559,7 +557,8 @@ const createRoom = () => {
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
 				if (room.getNbOfPlayers() === 0) {
-					sendGameReport(room.playersWhoConnected, room.dateBegin)
+					if (process.env.DEBUG !== 'true')
+						sendGameReport(room.playersWhoConnected, room.dateBegin)
 					delete roomsList[room.id]
 				}
 				else {
