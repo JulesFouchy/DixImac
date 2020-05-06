@@ -16,6 +16,12 @@ const path = require('path')
 
 const nodemailer = require('nodemailer')
 
+// Allow CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  next()
+})
+
 // -------- CONSTANTS --------
 
 const DELAY_TO_CHANGE_YOUR_MIND_IN_SEC = 2
