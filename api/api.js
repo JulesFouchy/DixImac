@@ -4,11 +4,11 @@ require('dotenv/config')
 
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
-const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
+const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
 
 const dbRequest = (req) => {
     try {
-        client.connect().then( (client) => {
+        client.then( (client) => {
             const db = client.db('diximac')
             req(db)
         })
