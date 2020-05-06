@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const router = express.Router()
 require('dotenv/config')
 const cardRendering = require('../cardRendering')
@@ -24,7 +23,7 @@ const dbRequest = (req) => {
     }
 }
 
-router.get('/cardSrc/:id', (req, res) => {
+router.get('/cards/:id', (req, res) => {
     dbRequest( db => {
         db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, card) => {
             if (err) {
@@ -33,37 +32,26 @@ router.get('/cardSrc/:id', (req, res) => {
             }
             else {
                 if (card) {
-                    switch (card.generationMethod) {
-                        case 0:
-                            res.send(path.join(webCardsLocation, card.fileFolder, card.fileName))
-                        break
-                        case 1:
-                            const seed = 0
-                            const scriptStr = `
-                                fill(255, 0, 0)
-                                ellipse(200, 200, 100, 100)
-                            `
-                            res.send(`
-                                <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
-                                <script>
-                                function setup() {
-                                    createCanvas(500, 750)
-                                    background(0)
-                                    randomSeed(${seed})
-                                    ${scriptStr}
-                                
-                                    const oCanvas = document.getElementById("defaultCanvas0")
-                                    const data = oCanvas.toDataURL("image/png")
-                                    oCanvas.remove()
-                                    document.body.innerHTML = data
-                                }
-                                </script>
-                            `)
-                        break
-                        case 2:
-                            res.json(card)
-                        break
-                    }
+                    res.send(card)
+                }
+                else {
+                    res.send('No card with such id found !')
+                }
+            }
+        })
+    })
+})
+
+router.get('/cardFile/:id', (req, res) => {
+    dbRequest( db => {
+        db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, card) => {
+            if (err) {
+                console.log('ERR')
+                res.json(err)
+            }
+            else {
+                if (card) {
+                    res.send(webCardsLocation + '/' + card.fileFolder + '/' + card.fileName)
                 }
                 else {
                     res.send('No card with such id found !')
