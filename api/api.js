@@ -23,6 +23,20 @@ const dbRequest = (req) => {
     }
 }
 
+router.get('/cards', (req, res) => {
+    dbRequest( db => {
+        db.collection('cards').find({}).toArray( (err, result) => {
+            if (err) {
+                console.log('ERR')
+                res.json(err)
+            }
+            else {
+                res.json(result)
+            }
+        })
+    })
+})
+
 router.get('/cards/:id', (req, res) => {
     dbRequest( db => {
         db.collection('cards').findOne({"_id": ObjectId(req.params.id)}, (err, card) => {
