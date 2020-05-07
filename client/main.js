@@ -12,7 +12,7 @@ const htmlYourHand = document.getElementById("yourHand")
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i){
-        html.innerHTML += '<span><img src = ' + convertCardToHTMLFormat(list[i])
+        html.innerHTML += '<span><img src = ' + renderCard(list[i])
                         + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
                         + ' onclick = "' + onClick + '( '+ i + ')\"'
                         + '></img></span>';
@@ -41,7 +41,7 @@ const drawCardsAtPlayAndVotesResult = () => {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
             + '<span class = "cardOwner" style = "color : '+ list[i].playerColor+'">'+list[i].playerName+'</span>'
-            + '<img src = ' + convertCardToHTMLFormat(list[i].card)
+            + '<img src = ' + renderCard(list[i].card)
             + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
             + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
             + '></img>'

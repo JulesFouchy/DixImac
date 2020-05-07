@@ -4,7 +4,7 @@ const serv = require('http').Server(app)
 
 // Allow CORS
 app.use((req, res, next) => {
-	console.log(req)
+	//console.log(req)
 	res.header('Access-Control-Allow-Origin', '*')
 	next()
 })
@@ -93,7 +93,7 @@ const sendToAllSockets = (socketList, eventName, data) => {
 
 const base64FromFile = (file) => {
     // read binary data
-    console.log(file)
+    //console.log(file)
     var bitmap = fs.readFileSync(file);
     // convert binary data to base64 encoded string
     return new Buffer(bitmap).toString('base64');
@@ -589,18 +589,26 @@ const createRoom = () => {
 			// JPG / PNG images
 			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
 			fs.readdirSync(fixedImgDir).forEach(function (file) {
-		        room.deck.push('client/cards/originalCards/'+file)
-		        //console.log('client/cards/originalCards/'+file)
+		        room.deck.push({
+					generationMethod: 0,
+					fileFolder: 'originalCards',
+					fileName: file,
+				})
 			})
 			const ourCardsDir = path.join(__dirname, 'client/cards/static')
 			fs.readdirSync(ourCardsDir).forEach(function (file) {
-		        room.deck.push('client/cards/static/' +file)
+				room.deck.push({
+					generationMethod: 0,
+					fileFolder: 'static',
+					fileName: file,
+				})
 			})
 			// P5 scripts
 			const p5ScriptsDir = path.join(__dirname, 'client/cards/P5script')
 			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
 			    room.deck.push({
-					script: fs.readFileSync(p5ScriptsDir+'/'+file, 'utf8'),
+					generationMethod: 1,
+					sourceCode: fs.readFileSync(p5ScriptsDir+'/'+file, 'utf8'),
 					seed: Math.floor(1000000*Math.random())
 				})
 			})
@@ -608,8 +616,9 @@ const createRoom = () => {
 			const shadersDir = path.join(__dirname, 'client/cards/fragmentShader')
 			fs.readdirSync(shadersDir).forEach(function (file) {
 			    room.deck.push({
-					fragmentSource: fs.readFileSync(shadersDir+'/'+file, 'utf8'),
-					rand: Math.random()
+					generationMethod: 2,
+					sourceCode: fs.readFileSync(shadersDir+'/'+file, 'utf8'),
+					seed: Math.random()
 				})
 			})
 			// Shuffle
