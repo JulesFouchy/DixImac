@@ -1,5 +1,5 @@
 
-const baseURL = 'http://diximac.herokuapp.com/client/cards' // 'http://localhost:2000/client/cards'
+const baseURL = 'https://diximac.herokuapp.com/client/cards' // 'http://localhost:2000/client/cards'
 
 const renderCard = ({fileName, fileFolder, generationMethod, sourceCode, seed}) => {
 	const url = baseURL + '/' + fileFolder + '/' + fileName
