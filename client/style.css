@@ -64,6 +64,14 @@ body {
 }
 /*----- GAME ----*/
 
+/* State message */
+.youHaveToPlay {
+	background-color: #fad55a;
+}
+.youHaveToWait {
+	background-color: #75ff6e;
+}
+
 .selectedImage {
 	border: yellow thick solid;
 }

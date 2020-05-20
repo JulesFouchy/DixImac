@@ -50,6 +50,18 @@ const drawCardsAtPlayAndVotesResult = () => {
     }
 }
 
+const bYouHaveToPlay = () => {
+    switch(myGamePhase) {
+        case GAME_MASTER_PICKING_A_CARD:
+            return myGameMasterID === myPlayerID && mySelectedCardInHandIndex === null
+        case OTHER_PLAYERS_PICKING_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardInHandIndex === null
+        case VOTING_FOR_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardAtPlayIndex === null
+    }
+    return false
+}
+
 const displayStateMessage = () => {
     let message
     switch(myGamePhase) {
@@ -68,7 +80,7 @@ const displayStateMessage = () => {
         default:
         break
     }
-    htmlStateMessage.innerHTML = "<p>" + message + "</p>"
+    htmlStateMessage.innerHTML = '<p class="'+ (bYouHaveToPlay() ? 'youHaveToPlay' : 'youHaveToWait') +'">' + message + '</p>'
 }
 
 const drawPlayersList = () => {
