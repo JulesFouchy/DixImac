@@ -1,89 +1,124 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<link href="client/style.css" rel="stylesheet" type="text/css">
-		<title>DixImac</title>
+<head>
+    <title>DixImac</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-
+    <link href="client/style.css" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+    <script src="client/imageFromP5.js"></script>
+    <script src="client/data.js"></script>
+</head>
 
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
-		<script src="client/imageFromP5.js"></script>
-		<script src="client/data.js"></script>
-	</head>
+<body>
+    <div class="container-fluid home-container text-center">
+        <div class="home-content">
+            <div class="form-group">
+                <label for="pseudo-input">Pseudo</label>
+                <input class="form-control" id="pseudo-input" type="text" value="" placeholder="Enter your pseudo" onchange="onMyNameChange(this.value || 'MyName')" required />
+            </div>
+            <div class="form-group">
+                <label for="roomToJoinID">Join a room</label>
+                <div id="roomSelection"></div>
+            </div>
+        </div>
+        <div><p><a href="" data-toggle="modal" data-target="#modalRules">Dixit Rules</a></p>
+        </div>
+        <div>
+            <p>You can <a href="" data-toggle="modal" data-target="#modalHowToSendUsACard">send us your own cards</a> and we will add them to the game !</p>
+            <p><a href="https://julesfouchy.github.io/DixImacGallery/">See the home made cards gallery !</a></p>
+        </div>
+    </div>
+    <div id="stateMessage"></div>
+    <div id="hint"></div>
+    <div id="playersList"></div>
+    <div id="cardsAtPlay" class="cardsList"></div>
+    <div id="yourHand" class="cardsList"></div>
 
-	<body>
-		<div class = "content">
-			<input type="text" value = "" placeholder="MyName" onchange = "onMyNameChange(this.value || 'MyName')"/>
-			<div id="roomSelection"></div>
-			<div id="stateMessage"></div>
-			<div id="hint"></div>
-			<div id="playersList"></div>
-			<div id="cardsAtPlay" class="cardsList"></div>
-			<div id="yourHand" class="cardsList"></div>
+    <script src="client/main.js"></script>
+    </div>
 
-			<script src="client/main.js"></script>
-		</div>
+    <footer class="footer text-center">
+        <p>
+            This application was developed by <a href="https://julesfouchy.github.io/MyProjectsOverview/" target="_blank">Jules Fouchy</a> and <a href="http://lauradietsch.pro/" target="_blank">Laura Dietsch</a> <br />
+            Feel free to send us any feedback, suggestion, bug report or happy reaction at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a><br />
+        </p>
+    </footer>
 
-		<footer class = "footer">
-			<span class="linkToPopup" onclick="openModal('modalDixitRules')">Rules of Dixit</span>
-			<div id="modalDixitRules" class="modal">
-				<div class="modal-content">
-					<span class="close">&times;</span>
-					<p class="modalText">
-						<h3>The Rules of Dixit :</h3>
-						<span class="bold">Phase 1 : </span>The StoryTeller chooses one of his cards and gives you a hint to recognize it.<br/>
-						<span class="bold">Phase 2 : </span>All other players choose a card of their own that could also match the hint.<br/>
-						<span class="bold">Phase 3 : </span>All cards are now shuffled and revealed : the players have to find the card of the StoryTeller.<br/>
-						The goal for the StoryTeller is that some people will find his card, but not all of them. 
-						He his <em>completely free</em> on the hint and the informations he gives, but he should obviously try 
-						to make it neither too obvious nor too obscure.<br/>
-						<h4>The points :</h4>
-						<ul>
-							<li>
-								<span class="bold">3pts</span> for the StoryTeller if some but not all players find his card (0pts otherwise)
-							</li>
-							<li>
-								<span class="bold">2pts</span> if you find the card of the StoryTeller
-							</li>
-							<li>
-								<span class="bold">1pt</span> per player who voted for your card instead of the one of the StoryTeller
-							</li>
-						</ul>
-					</p>
-				</div>
-			</div>
-			<p>
-				This application was developed by <a href = "https://julesfouchy.github.io/MyProjectsOverview/" target="_blank">Jules Fouchy</a> and <a href = "http://lauradietsch.pro/" target="_blank">Laura Dietsch</a>. (Design coming soon !) <br/>
-				Feel free to send us any feedback, suggestion, bug report or happy reaction at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a><br/>
-				You can also <span class="linkToPopup" onclick="openModal('modalHowToSendUsACard')">send us your own cards</span> and we will add them to the game !
-			</p>
-			<div id="modalHowToSendUsACard" class="modal">
-				<div class="modal-content">
-					<span class="close">&times;</span>
-					<p class="modalText">
-						<h3>Send us your own custom cards :</h3>
-						Please make sure your card is vertical with a 2/3 ratio. <span class="bold">500x750</span> pixels is a good size.<br/>
-						Also make sure you have all the rights on the image ^^<br/>
-						Then send at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a> either :
-						<ul>
-							<li>
-								Your image in <em>png</em> or <em>jpeg</em> format
-							</li>
-							<li>
-								A p5 script. It will be run each time the card is drawn and if it involves some randomness the card will be different each round ! Here is a template : <a href="https://editor.p5js.org/JulesFouchy/sketches/dnpksvQqD">p5.js editor</a>
-							</li>
-							<li>
-								A fragment shader written in glsl. Here is a template : <a href="https://editor.p5js.org/JulesFouchy/sketches/8UjiNPiym">p5.js editor</a>
-							</li>
-							<li>
-								Got another way of doing art ? <a href="mailto:jules.fouchy@ntymail.com">Get in touch with me</a> and I might implement it !
-							</li>
-						</ul>
-					</p>
-				</div>
-			</div>
-		</footer>
-		<script src="client/modals.js"></script>
-  </body>
+    <!-- Modal - Dixit Rules -->
+    <div class="modal fade" id="modalRules" tabindex="-1" role="dialog" aria-labelledby="modalRulesTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <h1 class="text-center">Dixit Rules</h1>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h2>Game Turn</h2>
+                    <p>
+                        <b>Phase 1 : </b>The StoryTeller chooses one of his cards and gives you a hint to recognize it.<br />
+                        <b>Phase 2 : </b>All other players choose a card of their own that could also match the hint.<br />
+                        <b>Phase 3 : </b>All cards are now shuffled and revealed : the players have to find the card of the StoryTeller.<br />
+                        The goal for the StoryTeller is that some people will find his card, but not all of them.
+                        He his <em>completely free</em> on the hint and the informations he gives, but he should obviously try
+                        to make it neither too obvious nor too obscure.
+                    </p>
+                    <h2>Scoring</h2>
+                    <ul>
+                        <li>
+                            <span class="bold">3pts</span> for the StoryTeller if some but not all players find his card (0pts otherwise)
+                        </li>
+                        <li>
+                            <span class="bold">2pts</span> if you find the card of the StoryTeller
+                        </li>
+                        <li>
+                            <span class="bold">1pt</span> per player who voted for your card instead of the one of the StoryTeller
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Send your own cards -->
+    <div class="modal fade" id="modalHowToSendUsACard" tabindex="-1" role="dialog" aria-labelledby="modalHowToSendUsACardTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <h1 class="text-center">Send us your own custom cards</h1>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p class="modalText">
+                        Please make sure your card is vertical with a 2/3 ratio. <span class="bold">500x750</span> pixels is a good size. Also make sure you have all the rights on the image.
+                        Then send i at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a>. You can either send :
+                        <ul>
+                            <li>
+                                An image in <em>png</em> or <em>jpeg</em> format
+                            </li>
+                            <li>
+                                A p5 script. It will be run each time the card is drawn and if it involves some randomness the card will be different each round ! Here is a template : <a href="https://editor.p5js.org/JulesFouchy/sketches/dnpksvQqD">p5.js editor</a>
+                            </li>
+                            <li>
+                                A fragment shader written in glsl. Here is a template : <a href="https://editor.p5js.org/JulesFouchy/sketches/8UjiNPiym">p5.js editor</a>
+                            </li>
+                            <li>
+                                Got another way of doing art ? <a href="mailto:jules.fouchy@ntymail.com">Get in touch with us</a> and we might implement it !
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="client/modals.js"></script>
+</body>
 </html>
