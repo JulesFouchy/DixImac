@@ -1,5 +1,6 @@
 const socket = io()
 
+let myName = 'myName'
 let myRoomID = null
 let myHand = []
 let myPlayersList = []
@@ -22,6 +23,7 @@ const VOTING_FOR_A_CARD = 2
 const VIEWING_VOTES = 3
 
 const onMyNameChange = (newName) => {
+	myName = newName
 	socket.emit('ThisIsMyName', {
 		name: newName
 	})

@@ -1,3 +1,8 @@
+const drawNameInput = () => {
+    const htmlEl = document.getElementById('pseudo-input')
+    htmlEl.value = myName
+}
+
 const drawRoomInfo = () => {
     const htmlEl = document.getElementById('roomInfo')
     htmlEl.innerHTML = 'You are in room ' + myRoomID
@@ -94,6 +99,7 @@ const drawHint = () => {
 
 const draw = () => {
     if (myRoomID !== null) {
+        drawNameInput()
         drawRoomInfo()
         drawHint()
         drawPlayersList()
