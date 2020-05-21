@@ -1,7 +1,3 @@
-const socket = io()
-
-let iHaveChosenMyName = false
-let myRoomID = null
 let myHand = []
 let myPlayersList = []
 let myPlayerID
@@ -14,14 +10,6 @@ let myHint = ''
 let myCardsAtPlay = []
 let myCardsAtPlayAndTheirPlayers = []
 let myVoteResults = []
-
-const onMyNameChange = (newName) => {
-	iHaveChosenMyName = true
-	socket.emit('ThisIsMyName', {
-		name: newName
-	})
-	draw()
-}
 
 const ImGameMaster = () => myPlayerID === myGameMasterID
 
@@ -73,11 +61,6 @@ convertCardToHTMLFormat = (card) => {
 		return imageFromFragmentShader(card.fragmentSource, card.rand)
 	return card
 }
-
-socket.on('ThisIsRoomID', data => {
-	myRoomID = data.id
-	draw()
-})
 
 socket.on('NewRound', data => {
 	mySelectedCardInHandIndex = null
@@ -147,3 +130,9 @@ socket.on('ThisIsTheHint', (data) => {
 	myHint = data.hint
 	draw()
 })
+
+const emitHint = () => {
+    socket.emit('ThisIsTheHint', {
+        hint: document.getElementById("hintInput").value
+    })
+}
