@@ -1,3 +1,6 @@
+const socket = io()
+
+let myRoomID = null
 let myHand = []
 let myPlayersList = []
 let myPlayerID
@@ -17,6 +20,30 @@ const GAME_MASTER_PICKING_A_CARD = 0
 const OTHER_PLAYERS_PICKING_A_CARD = 1
 const VOTING_FOR_A_CARD = 2
 const VIEWING_VOTES = 3
+
+const onMyNameChange = (newName) => {
+	socket.emit('ThisIsMyName', {
+		name: newName
+	})
+	draw()
+}
+
+socket.on('ThisIsRoomID', data => {
+	myRoomID = data.id
+	loadGamePage()
+})
+
+const bYouHaveToPlay = () => {
+    switch (myGamePhase) {
+        case GAME_MASTER_PICKING_A_CARD:
+            return myGameMasterID === myPlayerID && mySelectedCardInHandIndex === null
+        case OTHER_PLAYERS_PICKING_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardInHandIndex === null
+        case VOTING_FOR_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardAtPlayIndex === null
+    }
+    return false
+}
 
 const changeSelectedCardInHandFor = (index) => {
 	if (index === mySelectedCardInHandIndex)

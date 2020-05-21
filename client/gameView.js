@@ -1,3 +1,8 @@
+const drawRoomInfo = () => {
+    const htmlEl = document.getElementById('roomInfo')
+    htmlEl.innerHTML = 'You are in room ' + myRoomID
+}
+
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
@@ -39,19 +44,7 @@ const drawCardsAtPlayAndVotesResult = () => {
     }
 }
 
-const bYouHaveToPlay = () => {
-    switch (myGamePhase) {
-        case GAME_MASTER_PICKING_A_CARD:
-            return myGameMasterID === myPlayerID && mySelectedCardInHandIndex === null
-        case OTHER_PLAYERS_PICKING_A_CARD:
-            return myGameMasterID !== myPlayerID && mySelectedCardInHandIndex === null
-        case VOTING_FOR_A_CARD:
-            return myGameMasterID !== myPlayerID && mySelectedCardAtPlayIndex === null
-    }
-    return false
-}
-
-const displayStateMessage = () => {
+const drawStateMessage = () => {
     let message
     switch (myGamePhase) {
         case GAME_MASTER_PICKING_A_CARD:
@@ -100,19 +93,16 @@ const drawHint = () => {
 }
 
 const draw = () => {
-    if (myRoomID) {
+    if (myRoomID !== null) {
         drawRoomInfo()
         drawHint()
         drawPlayersList()
-        displayStateMessage()
+        drawStateMessage()
         if (myGamePhase !== VIEWING_VOTES)
             drawCardsAtPlay()
         else
             drawCardsAtPlayAndVotesResult()
         drawHand()
-    }
-    else {
-        drawRoomInfo()
     }
 }
 
