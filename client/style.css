@@ -50,16 +50,13 @@ body {
     margin: auto;
 }
 
-#pseudo-input, #hintInput {
-    max-width: 330px;
+.game-container #pseudo-input, #hintInput {
+    max-width: 200px;
 }
 
 /* State message */
-.youHaveToPlay {
-    background-color: #fad55a;
-}
-.youHaveToWait {
-	background-color: #75ff6e;
+#stateMessage {
+    height: 100px;
 }
 
 .selectedImage {
@@ -91,8 +88,12 @@ body {
 .hasPlayedIcon {
 	width: 16px;
 }
+
+#hint {
+    height: 100px;
+}
+
 #hintText {
-	font-weight: bold;
 	font-size: 20px;
 }
 .cardOwner {

@@ -5,7 +5,7 @@ const drawNameInput = () => {
 
 const drawRoomInfo = () => {
     const htmlEl = document.getElementById('roomInfo')
-    htmlEl.innerHTML = 'You are in room ' + myRoomID
+    htmlEl.innerHTML = 'You are in room <b>' + myRoomID + '</b>'
 }
 
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
@@ -53,13 +53,13 @@ const drawStateMessage = () => {
     let message
     switch (myGamePhase) {
         case GAME_MASTER_PICKING_A_CARD:
-            message = ((myGameMasterID === myPlayerID) ? "Pick a card, dear Story Teller" : "Waiting for the Story Teller to pick a card")
+            message = ((myGameMasterID === myPlayerID) ? '<div class="alert alert-warning" role="alert">You are the Story Teller, pick a card and write an hint</div>' : "Waiting for the Story Teller to pick a card")
             break
         case OTHER_PLAYERS_PICKING_A_CARD:
-            message = ((myGameMasterID !== myPlayerID) ? 'Pick a card that would match the hint' : "Waiting for other players to pick a card")
+            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Pick a card that would match the hint</div>' : "Waiting for other players to pick a card")
             break
         case VOTING_FOR_A_CARD:
-            message = ((myGameMasterID !== myPlayerID) ? 'Vote for a card' : 'Waiting for the other players to vote for a card')
+            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Vote for a card</div>' : 'Waiting for the other players to vote for a card')
             break
         case VIEWING_VOTES:
             message = ''
@@ -90,10 +90,10 @@ const drawHint = () => {
     const html = document.getElementById("hint")
     html.innerHTML = ''
     if (myPlayerID === myGameMasterID) {
-        html.innerHTML += '<input type="text" value = "' + myHint + '" id="hintInput" placeholder="My Hint is . . ." onchange = emitHint()>'
+        html.innerHTML += '<input type="text" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
-        html.innerHTML += '<p id="hintText">«' + myHint + '»</p>'
+        html.innerHTML += '<p id="hintText">The hint is : <b> ' + myHint + '</b></p>'
     }
 }
 
