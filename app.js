@@ -263,9 +263,7 @@ const createRoom = () => {
 			onExit: () => {
 
 			},
-			hasPlayed: (socket) => {
-				return false
-			}
+			hasPlayed: socket => socket.id === room.gameMasterID() && socket.selectedCardInHandIndex !== null
 		},
 
 		gpOTHER_PLAYERS_PICKING_A_CARD: {
