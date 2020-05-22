@@ -1,7 +1,12 @@
-<input class="form-control" id="pseudo-input" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')"/>
-<p id="roomInfo"></p>
-<div id="stateMessage"></div>
-<div id="hint"></div>
-<div id="playersList"></div>
-<div id="cardsAtPlay" class="cardsList"></div>
-<div id="yourHand" class="cardsList"></div>
+<div class="game-container text-center">
+    <div class="form-group m-auto">
+        <label for="pseudo-input">Want to change your name ?</label>
+        <input class="form-control" id="pseudo-input" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')" />
+    </div>
+    <p id="roomInfo"></p>
+    <div id="stateMessage"></div>
+    <div id="hint"></div>
+    <div id="playersList"></div>
+    <div id="cardsAtPlay" class="cardsList"></div>
+    <div id="yourHand" class="cardsList"></div>
+</div>

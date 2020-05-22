@@ -18,10 +18,6 @@ a:hover {
     margin: auto;
 }
 
-.home-content{
-
-}
-
 /*---- PUT FOOTER AT THE BOTTOM OF THE PAGE -----*/
 html, body {
     height: 100%;
@@ -48,6 +44,16 @@ body {
     display:block;
 }
 /*----- GAME ----*/
+.game-container {
+    width: 100%;
+    padding: 15px;
+    margin: auto;
+}
+
+#pseudo-input, #hintInput {
+    max-width: 330px;
+}
+
 /* State message */
 .youHaveToPlay {
     background-color: #fad55a;
@@ -77,10 +83,10 @@ body {
 	/*position:relative;*/
 }
 #cardsAtPlay {
-	background: pink
+	background: pink;
 }
 #yourHand {
-	background: black
+	text-align:center;
 }
 .hasPlayedIcon {
 	width: 16px;
