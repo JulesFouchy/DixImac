@@ -47,6 +47,8 @@ const bYouHaveToPlay = () => {
     return false
 }
 
+const getNbCardsAtPlay = () => myPlayersList.reduce((acc, player) => acc + (player.hasPlayed ? 1 : 0), 0)
+
 const changeSelectedCardInHandFor = (index) => {
 	if (index === mySelectedCardInHandIndex)
 		mySelectedCardInHandIndex = null

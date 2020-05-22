@@ -49,6 +49,14 @@ const drawCardsAtPlayAndVotesResult = () => {
     }
 }
 
+const drawCardsAtPlayHidden = () => {
+    const html = document.getElementById("cardsAtPlay")
+    html.innerHTML = ''
+    for (let i = 0; i < getNbCardsAtPlay(); ++i) {
+        html.innerHTML += '<div class="cardVerso"></div>'
+    }
+}
+
 const drawStateMessage = () => {
     let message
     switch (myGamePhase) {
@@ -104,10 +112,12 @@ const draw = () => {
         drawHint()
         drawPlayersList()
         drawStateMessage()
-        if (myGamePhase !== VIEWING_VOTES)
+        if (myGamePhase === VOTING_FOR_A_CARD)
             drawCardsAtPlay()
-        else
+        else if (myGamePhase === VIEWING_VOTES)
             drawCardsAtPlayAndVotesResult()
+        else
+            drawCardsAtPlayHidden()
         drawHand()
     }
 }
