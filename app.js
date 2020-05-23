@@ -656,15 +656,15 @@ io.sockets.on('connection', socket => {
 	socket.on('JoinRoom', (data) => {
 		joinRoom(socket, data.roomID)
 	})
-	setTimeout(() => {
-		if (Object.values(roomsList).length === 0) {
-			const roomID = createRoom()
-			joinRoom(socket, roomID)
-		}
-		else {
-			joinRoom(socket, Object.values(roomsList)[0].id)
-		}
-	}, 1000)
+	// setTimeout(() => {
+	// 	if (Object.values(roomsList).length === 0) {
+	// 		const roomID = createRoom()
+	// 		joinRoom(socket, roomID)
+	// 	}
+	// 	else {
+	// 		joinRoom(socket, Object.values(roomsList)[0].id)
+	// 	}
+	// }, 1000)
 })
 
 const sendGameReport = (playersList, dateBegin) => {
