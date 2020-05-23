@@ -263,9 +263,7 @@ const createRoom = () => {
 			onExit: () => {
 
 			},
-			hasPlayed: (socket) => {
-				return false
-			}
+			hasPlayed: socket => socket.id === room.gameMasterID() && socket.selectedCardInHandIndex !== null
 		},
 
 		gpOTHER_PLAYERS_PICKING_A_CARD: {
@@ -502,7 +500,7 @@ const createRoom = () => {
 			socket.emit('ThisIsRoomID', {id: room.id})
 
 			// -------- PLAYER --------
-			//socket.playerName = name
+			socket.playerName = 'myName'
 			socket.playerColor = randomColor()
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 			socket.score = room.computeScoreNewPlayer()
@@ -658,6 +656,15 @@ io.sockets.on('connection', socket => {
 	socket.on('JoinRoom', (data) => {
 		joinRoom(socket, data.roomID)
 	})
+	setTimeout(() => {
+		if (Object.values(roomsList).length === 0) {
+			const roomID = createRoom()
+			joinRoom(socket, roomID)
+		}
+		else {
+			joinRoom(socket, Object.values(roomsList)[0].id)
+		}
+	}, 1000)
 })
 
 const sendGameReport = (playersList, dateBegin) => {

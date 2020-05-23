@@ -1,6 +1,6 @@
 const socket = io()
 
-let iHaveChosenMyName = false
+let myName = 'myName'
 let myRoomID = null
 let myHand = []
 let myPlayersList = []
@@ -15,20 +15,39 @@ let myCardsAtPlay = []
 let myCardsAtPlayAndTheirPlayers = []
 let myVoteResults = []
 
-const onMyNameChange = (newName) => {
-	iHaveChosenMyName = true
-	socket.emit('ThisIsMyName', {
-		name: newName
-	})
-	draw()
-}
-
 const ImGameMaster = () => myPlayerID === myGameMasterID
 
 const GAME_MASTER_PICKING_A_CARD = 0
 const OTHER_PLAYERS_PICKING_A_CARD = 1
 const VOTING_FOR_A_CARD = 2
 const VIEWING_VOTES = 3
+
+const onMyNameChange = (newName) => {
+	myName = newName
+	socket.emit('ThisIsMyName', {
+		name: newName
+	})
+	draw()
+}
+
+socket.on('ThisIsRoomID', data => {
+	myRoomID = data.id
+	loadGamePage()
+})
+
+const bYouHaveToPlay = () => {
+    switch (myGamePhase) {
+        case GAME_MASTER_PICKING_A_CARD:
+            return myGameMasterID === myPlayerID && mySelectedCardInHandIndex === null
+        case OTHER_PLAYERS_PICKING_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardInHandIndex === null
+        case VOTING_FOR_A_CARD:
+            return myGameMasterID !== myPlayerID && mySelectedCardAtPlayIndex === null
+    }
+    return false
+}
+
+const getNbCardsAtPlay = () => myPlayersList.reduce((acc, player) => acc + (player.hasPlayed ? 1 : 0), 0)
 
 const changeSelectedCardInHandFor = (index) => {
 	if (index === mySelectedCardInHandIndex)
@@ -73,11 +92,6 @@ convertCardToHTMLFormat = (card) => {
 		return imageFromFragmentShader(card.fragmentSource, card.rand)
 	return card
 }
-
-socket.on('ThisIsRoomID', data => {
-	myRoomID = data.id
-	draw()
-})
 
 socket.on('NewRound', data => {
 	mySelectedCardInHandIndex = null
@@ -147,3 +161,9 @@ socket.on('ThisIsTheHint', (data) => {
 	myHint = data.hint
 	draw()
 })
+
+const emitHint = () => {
+    socket.emit('ThisIsTheHint', {
+        hint: document.getElementById("hintInput").value
+    })
+}

@@ -1,0 +1,24 @@
+<div class="game-container container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Room infos</h1>
+            <p id="roomInfo"></p>
+            <div class="form-group">
+                <label for="pseudo-input">Want to change your name ?</label>
+                <input class="form-control" id="pseudo-input" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h1>Instructions</h1>
+            <div id="stateMessage" class="d-flex align-items-center"></div>
+            <div id="hint" class="d-flex justify-content-between flex-column"></div>
+        </div>
+        <div class="col-md-4">
+            <h1>Scores</h1>
+            <div id="playersList"></div>
+        </div>
+    </div>
+</div>
+<div id="cardsAtPlay" class="cardsList"></div>
+<div id="yourHand" class="cardsList"></div>
+

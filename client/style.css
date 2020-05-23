@@ -1,9 +1,26 @@
-.bold {
-	font-weight: bold;
+h1 {
+    font-size: 2rem;
 }
+
+h2 {
+    font-size: 1.5rem;
+}
+
+a:hover {
+    text-decoration:none;
+}
+
+/* Home style */
+.home-container {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
 /*---- PUT FOOTER AT THE BOTTOM OF THE PAGE -----*/
 html, body {
-	height: 100%;
+    height: 100%;
 }
 body {
 	display: flex;
@@ -22,54 +39,24 @@ body {
 .linkToPopup:hover {
 	cursor: pointer;
 }
-/* -----------------------------------*/
-/* ------------- MODALS --------------*/
-/* -----------------------------------*/
-
-/* The Modal (background) */
-.modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0,0,0); /* Fallback color */
-	background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-  
-/* Modal Content/Box */
-.modal-content {
-	background-color: #fefefe;
-	margin: 15% auto; /* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-}
-
-.close:hover, .close:focus {
-	color: black;
-	text-decoration: none;
-	cursor: pointer;
+/* MODAL - RULES*/
+.modal-header{
+    display:block;
 }
 /*----- GAME ----*/
+.game-container {
+    width: 100%;
+    padding: 15px;
+    margin: auto;
+}
+
+.game-container #pseudo-input, #hintInput {
+    max-width: 200px;
+}
 
 /* State message */
-.youHaveToPlay {
-	background-color: #fad55a;
-}
-.youHaveToWait {
-	background-color: #75ff6e;
+#stateMessage {
+    height: 100px;
 }
 
 .selectedImage {
@@ -93,16 +80,20 @@ body {
 	/*position:relative;*/
 }
 #cardsAtPlay {
-	background: pink
+	background: pink;
 }
 #yourHand {
-	background: black
+	text-align:center;
 }
 .hasPlayedIcon {
 	width: 16px;
 }
+
+#hint {
+    height: 100px;
+}
+
 #hintText {
-	font-weight: bold;
 	font-size: 20px;
 }
 .cardOwner {
@@ -125,6 +116,11 @@ body {
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: row;
+}
+.cardVerso {
+	height: 300px;
+	width: 200px;
+	background-color: brown;
 }
 .gameMaster {
 	background-color: lightBlue;
