@@ -24,10 +24,12 @@ const VIEWING_VOTES = 3
 
 const onMyNameChange = (newName) => {
 	myName = newName
-	socket.emit('ThisIsMyName', {
-		name: newName
-	})
-	draw()
+	if (newName !== '') {
+		socket.emit('ThisIsMyName', {
+			name: newName
+		})
+		draw()
+	}
 }
 
 socket.on('ThisIsRoomID', data => {
