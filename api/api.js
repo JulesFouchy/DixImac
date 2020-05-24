@@ -92,4 +92,4 @@ router.get('/authors', (req, res) => {
     })
 })
 
-module.exports = router
+module.exports = { router, dbRequest }
