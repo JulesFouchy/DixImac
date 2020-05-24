@@ -597,10 +597,17 @@ const createRoom = async () => {
 			// Read custom cards from database
 			await dbRequest( async db => {
 				try {
-					const result = await db.collection('cards').find({}).toArray()
-					result.forEach( cardDB => {
+					const cards = await db.collection('cards').find({}).toArray()
+					const authors = await db.collection('authors').find({}).toArray()
+					cards.forEach( cardDB => {
+						const author = authors.find(author => {
+							return author._id.toString() === cardDB.authorID
+						})
 						const cardObj = {
 							generationMethod: cardDB.generationMethod,
+							linkToGalery: 'https://julesfouchy.github.io/DixImacGallery/?cardid=' + cardDB._id,
+							authorName: author.name,
+							authorLink: author.link,
 						}
 						if (cardDB.generationMethod === 0) {
 							cardObj.fileFolder = cardDB.fileFolder
