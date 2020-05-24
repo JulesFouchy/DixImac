@@ -165,7 +165,9 @@ socket.on('ThisIsTheHint', (data) => {
 })
 
 const emitHint = () => {
-    socket.emit('ThisIsTheHint', {
-        hint: document.getElementById("hintInput").value
-    })
+	if (!bDontSendHintJustYet) {
+		socket.emit('ThisIsTheHint', {
+			hint: document.getElementById("hintInput").value
+		})
+	}
 }
