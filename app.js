@@ -501,7 +501,7 @@ const createRoom = async () => {
 			socket.emit('ThisIsRoomID', {id: room.id})
 
 			// -------- PLAYER --------
-			socket.playerName = 'myName'
+			socket.playerName = socket.playerName || 'myName'
 			socket.playerColor = randomColor()
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 			socket.score = room.computeScoreNewPlayer()
