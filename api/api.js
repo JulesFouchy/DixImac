@@ -9,11 +9,11 @@ const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
 const client = new MongoClient(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
 
-const dbRequest = (req) => {
+const dbRequest = async (req) => {
     try {
-        client.then( (client) => {
+        await client.then( async (client) => {
             const db = client.db('diximac')
-            req(db)
+            await req(db)
         })
     }
     catch(err) {
