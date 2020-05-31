@@ -97,7 +97,9 @@ body {
 	font-size: 20px;
 }
 .cardOwner {
-	font-size: 25px;
+    overflow: hidden;
+    width: 200px;
+    height: 28px;
 }
 .cardAndVotesResult {
 	display: flex;
@@ -110,7 +112,9 @@ body {
 	flex-direction: column;
 }
 .cardVoter {
-	font-size: 25px;
+    overflow: hidden;
+    width: 200px;
+    height: 28px;
 }
 #cardsAtPlay {
 	display: flex;
