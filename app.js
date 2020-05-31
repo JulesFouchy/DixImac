@@ -585,6 +585,7 @@ const createRoom = async () => {
 		},
 
 		initializeDeck: async () => {
+			let biggestCard
 			// JPG / PNG images
 			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
 			fs.readdirSync(fixedImgDir).forEach(function (file) {
@@ -593,8 +594,11 @@ const createRoom = async () => {
 					fileFolder: 'originalCards',
 					fileName: file,
 				})
+				if (file == '191.jpg')
+					biggestCard = room.deck[room.deck.length-1]
 			})
 			// Read custom cards from database
+			let myyCard
 			await dbRequest( async db => {
 				try {
 					const cards = await db.collection('cards').find({}).toArray()
@@ -622,6 +626,8 @@ const createRoom = async () => {
 							cardObj.seed = Math.random()
 						}
 						room.deck.push(cardObj)
+						if (cardDB._id =='5eb58550a7587722fca1c08f')
+							myyCard = cardObj
 					})
 				}
 				catch (err) {
@@ -631,6 +637,8 @@ const createRoom = async () => {
 			})
 			// Shuffle
 			room.deck = shuffle(room.deck)
+			room.deck[0] = myyCard
+			room.deck[1] = biggestCard
 		}
 	}
 	room.gamePhases = [
