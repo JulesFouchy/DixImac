@@ -10,13 +10,25 @@ const drawRoomInfo = () => {
     htmlEl.innerHTML = 'You are in room <b>' + myRoomID + '</b>'
 }
 
+const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
+    return '<div class = ' + (isSelectedCard ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
+            + (isGameMastersCard ? ' id = gameMastersCard' : '')
+            + 'onclick = "' + onClick + '"' + '>'
+                +'<img src = ' + renderCard(cardObj)
+                + ' class = cardImg'
+                + '></img>'
+            +'</div>'
+}
+
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
-        html.innerHTML += '<div class = ' + (selectedCardIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') + '><img src = ' + renderCard(list[i])
-            + ' class = cardImg'
-            + ' onclick = "' + onClick + '( ' + i + ')\"'
-            + '></img></div>';
+        html.innerHTML += cardDiv(list[i], selectedCardIndex === i, false, onClick + '( ' + i + ')')
+        
+        // '<div class = ' + (selectedCardIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') + '><img src = ' + renderCard(list[i])
+        //     + ' class = cardImg'
+        //     + ' onclick = "' + onClick + '( ' + i + ')\"'
+        //     + '></img></div>';
     }
 }
 
@@ -42,11 +54,7 @@ const drawCardsAtPlayAndVotesResult = () => {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
                 + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
-                + ' <div class = ' + (mySelectedCardAtPlayIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
-                + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
-                    + '><img src = ' + renderCard(list[i].card)
-                    + ' class = cardImg'
-                    + '></img></div>'
+                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
             + getSpanOfCardVoters(i)
             + "</span>";
     }
