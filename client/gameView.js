@@ -13,10 +13,10 @@ const drawRoomInfo = () => {
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
-        html.innerHTML += '<span><img src = ' + renderCard(list[i])
+        html.innerHTML += '<div class="dxCard"><img src = ' + renderCard(list[i])
             + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
             + ' onclick = "' + onClick + '( ' + i + ')\"'
-            + '></img></span>';
+            + '></img></div>';
     }
 }
 
