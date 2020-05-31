@@ -42,10 +42,10 @@ const drawCardsAtPlayAndVotesResult = () => {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
             + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
-            + '<img src = ' + renderCard(list[i].card)
+            + ' < div class="dxCard" ><img src = ' + renderCard(list[i].card)
             + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
             + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
-            + '></img>'
+            + '></img></div>'
             + getSpanOfCardVoters(i)
             + "</span>";
     }
