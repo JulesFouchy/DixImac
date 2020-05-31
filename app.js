@@ -599,6 +599,7 @@ const createRoom = async () => {
 			})
 			// Read custom cards from database
 			let myyCard
+			let myyCard2
 			await dbRequest( async db => {
 				try {
 					const cards = await db.collection('cards').find({}).toArray()
@@ -628,6 +629,8 @@ const createRoom = async () => {
 						room.deck.push(cardObj)
 						if (cardDB._id =='5eb58550a7587722fca1c08f')
 							myyCard = cardObj
+						if (cardDB._id =='5eb585a92cc6b815b0960798')
+							myyCard2 = cardObj
 					})
 				}
 				catch (err) {
@@ -639,6 +642,7 @@ const createRoom = async () => {
 			room.deck = shuffle(room.deck)
 			room.deck[0] = myyCard
 			room.deck[1] = biggestCard
+			room.deck[2] = myyCard2
 		}
 	}
 	room.gamePhases = [
