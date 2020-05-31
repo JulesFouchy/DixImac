@@ -10,13 +10,30 @@ const drawRoomInfo = () => {
     htmlEl.innerHTML = 'You are in room <b>' + myRoomID + '</b>'
 }
 
+const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
+    return '<div class = ' + (isSelectedCard ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
+            + (isGameMastersCard ? ' id = "gameMastersCard"' : '')
+            + 'onclick = "' + onClick + '"' + '>'
+                +'<img src = ' + renderCard(cardObj)
+                + ' class = cardImg'
+        + '></img>'
+        + (cardObj.authorName ? '<div class="dxCardInfos>'
+        + '<div class="author">'
+        + (cardObj.authorLink ? '<a href="' + cardObj.authorLink +'"  target="_blank">' : '')
+        + 'by ' + cardObj.authorName 
+        + (cardObj.authorLink ? '</a>' : '')
+        + '</div>'
+        + '<div class="galleryLink"><a href="'
+        + cardObj.linkToGalery
+        + '" target="_blank">Voir dans la gallery</a>'
+        + '</div></div >' : '')
+        +'</div > '
+}
+
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
-        html.innerHTML += '<span><img src = ' + renderCard(list[i])
-            + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
-            + ' onclick = "' + onClick + '( ' + i + ')\"'
-            + '></img></span>';
+        html.innerHTML += cardDiv(list[i], selectedCardIndex === i, false, onClick + '( ' + i + ')')
     }
 }
 
@@ -41,11 +58,8 @@ const drawCardsAtPlayAndVotesResult = () => {
     for (let i = 0; i < list.length; ++i) {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-            + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
-            + '<img src = ' + renderCard(list[i].card)
-            + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
-            + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
-            + '></img>'
+                + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
+                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
             + getSpanOfCardVoters(i)
             + "</span>";
     }

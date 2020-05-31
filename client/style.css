@@ -54,36 +54,66 @@ body {
     max-width: 200px;
 }
 
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+}
+
+#playerList {
+    word-wrap: break-word;
+}
+
 /* State message */
 #stateMessage {
     height: 100px;
 }
 
-.selectedImage {
-	border: yellow thick solid;
+.selectedCard {
+    position: inherit;
+    height: auto;
+    z-index: 999;
+    transform: scale(1.1);
 }
-.cardImg {
-	width:200px;
-	/*margin: 10px;*/
-	/*position:absolute;*/
-	/*top: 0;
-	left: auto;*/
+
+.dxCard:hover {
+    position: inherit;
+    height: auto;
+    z-index: 999;
+    transform: scale(1.1);
 }
-.cardImg:hover {
-	/*position:relative;
-    width:500px;
-    height:auto;
-    z-index:999;*/
-    /*transform: scale(2.5);*/
+
+.cardAndVotesResult .dxCard:hover, .cardAndVotesResult .selectedCard {
+    height: 400px;
+    transform: unset;
 }
-.cardsList {
-	/*position:relative;*/
-}
-#cardsAtPlay {
-	background: pink;
-}
+
 #yourHand {
-	text-align:center;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.dxCard {
+    width: 200px;
+    height: 400px;
+    border: solid #a6bcc6 1.2px;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 10px;
+    background-color: #e9f8ff;
+}
+
+.cardImg {
+    width: 100%;
+}
+
+
+#yourHand {
+    text-align: center;
 }
 .hasPlayedIcon {
 	width: 16px;
@@ -97,7 +127,9 @@ body {
 	font-size: 20px;
 }
 .cardOwner {
-	font-size: 25px;
+    overflow: hidden;
+    width: 200px;
+    height: 28px;
 }
 .cardAndVotesResult {
 	display: flex;
@@ -110,25 +142,35 @@ body {
 	flex-direction: column;
 }
 .cardVoter {
-	font-size: 25px;
+    overflow: hidden;
+    width: 200px;
+    height: 28px;
 }
 #cardsAtPlay {
-	display: flex;
-	flex-wrap: wrap;
-	flex-direction: row;
+    min-height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
 }
 .cardVerso {
-	height: 300px;
-	width: 200px;
-	background-color: brown;
+    width: 200px;
+    height: 400px;
+    border: solid #a6bcc6 1.2px;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 10px;
+    background-color: #e9f8ff;
+    background-image: url(img/motifIMAC.png);
+    background-size: 66px;
 }
 .gameMaster {
-	background-color: lightBlue;
+	font-weight: bold;
 }
 #gameMastersCard {
-	border: lightBlue thick solid;
+    background-color: #edffec;
+    border-color: #77d77f;
 }
-
 
 #defaultCanvas0 {
 	visibility: hidden;
