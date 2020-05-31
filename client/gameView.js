@@ -17,7 +17,16 @@ const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
         + '></img>'
-            +'</div>'
+        + (cardObj.authorName ? '<div class="dxCardInfos>'
+        + '<div class="author"><a href="'
+        + cardObj.authorLink +'"  target="_blank">'
+        + cardObj.authorName 
+        + '</a></div>'
+        + '<div class="galleryLink"><a href="'
+        + cardObj.linkToGalery
+        + '" target="_blank">Voir dans la gallery</a>'
+        + '</div></div >' : '')
+        +'</div > '
 }
 
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
