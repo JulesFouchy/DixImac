@@ -61,7 +61,7 @@ float treeSDF( vec2 uv, out int iterMinReached ){
 }
 
 void main() {
-	vec2 uv = (vTexCoord - vec2(0.5, 0.1)) * 10.;
+	vec2 uv = (vTexCoord - vec2(0.5, 0.27)) * 10.;
     uv.y *= 1.5;
 	vec3 color;
 
