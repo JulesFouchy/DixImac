@@ -18,7 +18,7 @@ const randomPt = () => {
   // }
   const a = p.random(p.TAU)
   
-  return p5.Vector.fromAngle(a).mult(r)
+  return p.createVector(p.cos(a), p.sin(a)).mult(r)
 }
 
 const yesOrNo = () => {
