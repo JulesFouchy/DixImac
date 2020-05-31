@@ -12,7 +12,7 @@ const drawRoomInfo = () => {
 
 const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
     return '<div class = ' + (isSelectedCard ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
-            + (isGameMastersCard ? ' id = gameMastersCard' : '')
+            + (isGameMastersCard ? ' id = "gameMastersCard"' : '')
             + 'onclick = "' + onClick + '"' + '>'
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
