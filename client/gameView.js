@@ -13,8 +13,8 @@ const drawRoomInfo = () => {
 const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
-        html.innerHTML += '<div class="dxCard"><img src = ' + renderCard(list[i])
-            + (selectedCardIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
+        html.innerHTML += '<div class = ' + (selectedCardIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') + '><img src = ' + renderCard(list[i])
+            + ' class = cardImg'
             + ' onclick = "' + onClick + '( ' + i + ')\"'
             + '></img></div>';
     }
@@ -41,11 +41,12 @@ const drawCardsAtPlayAndVotesResult = () => {
     for (let i = 0; i < list.length; ++i) {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-            + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
-            + ' < div class="dxCard" ><img src = ' + renderCard(list[i].card)
-            + (mySelectedCardAtPlayIndex === i ? ' class = \" selectedImage cardImg\"' : ' class = cardImg')
-            + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
-            + '></img></div>'
+                + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
+                + ' <div class = ' + (mySelectedCardAtPlayIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
+                + (i === myGameMastersCardIndex ? ' id = gameMastersCard' : '')
+                    + '><img src = ' + renderCard(list[i].card)
+                    + ' class = cardImg'
+                    + '></img></div>'
             + getSpanOfCardVoters(i)
             + "</span>";
     }
