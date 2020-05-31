@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const serv = require('http').Server(app)
 
+const { router, dbRequest } = require('./api/api')
+
 // Allow CORS
 app.use((req, res, next) => {
 	//console.log(req)
@@ -11,8 +13,7 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/client/index.html'))
 app.use('/client', express.static(__dirname + '/client'))
-app.use('/api', require('./api/api'))
-
+app.use('/api', router)
 
 
 const PORT = process.env.PORT || 2000
@@ -113,7 +114,7 @@ const setSelectedCardAtPlay = (socket, index) => {
 
 const roomsList = {}
 
-const createRoom = () => {
+const createRoom = async () => {
 	const id = randomIntID(6)
 	const room = {
 		// DATA
@@ -500,7 +501,7 @@ const createRoom = () => {
 			socket.emit('ThisIsRoomID', {id: room.id})
 
 			// -------- PLAYER --------
-			socket.playerName = 'myName'
+			socket.playerName = socket.playerName || 'myName'
 			socket.playerColor = randomColor()
 			applyToAllSockets(room.socketList, room.sendPlayersList)
 			socket.score = room.computeScoreNewPlayer()
@@ -583,7 +584,7 @@ const createRoom = () => {
 			})
 		},
 
-		initializeDeck: () => {
+		initializeDeck: async () => {
 			// JPG / PNG images
 			const fixedImgDir = path.join(__dirname, 'client/cards/originalCards')
 			fs.readdirSync(fixedImgDir).forEach(function (file) {
@@ -593,31 +594,40 @@ const createRoom = () => {
 					fileName: file,
 				})
 			})
-			const ourCardsDir = path.join(__dirname, 'client/cards/static')
-			fs.readdirSync(ourCardsDir).forEach(function (file) {
-				room.deck.push({
-					generationMethod: 0,
-					fileFolder: 'static',
-					fileName: file,
-				})
-			})
-			// P5 scripts
-			const p5ScriptsDir = path.join(__dirname, 'client/cards/P5script')
-			fs.readdirSync(p5ScriptsDir).forEach(function (file) {
-			    room.deck.push({
-					generationMethod: 1,
-					sourceCode: fs.readFileSync(p5ScriptsDir+'/'+file, 'utf8'),
-					seed: Math.floor(1000000*Math.random())
-				})
-			})
-			// Fragment Shaders
-			const shadersDir = path.join(__dirname, 'client/cards/fragmentShader')
-			fs.readdirSync(shadersDir).forEach(function (file) {
-			    room.deck.push({
-					generationMethod: 2,
-					sourceCode: fs.readFileSync(shadersDir+'/'+file, 'utf8'),
-					seed: Math.random()
-				})
+			// Read custom cards from database
+			await dbRequest( async db => {
+				try {
+					const cards = await db.collection('cards').find({}).toArray()
+					const authors = await db.collection('authors').find({}).toArray()
+					cards.forEach( cardDB => {
+						const author = authors.find(author => {
+							return author._id.toString() === cardDB.authorID
+						})
+						const cardObj = {
+							generationMethod: cardDB.generationMethod,
+							linkToGalery: 'https://julesfouchy.github.io/DixImacGallery/?cardid=' + cardDB._id,
+							authorName: author.name,
+							authorLink: author.link,
+						}
+						if (cardDB.generationMethod === 0) {
+							cardObj.fileFolder = cardDB.fileFolder
+							cardObj.fileName = cardDB.fileName
+						}
+						if (cardDB.generationMethod === 1) {
+							cardObj.sourceCode = fs.readFileSync(path.join(__dirname, 'client/cards/', cardDB.fileFolder, cardDB.fileName), 'utf8')
+							cardObj.seed = Math.floor(1000000*Math.random())
+						}
+						if (cardDB.generationMethod === 2) {
+							cardObj.sourceCode = fs.readFileSync(path.join(__dirname, 'client/cards/', cardDB.fileFolder, cardDB.fileName), 'utf8')
+							cardObj.seed = Math.random()
+						}
+						room.deck.push(cardObj)
+					})
+				}
+				catch (err) {
+					console.log('Error while connecting to database to create deck')
+					console.log(err)
+				}
 			})
 			// Shuffle
 			room.deck = shuffle(room.deck)
@@ -629,7 +639,7 @@ const createRoom = () => {
 			room.gpVOTING_FOR_A_CARD,
 			room.gpVIEWING_VOTES
 	]
-	room.initializeDeck()
+	await room.initializeDeck()
 	roomsList[id] = room
 	return id
 }
@@ -648,23 +658,23 @@ io.sockets.on('connection', socket => {
 	socket.on('ThisIsMyName', data => {
 		socket.playerName = escapeHtml(data.name)
 	})
-	socket.on('CreateRoom', () => {
-		const roomID = createRoom()
+	socket.on('CreateRoom', async () => {
+		const roomID = await createRoom()
 		joinRoom(socket, roomID)
 	})
 
 	socket.on('JoinRoom', (data) => {
 		joinRoom(socket, data.roomID)
 	})
-	setTimeout(() => {
-		if (Object.values(roomsList).length === 0) {
-			const roomID = createRoom()
-			joinRoom(socket, roomID)
-		}
-		else {
-			joinRoom(socket, Object.values(roomsList)[0].id)
-		}
-	}, 1000)
+	// setTimeout(() => {
+	// 	if (Object.values(roomsList).length === 0) {
+	// 		const roomID = createRoom()
+	// 		joinRoom(socket, roomID)
+	// 	}
+	// 	else {
+	// 		joinRoom(socket, Object.values(roomsList)[0].id)
+	// 	}
+	// }, 1000)
 })
 
 const sendGameReport = (playersList, dateBegin) => {

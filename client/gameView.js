@@ -1,3 +1,5 @@
+let bDontSendHintJustYet = false
+
 const drawNameInput = () => {
     const htmlEl = document.getElementById('pseudo-input')
     htmlEl.value = myName
@@ -98,7 +100,7 @@ const drawHint = () => {
     const html = document.getElementById("hint")
     html.innerHTML = ''
     if (myPlayerID === myGameMasterID) {
-        html.innerHTML += '<input type="text" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
+        html.innerHTML += '<input type="text" autocomplete="off" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
         html.innerHTML += '<p id="hintText">The hint is : <b> ' + myHint + '</b></p>'
@@ -106,6 +108,10 @@ const drawHint = () => {
 }
 
 const draw = () => {
+    bDontSendHintJustYet = true
+    const htmlHint = document.getElementById('hintInput')
+    const myHint = htmlHint ? htmlHint.value : ''
+    const hadFocus = document.activeElement && document.activeElement.id === 'hintInput'
     if (myRoomID !== null) {
         drawNameInput()
         drawRoomInfo()
@@ -119,7 +125,16 @@ const draw = () => {
         else
             drawCardsAtPlayHidden()
         drawHand()
+        if (hadFocus) {
+            const input = document.getElementById('hintInput')
+            input.focus()
+            setTimeout(function(){ input.selectionStart = input.selectionEnd = 10000; }, 0);
+        }
     }
+    bDontSendHintJustYet = false
+    const htmlHint2 = document.getElementById('hintInput')
+    if (htmlHint2)
+        htmlHint2.value = myHint
 }
 
 window.onfocus = () => draw()

@@ -21,13 +21,13 @@
         <div class="home-content">
             <div class="form-group">
                 <label for="pseudo-input">Name</label>
-                <input class="form-control" id="pseudo-input" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')"/>
+                <input class="form-control" id="pseudo-input" autocomplete="off" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')"/>
             </div>
             <div class="form-group">
                 <label for="roomToJoinID">Join a room</label>
                 <div id="roomSelection">
                     <div class="input-group" >
-                        <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" >
+                        <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" autocomplete="off">
                         <div class="input-group-append">
                             <button type = "submit" class="btn btn-secondary" onclick= joinRoom() >GO</button >
                         </div>
