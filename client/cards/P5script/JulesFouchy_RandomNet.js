@@ -52,6 +52,7 @@ const getClosestIndex = (ptsList, pt) => {
   p.stroke(235, 50, 20)
   p.strokeWeight(2)
   
+  p.push()
   p.translate(p.width / 2, p.height / 2)
   
   for (let i = 0; i < 3 ; ++i) {
@@ -88,3 +89,4 @@ const getClosestIndex = (ptsList, pt) => {
     }
     p.line(pt.x, pt.y, firstPt.x, firstPt.y)
   }
+  p.pop()
