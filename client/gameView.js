@@ -16,7 +16,7 @@ const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
             + 'onclick = "' + onClick + '"' + '>'
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
-                + '></img>'
+        + '></img>'
             +'</div>'
 }
 
