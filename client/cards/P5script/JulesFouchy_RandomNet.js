@@ -1,35 +1,35 @@
-const gaussian = x => exp(-x*x/2)
+const gaussian = x => p.exp(-x*x/2)
 
 const myRandomGaussian = (maxVal) => {
   const maxY = gaussian(0)
-  let x = random(-maxVal, maxVal)
-  let y = random(maxY)
+  let x = p.random(-maxVal, maxVal)
+  let y = p.random(maxY)
   while (y > gaussian(x)) {
-      x = random(-maxVal, maxVal)
-      y = random(maxY)
+      x = p.random(-maxVal, maxVal)
+      y = p.random(maxY)
   }
   return x
 }
 
 const randomPt = () => {
-  let r = myRandomGaussian(0.5/0.4) * width * 0.4
+  let r = myRandomGaussian(0.5/0.4) * p.width * 0.4
   // while (abs(r) > 0.5*width) {
   //   r = myRandomGaussian(3) * width * 0.4
   // }
-  const a = random(TAU)
+  const a = p.random(p.TAU)
   
-  return p5.Vector.fromAngle(a).mult(r)
+  return p.Vector.fromAngle(a).mult(r)
 }
 
 const yesOrNo = () => {
-  return random() < 0.6
+  return p.random() < 0.6
 }
 
 const getClosestIndex = (ptsList, pt) => {
   let dist = Infinity
   let index = -1
   ptsList.forEach((opt, i) => {
-    const d = sqrt(sq(pt.x-opt.x) + sq(pt.y-opt.y))
+    const d = p.sqrt(p.sq(pt.x-opt.x) + p.sq(pt.y-opt.y))
     if (d < dist) {
       dist = d
       index = i
@@ -38,45 +38,45 @@ const getClosestIndex = (ptsList, pt) => {
   return index
 }
 
-  background(0)
+  p.background(0)
   
   for (let i = 0; i < 18; ++i ){
-    let x = random(width)
-    let y = random(height)
-    let r = width * random(0.15, 0.35)
-    noStroke()
-    fill(random(50, 200), random(50, 200))
-    ellipse(x, y, r)
+    let x = p.random(p.width)
+    let y = p.random(p.height)
+    let r = p.width * p.random(0.15, 0.35)
+    p.noStroke()
+    p.fill(p.random(50, 200), p.random(50, 200))
+    p.ellipse(x, y, r)
   }
   
-  stroke(235, 50, 20)
-  strokeWeight(2)
+  p.stroke(235, 50, 20)
+  p.strokeWeight(2)
   
-  translate(width / 2, height / 2)
+  p.translate(p.width / 2, p.height / 2)
   
   for (let i = 0; i < 3 ; ++i) {
     const t = i / 3
-    background(100, 100, 200, 80)
-    const col = lerpColor(color(245, 59, 40), color(255, 200, 100), 1-t)
-    fill(col)
+    p.background(100, 100, 200, 80)
+    const col = p.lerpColor(p.color(245, 59, 40), p.color(255, 200, 100), 1-t)
+    p.fill(col)
     const ptsList = []
     for (let i = 0; i < 10; ++i) {
       ptsList.push(randomPt())
     }
 
     ptsList.forEach( pt => {
-      ellipse(pt.x, pt.y, 15)
+      p.ellipse(pt.x, pt.y, 15)
     })
 
     let pt = ptsList[0]
-    const firstPt = createVector(pt.x, pt.y)
+    const firstPt = p.createVector(pt.x, pt.y)
     ptsList.splice(0, 1);
     let bMustLink = true
     while (ptsList.length > 0) {
       let nextPtIndex = getClosestIndex(ptsList, pt)
       const nextPt = ptsList[nextPtIndex]
       if (bMustLink || yesOrNo()) {
-        line(pt.x, pt.y, nextPt.x, nextPt.y)
+        p.line(pt.x, pt.y, nextPt.x, nextPt.y)
         bMustLink = false
       }
       else {
@@ -86,5 +86,5 @@ const getClosestIndex = (ptsList, pt) => {
       pt.set(nextPt)
       ptsList.splice(nextPtIndex, 1);
     }
-    line(pt.x, pt.y, firstPt.x, firstPt.y)
+    p.line(pt.x, pt.y, firstPt.x, firstPt.y)
   }
