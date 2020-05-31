@@ -24,11 +24,6 @@ const drawCardList = (html, list, onClick, selectedCardIndex) => {
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
         html.innerHTML += cardDiv(list[i], selectedCardIndex === i, false, onClick + '( ' + i + ')')
-        
-        // '<div class = ' + (selectedCardIndex === i ? '\"selectedCard dxCard\"' : '\"dxCard\"') + '><img src = ' + renderCard(list[i])
-        //     + ' class = cardImg'
-        //     + ' onclick = "' + onClick + '( ' + i + ')\"'
-        //     + '></img></div>';
     }
 }
 

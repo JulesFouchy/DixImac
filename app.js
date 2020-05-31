@@ -352,7 +352,7 @@ const createRoom = async () => {
 						playerColor: el.player.playerColor
 					}))
 				})
-				//setTimeout(room.moveToNextPhase, 15 * 1000);
+				setTimeout(room.moveToNextPhase, 15 * 1000);
 			},
 			checkForEndOfPhase: () => {
 				
