@@ -10,10 +10,14 @@ const drawRoomInfo = () => {
     htmlEl.innerHTML = 'You are in room <b>' + myRoomID + '</b>'
 }
 
+const wrapOnClick = (onClick) => {
+    return 'if (event.target.tagName !== \'A\') ' + onClick
+}
+
 const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
     return '<div class = ' + (isSelectedCard ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
             + (isGameMastersCard ? ' id = "gameMastersCard"' : '')
-            + 'onclick = "' + onClick + '"' + '>'
+            + 'onclick = "' + wrapOnClick(onClick) + '"' + '>'
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
         + '></img>'
