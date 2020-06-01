@@ -17,16 +17,13 @@ const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
         + '></img>'
-        + (cardObj.authorName ? '<div class="dxCardInfos>'
+        + (cardObj.authorName ? '<div class="dxCardInfos">'
         + '<div class="author">'
-        + (cardObj.authorLink ? '<a href="' + cardObj.authorLink +'"  target="_blank">' : '')
+        + (cardObj.linkToGalery ? '<a href="' + cardObj.linkToGalery +'"  target="_blank">' : '')
         + 'by ' + cardObj.authorName 
-        + (cardObj.authorLink ? '</a>' : '')
+        + (cardObj.linkToGalery ? '</a>' : '')
         + '</div>'
-        + '<div class="galleryLink"><a href="'
-        + cardObj.linkToGalery
-        + '" target="_blank">Voir dans la gallery</a>'
-        + '</div></div >' : '')
+        + '</div >' : '')
         +'</div > '
 }
 
@@ -45,7 +42,7 @@ const getSpanOfCardVoters = (cardAtPLayIndex) => {
     const list = myVoteResults[cardAtPLayIndex]
     let res = '<span class = "cardVoters">'
     for (let i = 0; i < list.length; ++i) {
-        res += '<span class = "cardVoter" style = "color : ' + list[i].color + '">' + list[i].name + '</span>'
+        res += '<span class = "cardVoter nameDuringResults">' + list[i].name + '</span>'
     }
     res += '</span>'
     return res
@@ -58,7 +55,7 @@ const drawCardsAtPlayAndVotesResult = () => {
     for (let i = 0; i < list.length; ++i) {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-                + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
+                + '<span class = "cardOwner nameDuringResults">' + list[i].playerName + '</span>'
                 + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
             + getSpanOfCardVoters(i)
             + "</span>";
@@ -102,7 +99,7 @@ const drawPlayersList = () => {
         const player = myPlayersList[i]
         const isGameMaster = player.id === myGameMasterID ? " class = gameMaster " : ""
         htmlPLayersList.innerHTML += "<div>"
-        htmlPLayersList.innerHTML += "<span " + isGameMaster + "style = \"color : " + player.color + "\">" + player.name + " " + player.score + 'pts ' + (myGamePhase === VIEWING_VOTES ? ' + ' + player.scoreDelta : '') + "</span>"
+        htmlPLayersList.innerHTML += "<span " + isGameMaster + 'class="playerName"' + "style = \"color : " + player.color + "\">" + player.name + " " + player.score + 'pts ' + (myGamePhase === VIEWING_VOTES ? ' + ' + player.scoreDelta : '') + "</span>"
         if (player.hasPlayed && myGamePhase !== VIEWING_VOTES) {
             htmlPLayersList.innerHTML += '<img src = "client/img/check.png" class = "hasPlayedIcon" />'
         }
@@ -117,7 +114,7 @@ const drawHint = () => {
         html.innerHTML += '<input type="text" autocomplete="off" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
-        html.innerHTML += '<p id="hintText">The hint is : <b> ' + myHint + '</b></p>'
+        html.innerHTML += '<div class="alert alert-warning mt-3"><p id="hintText">The hint is : <b> ' + myHint + '</b></p></div>'
     }
 }
 
