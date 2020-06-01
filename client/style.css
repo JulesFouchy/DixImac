@@ -84,20 +84,22 @@ html, body {
 /*----- GAME ----*/
 .game-container {
     width: 100%;
+    min-height:100%;
     padding: 15px;
     margin: auto;
-    display: flex;
-    flex-direction: column;
     background-image: url(img/bg-game.png);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
-    height: 100%;
 }
 
-.game-container #pseudo-input, #hintInput {
+.game-container #pseudo-input {
     max-width: 200px;
+}
+
+.game-container {
+    
 }
 
 .sidebar {
@@ -107,11 +109,31 @@ html, body {
     left: 0;
     z-index: 100;
     overflow: auto;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255, 237, 181);
+    box-shadow: 2px 5px 17px #00000059;
+}
+
+    .sidebar::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* Chrome/Safari/Webkit */
+    }
+
+
+.infos-box {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.infos-box h1{
+    font-size: 25px;
 }
 
 .board {
     margin-left: auto !important;
+}
+
+.board h1 {
+    color: white;
 }
 
 .playerName, .gameMaster {
@@ -141,15 +163,23 @@ html, body {
     justify-content: center;
 }
 
+.handHeight, .boardHeight {
+    min-height: 400px;
+}
+
 .dxCard {
     width: 150px;
     height: 250px;
-    border: solid #a6bcc6 1.2px;
     border-radius: 10px;
-    margin: 0 4px;
+    margin: 4px;
     padding: 10px;
-    background-color: #e9f8ff;
+    background-color: rgb(255, 237, 181);
     transition-duration: 1s;
+}
+
+.dxCardInfos .author {
+    line-height: 16px;
+    font-size:12px;
 }
 
 .cardImg {
@@ -164,12 +194,18 @@ html, body {
 	width: 16px;
 }
 
+.alert-warning {
+    background-color: #dca9ff;
+    border-color: #bc8fda;
+    color: black;
+}
+
 #hint {
-    height: 100px;
+    width: 300px;
 }
 
 #hintText {
-	font-size: 20px;
+	font-size: 18px;
 }
 .cardOwner {
     overflow: hidden;
@@ -192,20 +228,18 @@ html, body {
     height: 28px;
 }
 #cardsAtPlay {
-    min-height: 400px;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
 }
 .cardVerso {
-    width: 200px;
-    height: 400px;
-    border: solid #a6bcc6 1.2px;
+    width: 150px;
+    height: 300px;
     border-radius: 10px;
     margin: 0 4px;
     padding: 10px;
-    background-color: #e9f8ff;
+    background-color: rgb(255, 237, 181);
     background-image: url(img/motifIMAC.png);
     background-size: 66px;
 }
@@ -213,8 +247,7 @@ html, body {
 	font-weight: bold;
 }
 #gameMastersCard {
-    background-color: #edffec;
-    border-color: #77d77f;
+    background-color: #bdffb9;
 }
 
 #defaultCanvas0 {
