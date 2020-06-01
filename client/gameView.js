@@ -78,10 +78,10 @@ const drawStateMessage = () => {
     let message
     switch (myGamePhase) {
         case GAME_MASTER_PICKING_A_CARD:
-            message = ((myGameMasterID === myPlayerID) ? '<div class="alert alert-warning" role="alert">You are the Story Teller, pick a card and write an hint</div>' : "Waiting for the Story Teller to pick a card")
+            message = ((myGameMasterID === myPlayerID) ? '<div class="alert alert-warning" role="alert">You are the Story Teller, pick a card and write a hint</div>' : "Waiting for the Story Teller to pick a card")
             break
         case OTHER_PLAYERS_PICKING_A_CARD:
-            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Pick a card that would match the hint</div>' : "Waiting for other players to pick a card")
+            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Pick a card that would match the hint</div>' : "Waiting for the other players to pick a card")
             break
         case VOTING_FOR_A_CARD:
             message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Vote for a card</div>' : 'Waiting for the other players to vote for a card')
