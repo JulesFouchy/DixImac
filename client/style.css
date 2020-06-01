@@ -55,14 +55,19 @@ body {
 }
 
 .sidebar {
-    /*position: fixed;*/
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     z-index: 100;
+    /*overflow: auto;*/
 }
 
-#playerList {
+.board {
+    margin-left: auto !important;
+}
+
+.playerName, .gameMaster {
     word-wrap: break-word;
 }
 
@@ -71,22 +76,14 @@ body {
     height: 100px;
 }
 
-.selectedCard {
+.dxCard:hover, .selectedCard {
     position: inherit;
-    height: auto;
     z-index: 999;
-    transform: scale(1.1);
-}
-
-.dxCard:hover {
-    position: inherit;
-    height: auto;
-    z-index: 999;
-    transform: scale(1.1);
+    transform: scale(1.3);
 }
 
 .cardAndVotesResult .dxCard:hover, .cardAndVotesResult .selectedCard {
-    height: 400px;
+    height: 250px;
     transform: unset;
 }
 
@@ -98,13 +95,14 @@ body {
 }
 
 .dxCard {
-    width: 200px;
-    height: 400px;
+    width: 150px;
+    height: 250px;
     border: solid #a6bcc6 1.2px;
     border-radius: 10px;
     margin: 0 4px;
     padding: 10px;
     background-color: #e9f8ff;
+    transition-duration: 1s;
 }
 
 .cardImg {

@@ -102,7 +102,7 @@ const drawPlayersList = () => {
         const player = myPlayersList[i]
         const isGameMaster = player.id === myGameMasterID ? " class = gameMaster " : ""
         htmlPLayersList.innerHTML += "<div>"
-        htmlPLayersList.innerHTML += "<span " + isGameMaster + "style = \"color : " + player.color + "\">" + player.name + " " + player.score + 'pts ' + (myGamePhase === VIEWING_VOTES ? ' + ' + player.scoreDelta : '') + "</span>"
+        htmlPLayersList.innerHTML += "<span " + isGameMaster + 'class="playerName"' + "style = \"color : " + player.color + "\">" + player.name + " " + player.score + 'pts ' + (myGamePhase === VIEWING_VOTES ? ' + ' + player.scoreDelta : '') + "</span>"
         if (player.hasPlayed && myGamePhase !== VIEWING_VOTES) {
             htmlPLayersList.innerHTML += '<img src = "client/img/check.png" class = "hasPlayedIcon" />'
         }
