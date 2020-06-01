@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DixImac</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div id = 'devCredits'></div>
+    <div id = 'illuCredits'></div>
+</body>
+
+<script>
+    const jules = {name: 'Jules Fouchy', link: 'https://julesfouchy.github.io/MyProjectsOverview/'}
+    const laura = {name: 'Laura Dietsch', link: 'http://lauradietsch.pro/'}
+    const mathilde = {name: 'Mathilde Dumoulin', insta: 'https://www.instagram.com/math.edil'}
+    const laurelenn = {name: 'Laurelenn Sangare', link: 'https://laurelenn-sangare.fr', insta: 'https://instagram.com/hayleiss'}
+    const eva = {name: 'Eva Benharira', insta: 'https://www.instagram.com/emoi_cb/'}
+
+    let developppers = [jules, laura]
+    let illustrators = [mathilde, laurelenn, eva]
+
+    const shuffle = (arr) => {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    developppers = shuffle(developppers)
+    illustrators = shuffle(illustrators)
+
+    const credit = (author) =>
+          (author.link ? '<a href = ' +author.link+ ' target = _blank>' : '')
+        + author.name
+        + (author.link ? '</a>' : '')
+        + (author.insta ? 
+            ' <a href = ' +author.insta+ ' target = _blank><img src = img/insta-logo-50px.png width = 20px></img></a>' : '')
+
+    document.getElementById('devCredits').innerHTML = 
+          'This application was developed by '
+        + credit(developppers[0])
+        + ' and '
+        + credit(developppers[1])
+        + '.'
+
+    document.getElementById('illuCredits').innerHTML = 
+          'The amazing background illustration was made by '
+        + credit(illustrators[0])
+        + ', '
+        + credit(illustrators[1])
+        + ' and '
+        + credit(illustrators[2])
+        + '.'
+</script>
