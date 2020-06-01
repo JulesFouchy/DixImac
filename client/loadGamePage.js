@@ -8,7 +8,7 @@ xhr.onreadystatechange = function() {
 xhr.send()
 
 const loadGamePage = () => {
-    const htmlEl = document.body
+    const htmlEl = document.getElementById('landingPage')
     htmlEl.innerHTML = gamePageContent
     htmlEl.removeAttribute("class")
 }

@@ -17,40 +17,42 @@
 </head>
 
 <body>
-    <div class="homeBG">
-        <div class="container-fluid home-container text-center" id="global-container">
-            <h1> DIXIMAC</h1>
-            <div class="home-content">
-                <div class="form-group">
-                    <label for="pseudo-input">Name</label>
-                    <input class="form-control" id="pseudo-input" autocomplete="off" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')" />
-                </div>
-                <div class="form-group">
-                    <label for="roomToJoinID">Join a room</label>
-                    <div id="roomSelection">
-                        <div class="input-group">
-                            <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" autocomplete="off">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-secondary" onclick=joinRoom()>GO</button>
+    <span id = "landingPage">
+        <div class="homeBG">
+            <div class="container-fluid home-container text-center" id="global-container">
+                <h1> DIXIMAC</h1>
+                <div class="home-content">
+                    <div class="form-group">
+                        <label for="pseudo-input">Name</label>
+                        <input class="form-control" id="pseudo-input" autocomplete="off" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')" />
+                    </div>
+                    <div class="form-group">
+                        <label for="roomToJoinID">Join a room</label>
+                        <div id="roomSelection">
+                            <div class="input-group">
+                                <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" autocomplete="off">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-secondary" onclick=joinRoom()>GO</button>
+                                </div>
+                            </div>
+                            <label for="buttonCreateARoom">or</label>
+                            <div>
+                                <button type="submit" class="btn btn-secondary w-100" id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
                             </div>
                         </div>
-                        <label for="buttonCreateARoom">or</label>
-                        <div>
-                            <button type="submit" class="btn btn-secondary w-100" id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
-                        </div>
                     </div>
-                </div>
-                <div>
-                    <!-- <p><a href="" data-toggle="modal" data-target="#modalRules">Dixit Rules</a></p> -->
-                </div>
-                <div>
-                    <p>You can <a href="" data-toggle="modal" data-target="#modalHowToSendUsACard">send us your own cards</a> and we will add them to the game !</p>
-                    <p><a href="https://julesfouchy.github.io/DixImacGallery/" target="_blank">See the home made cards gallery !</a></p>
-                    <p><a href="client/credits.html" target = "_blank">Credits</a></p>
+                    <div>
+                        <!-- <p><a href="" data-toggle="modal" data-target="#modalRules">Dixit Rules</a></p> -->
+                    </div>
+                    <div>
+                        <p>You can <a href="" data-toggle="modal" data-target="#modalHowToSendUsACard">send us your own cards</a> and we will add them to the game !</p>
+                        <p><a href="https://julesfouchy.github.io/DixImacGallery/" target="_blank">See the home made cards gallery !</a></p>
+                        <p><a href="client/credits.html" target = "_blank">Credits</a></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </span>
 
     <!--<footer class="footer mt-auto text-center p-2">
         <p>
