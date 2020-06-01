@@ -1,5 +1,6 @@
 h1 {
     font-size: 2rem;
+    font-family: 'Berkshire Swash', cursive;
 }
 
 h2 {
@@ -56,7 +57,7 @@ a {
 html, body {
     height: 100%;
 }
-body {
+.homeBG {
     display: flex;
     flex-direction: column;
     background-image: url(img/bg-diximac.png);
@@ -85,6 +86,14 @@ body {
     width: 100%;
     padding: 15px;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    background-image: url(img/bg-game.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    height: 100%;
 }
 
 .game-container #pseudo-input, #hintInput {
@@ -97,7 +106,8 @@ body {
     bottom: 0;
     left: 0;
     z-index: 100;
-    /*overflow: auto;*/
+    overflow: auto;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .board {

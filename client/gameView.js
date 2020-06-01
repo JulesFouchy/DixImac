@@ -19,14 +19,11 @@ const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
         + '></img>'
         + (cardObj.authorName ? '<div class="dxCardInfos>'
         + '<div class="author">'
-        + (cardObj.authorLink ? '<a href="' + cardObj.authorLink +'"  target="_blank">' : '')
+        + (cardObj.linkToGalery ? '<a href="' + cardObj.linkToGalery +'"  target="_blank">' : '')
         + 'by ' + cardObj.authorName 
-        + (cardObj.authorLink ? '</a>' : '')
+        + (cardObj.linkToGalery ? '</a>' : '')
         + '</div>'
-        + '<div class="galleryLink"><a href="'
-        + cardObj.linkToGalery
-        + '" target="_blank">Voir dans la gallery</a>'
-        + '</div></div >' : '')
+        + '</div >' : '')
         +'</div > '
 }
 
