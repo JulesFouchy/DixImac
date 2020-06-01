@@ -17,7 +17,7 @@ const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
         + '></img>'
-        + (cardObj.authorName ? '<div class="dxCardInfos>'
+        + (cardObj.authorName ? '<div class="dxCardInfos">'
         + '<div class="author">'
         + (cardObj.linkToGalery ? '<a href="' + cardObj.linkToGalery +'"  target="_blank">' : '')
         + 'by ' + cardObj.authorName 
@@ -114,7 +114,7 @@ const drawHint = () => {
         html.innerHTML += '<input type="text" autocomplete="off" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
-        html.innerHTML += '<p id="hintText">The hint is : <b> ' + myHint + '</b></p>'
+        html.innerHTML += '<div class="alert alert-warning mt-3"><p id="hintText">The hint is : <b> ' + myHint + '</b></p></div>'
     }
 }
 
