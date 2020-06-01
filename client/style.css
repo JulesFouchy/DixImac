@@ -209,8 +209,8 @@ html, body {
 }
 .cardOwner {
     overflow: hidden;
-    width: 200px;
-    height: 28px;
+    width: 150px;
+    height: 20px;
 }
 .cardAndVotesResult {
 	display: flex;
@@ -225,11 +225,12 @@ html, body {
 .nameDuringResults {
     font-size: 14px;
 	font-weight: bold;
+    text-align:center;
 }
 .cardVoter {
     overflow: hidden;
-    width: 200px;
-    height: 28px;
+    width: 150px;
+    height: 20px;
 }
 #cardsAtPlay {
     display: flex;
