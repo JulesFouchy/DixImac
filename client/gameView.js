@@ -10,14 +10,10 @@ const drawRoomInfo = () => {
     htmlEl.innerHTML = 'You are in room <b>' + myRoomID + '</b>'
 }
 
-const wrapOnClick = (onClick) => {
-    return 'if (event.target.tagName !== \'A\') ' + onClick
-}
-
 const cardDiv = (cardObj, isSelectedCard, isGameMastersCard, onClick) => {
     return '<div class = ' + (isSelectedCard ? '\"selectedCard dxCard\"' : '\"dxCard\"') 
             + (isGameMastersCard ? ' id = "gameMastersCard"' : '')
-            + 'onclick = "' + wrapOnClick(onClick) + '"' + '>'
+            + 'onclick = "' + onClick + '"' + '>'
                 +'<img src = ' + renderCard(cardObj)
                 + ' class = cardImg'
         + '></img>'
@@ -78,10 +74,10 @@ const drawStateMessage = () => {
     let message
     switch (myGamePhase) {
         case GAME_MASTER_PICKING_A_CARD:
-            message = ((myGameMasterID === myPlayerID) ? '<div class="alert alert-warning" role="alert">You are the Story Teller, pick a card and write a hint</div>' : "Waiting for the Story Teller to pick a card")
+            message = ((myGameMasterID === myPlayerID) ? '<div class="alert alert-warning" role="alert">You are the Story Teller, pick a card and write an hint</div>' : "Waiting for the Story Teller to pick a card")
             break
         case OTHER_PLAYERS_PICKING_A_CARD:
-            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Pick a card that would match the hint</div>' : "Waiting for the other players to pick a card")
+            message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Pick a card that would match the hint</div>' : "Waiting for other players to pick a card")
             break
         case VOTING_FOR_A_CARD:
             message = ((myGameMasterID !== myPlayerID) ? '<div class="alert alert-warning" role="alert">Vote for a card</div>' : 'Waiting for the other players to vote for a card')

@@ -142,7 +142,7 @@ html, body {
 
 /* State message */
 #stateMessage {
-    height: 100px;
+   min-height: 150px;
 }
 
 .dxCard:hover, .selectedCard {
@@ -174,7 +174,7 @@ html, body {
     margin: 4px;
     padding: 10px;
     background-color: rgb(255, 237, 181);
-    transition-duration: 1s;
+    transition-duration: 0.4s;
 }
 
 .dxCardInfos .author {
@@ -235,7 +235,7 @@ html, body {
 }
 .cardVerso {
     width: 150px;
-    height: 300px;
+    height: 250px;
     border-radius: 10px;
     margin: 0 4px;
     padding: 10px;
