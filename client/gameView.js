@@ -42,7 +42,7 @@ const getSpanOfCardVoters = (cardAtPLayIndex) => {
     const list = myVoteResults[cardAtPLayIndex]
     let res = '<span class = "cardVoters">'
     for (let i = 0; i < list.length; ++i) {
-        res += '<span class = "cardVoter" style = "color : ' + list[i].color + '">' + list[i].name + '</span>'
+        res += '<span class = "cardVoter nameDuringResults">' + list[i].name + '</span>'
     }
     res += '</span>'
     return res
@@ -55,7 +55,7 @@ const drawCardsAtPlayAndVotesResult = () => {
     for (let i = 0; i < list.length; ++i) {
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-                + '<span class = "cardOwner" style = "color : ' + list[i].playerColor + '">' + list[i].playerName + '</span>'
+                + '<span class = "cardOwner nameDuringResults">' + list[i].playerName + '</span>'
                 + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
             + getSpanOfCardVoters(i)
             + "</span>";
