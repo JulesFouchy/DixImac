@@ -207,11 +207,6 @@ html, body {
 #hintText {
 	font-size: 18px;
 }
-.cardOwner {
-    overflow: hidden;
-    width: 150px;
-    height: 20px;
-}
 .cardAndVotesResult {
 	display: flex;
 	flex-wrap: wrap;
@@ -223,14 +218,13 @@ html, body {
 	flex-direction: column;
 }
 .nameDuringResults {
-    font-size: 14px;
-	font-weight: bold;
-    text-align:center;
-}
-.cardVoter {
     overflow: hidden;
     width: 150px;
     height: 20px;
+    
+    font-size: 14px;
+	font-weight: bold;
+    text-align: center;
 }
 #cardsAtPlay {
     display: flex;
