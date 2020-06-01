@@ -6,33 +6,70 @@ h2 {
     font-size: 1.5rem;
 }
 
-a:hover {
-    text-decoration:none;
+a {
+    color:#893bbf ;
 }
 
+    a:hover {
+        text-decoration: none;
+        color: #6c3492;
+    }
+
 /* Home style */
+
 .home-container {
     width: 100%;
-    max-width: 330px;
+    max-width: 400px;
     padding: 15px;
     margin: auto;
+    margin-top: 100px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
 }
+
+    .home-container label {
+        font-size: 20px;
+    }
+
+    .home-container h1, .home-container label {
+        font-family: 'Berkshire Swash', cursive;
+    }
+
+.btn-secondary {
+    background-color: #422159;
+}
+
+    .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+        background-color: #331945;
+    }
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+    .form-control placeholder {
+        color: red;
+    }
+
 
 /*---- PUT FOOTER AT THE BOTTOM OF THE PAGE -----*/
 html, body {
     height: 100%;
 }
 body {
-	display: flex;
-	flex-direction: column;
-}
-.content {
-	flex: 1 0 auto;
-}
-.footer {
-	flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background-image: url(img/bg-diximac.png);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    height: 100%;
 }
 /*----- FOOTER ----*/
+.footer {
+    background-color: rgba(255, 255, 255, 0.7);
+}
 .linkToPopup {
 	color: blue;
 }

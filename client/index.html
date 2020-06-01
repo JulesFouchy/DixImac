@@ -1,62 +1,62 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
     <title>DixImac</title>
+    <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="client/style.css" rel="stylesheet" type="text/css">
     <meta charset="utf-8">
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
     <script src="client/imageFromP5.js"></script>
-	<script src="client/createOrJoinRoom.js"></script>
-	<script src="client/gameView.js"></script>
-	<script src="client/state.js"></script>
-	<script src="client/loadGamePage.js"></script>
+    <script src="client/createOrJoinRoom.js"></script>
+    <script src="client/gameView.js"></script>
+    <script src="client/state.js"></script>
+    <script src="client/loadGamePage.js"></script>
 </head>
 
 <body>
-
-    <div class="container-fluid home-container text-center" id = "global-container">
-        <div class="home-content">
-            <div class="form-group">
-                <label for="pseudo-input">Name</label>
-                <input class="form-control" id="pseudo-input" autocomplete="off" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')"/>
-            </div>
-            <div class="form-group">
-                <label for="roomToJoinID">Join a room</label>
-                <div id="roomSelection">
-                    <div class="input-group" >
-                        <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" autocomplete="off">
-                        <div class="input-group-append">
-                            <button type = "submit" class="btn btn-secondary" onclick= joinRoom() >GO</button >
+    <div class="homeBG">
+        <div class="container-fluid home-container text-center" id="global-container">
+            <h1> DIXIMAC</h1>
+            <div class="home-content">
+                <div class="form-group">
+                    <label for="pseudo-input">Name</label>
+                    <input class="form-control" id="pseudo-input" autocomplete="off" type="text" value="" placeholder="Enter your name" onchange="onMyNameChange(this.value || 'myName')" />
+                </div>
+                <div class="form-group">
+                    <label for="roomToJoinID">Join a room</label>
+                    <div id="roomSelection">
+                        <div class="input-group">
+                            <input class="form-control" type="text" value="" id="roomToJoinID" placeholder="Enter room number" autocomplete="off">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-secondary" onclick=joinRoom()>GO</button>
+                            </div>
+                        </div>
+                        <label for="buttonCreateARoom">or</label>
+                        <div>
+                            <button type="submit" class="btn btn-secondary w-100" id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
                         </div>
                     </div>
-                    <label for="buttonCreateARoom">or</label>
-                    <div>
-                        <button type="submit" class="btn btn-secondary w-100" id="buttonCreateARoom" onclick="emitCreateRoom()">Create a Room</button>
-                    </div>
+                </div>
+                <div>
+                    <p><a href="" data-toggle="modal" data-target="#modalRules">Dixit Rules</a></p>
+                </div>
+                <div>
+                    <p>You can <a href="" data-toggle="modal" data-target="#modalHowToSendUsACard">send us your own cards</a> and we will add them to the game !</p>
+                    <p><a href="https://julesfouchy.github.io/DixImacGallery/" target="_blank">See the home made cards gallery !</a></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid text-center">
-        <div><p><a href="" data-toggle="modal" data-target="#modalRules">Dixit Rules</a></p>
-        </div>
-        <div>
-            <p>You can <a href="" data-toggle="modal" data-target="#modalHowToSendUsACard">send us your own cards</a> and we will add them to the game !</p>
-            <p><a href="https://julesfouchy.github.io/DixImacGallery/" target="_blank">See the home made cards gallery !</a></p>
-        </div>
-    </div>
-
-    <footer class="footer text-center">
+    <!--<footer class="footer mt-auto text-center p-2">
         <p>
             This application was developed by <a href="https://julesfouchy.github.io/MyProjectsOverview/" target="_blank">Jules Fouchy</a> and <a href="http://lauradietsch.pro/" target="_blank">Laura Dietsch</a> <br />
             Feel free to send us any feedback, suggestion, bug report or happy reaction at <a href="mailto:jules.fouchy@ntymail.com">jules.fouchy@ntymail.com</a><br />
-        </p>
+        </p>-->
     </footer>
-
     <!-- Modal - Dixit Rules -->
     <div class="modal fade" id="modalRules" tabindex="-1" role="dialog" aria-labelledby="modalRulesTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
