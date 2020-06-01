@@ -222,6 +222,10 @@ html, body {
 	flex-wrap: wrap;
 	flex-direction: column;
 }
+.nameDuringResults {
+    font-size: 14px;
+	font-weight: bold;
+}
 .cardVoter {
     overflow: hidden;
     width: 200px;
