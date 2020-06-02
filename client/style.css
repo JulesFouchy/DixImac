@@ -118,6 +118,9 @@ html, body {
     .sidebar a {
         color:#7511bd;
     }
+    .sidebar .form-control {
+        background-color: #ffffcc;
+    }
 
 
 .infos-box {
