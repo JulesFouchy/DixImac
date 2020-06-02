@@ -9,9 +9,8 @@ h2 {
 }
 
 a {
-    color:#893bbf ;
+    color:#893bbf;
 }
-
     a:hover {
         text-decoration: none;
         color: #6c3492;
@@ -110,13 +109,15 @@ html, body {
     left: 0;
     z-index: 100;
     overflow: auto;
-    background-color: rgb(255, 237, 181);
+    background-color: #ffa640;
     box-shadow: 2px 5px 17px #00000059;
 }
-
     .sidebar::-webkit-scrollbar {
         width: 0px;
         background: transparent; /* Chrome/Safari/Webkit */
+    }
+    .sidebar a {
+        color:#7511bd;
     }
 
 
@@ -157,10 +158,6 @@ html, body {
     transform: unset;
 }
 
-.withShadow {
-    text-shadow: black 0.1em 0.1em 10px;
-}
-
 #yourHand {
     display: flex;
     flex-wrap: wrap;
@@ -172,13 +169,20 @@ html, body {
     min-height: 300px;
 }
 
+.withShadow {
+    text-shadow: black 0.1em 0.1em 10px;
+}
+
 .dxCard {
     width: 150px;
     height: 250px;
-    border-radius: 10px;
+    border-radius: 4px;
     margin: 4px;
     padding: 10px;
-    background-color: rgb(255, 237, 181);
+    background-color: #f1f1b9;
+    /* background-image: url(img/card-texture.jpg);
+    background-repeat: no-repeat;
+    background-size: cover; */
     transition-duration: 0.4s;
 }
 .dxCardInfos {
@@ -199,9 +203,14 @@ html, body {
 }
 
 .alert-warning {
-    background-color: #dca9ff;
+    background-color: #db76d4;
     border-color: #bc8fda;
-    color: black;
+    color: #fffdf2;
+    font-style: italic;
+}
+
+.youHaveToWait {
+    font-style: italic;
 }
 
 #hint {
@@ -244,7 +253,7 @@ html, body {
     border-radius: 10px;
     margin: 0 4px;
     padding: 10px;
-    background-color: rgb(255, 237, 181);
+    background-color: rgb(255, 147, 46);
     background-image: url(img/motifIMAC.png);
     background-size: 66px;
 }
