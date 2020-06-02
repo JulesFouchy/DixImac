@@ -1,7 +1,6 @@
 h1 {
     font-size: 2rem;
     font-family: 'Berkshire Swash', cursive;
-    margin-bottom: 0;
 }
 
 h2 {
@@ -169,8 +168,9 @@ html, body {
     min-height: 300px;
 }
 
-.withShadow {
+.titleYourHandOrGameBoard {
     text-shadow: black 0.1em 0.1em 10px;
+    margin-bottom: 0;
 }
 
 .dxCard {
