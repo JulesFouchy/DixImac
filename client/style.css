@@ -209,6 +209,9 @@ html, body {
     background-color: #db76d4;
     border-color: #bc8fda;
     color: #fffdf2;
+}
+
+.sidebar .alert-warning {
     font-style: italic;
 }
 

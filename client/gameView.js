@@ -118,7 +118,10 @@ const drawHint = () => {
         html.innerHTML += '<input type="text" autocomplete="off" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
-        html.innerHTML += '<div class="alert alert-warning mt-3"><span id="hintText">The hint is : <b> ' + myHint + '</b></span></div>'
+        html.innerHTML += '<div class="alert alert-warning mt-3"><span id="hintText"><i>The hint is</i> : <b> ' + myHint + '</b></span></div>'
+    }
+    else {
+        html.innerHTML += '<div class="alert alert-warning mt-3" style="visibility: hidden;"><span id="hintText"><i>The hint is</i> : <b></b></span></div>'
     }
 }
 
