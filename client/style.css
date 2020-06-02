@@ -186,7 +186,7 @@ html, body {
     /* background-image: url(img/card-texture.jpg);
     background-repeat: no-repeat;
     background-size: cover; */
-    transition-duration: 0.4s;
+    /* transition-duration: 0.4s; */
 }
 
 .selectedCard {
