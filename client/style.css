@@ -176,6 +176,9 @@ html, body {
     background-color: rgb(255, 237, 181);
     transition-duration: 0.4s;
 }
+.dxCardInfos {
+    text-align: center;
+}
 
 .dxCardInfos .author {
     line-height: 16px;
@@ -186,10 +189,6 @@ html, body {
     width: 100%;
 }
 
-
-#yourHand {
-    text-align: center;
-}
 .hasPlayedIcon {
 	width: 16px;
 }
