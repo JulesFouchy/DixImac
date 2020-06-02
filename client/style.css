@@ -8,7 +8,7 @@ h2 {
 }
 
 a {
-    color:#893bbf;
+    color:#7511bd;
 }
     a:hover {
         text-decoration: none;
@@ -114,9 +114,6 @@ html, body {
     .sidebar::-webkit-scrollbar {
         width: 0px;
         background: transparent; /* Chrome/Safari/Webkit */
-    }
-    .sidebar a {
-        color:#7511bd;
     }
     .sidebar .form-control {
         background-color: rgb(255, 255, 214);
