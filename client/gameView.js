@@ -57,10 +57,11 @@ const drawCardsAtPlayAndVotesResult = () => {
     const list = myCardsAtPlayAndTheirPlayers
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
+        const isGameMaster = myGameMastersCardIndex === i
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-                + '<span class = "cardOwner nameDuringResults">' + list[i].playerName + '</span>'
-                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
+                + '<span class = "cardOwner nameDuringResults ' + (isGameMaster ? 'gameMaster' : '') + '">' + list[i].playerName + '</span>'
+                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, isGameMaster, '')
             + getSpanOfCardVoters(i)
             + "</span>";
     }
@@ -118,7 +119,10 @@ const drawHint = () => {
         html.innerHTML += '<input type="text" autocomplete="off" value = "' + myHint + '" id="hintInput" class="form-control" placeholder="My Hint is . . ." onchange = emitHint()>'
     }
     if (myHint) {
-        html.innerHTML += '<div class="alert alert-warning mt-3"><p id="hintText">The hint is : <b> ' + myHint + '</b></p></div>'
+        html.innerHTML += '<div class="alert alert-warning mt-3"><span id="hintText"><i>The hint is</i> : <b> ' + myHint + '</b></span></div>'
+    }
+    else {
+        html.innerHTML += '<div class="alert alert-warning mt-3" style="visibility: hidden;"><span id="hintText"><i>The hint is</i> : <b></b></span></div>'
     }
 }
 
