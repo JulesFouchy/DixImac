@@ -149,16 +149,16 @@ html, body {
    min-height: 150px;
 }
 
-.dxCard:hover, .selectedCard {
+.dxCard:hover {
     position: inherit;
     z-index: 999;
     transform: scale(1.3);
 }
 
-.cardAndVotesResult .dxCard:hover, .cardAndVotesResult .selectedCard {
+/* .cardAndVotesResult .dxCard:hover, .cardAndVotesResult .selectedCard {
     height: 250px;
     transform: unset;
-}
+} */
 
 #yourHand {
     display: flex;
@@ -188,6 +188,11 @@ html, body {
     background-size: cover; */
     transition-duration: 0.4s;
 }
+
+.selectedCard {
+    background-color: #ffae52;
+}
+
 .dxCardInfos {
     text-align: center;
 }
