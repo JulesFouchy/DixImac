@@ -251,6 +251,8 @@ html, body {
     font-size: 14px;
 	font-weight: bold;
     text-align: center;
+
+    vertical-align: text-top;
 }
 #cardsAtPlay {
     display: flex;
@@ -271,8 +273,12 @@ html, body {
 .gameMaster {
 	font-weight: bold;
 }
+.cardAndVotesResult .gameMaster {
+    color: #08ff39;
+    font-size: 16px;
+}
 #gameMastersCard {
-    background-color: #bdffb9;
+    /* background-color: #bdffb9; */
 }
 
 #defaultCanvas0 {

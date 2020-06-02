@@ -57,10 +57,11 @@ const drawCardsAtPlayAndVotesResult = () => {
     const list = myCardsAtPlayAndTheirPlayers
     html.innerHTML = ''
     for (let i = 0; i < list.length; ++i) {
+        const isGameMaster = myGameMastersCardIndex === i
         html.innerHTML = html.innerHTML
             + '<span class = cardAndVotesResult>'
-                + '<span class = "cardOwner nameDuringResults">' + list[i].playerName + '</span>'
-                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, myGameMastersCardIndex === i, '')
+                + '<span class = "cardOwner nameDuringResults ' + (isGameMaster ? 'gameMaster' : '') + '">' + list[i].playerName + '</span>'
+                + cardDiv(list[i].card, mySelectedCardAtPlayIndex === i, isGameMaster, '')
             + getSpanOfCardVoters(i)
             + "</span>";
     }
