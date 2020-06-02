@@ -218,6 +218,8 @@ html, body {
 	flex-direction: column;
 }
 .nameDuringResults {
+    color: white;
+
     overflow: hidden;
     width: 150px;
     height: 20px;
