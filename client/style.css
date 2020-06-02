@@ -157,6 +157,10 @@ html, body {
     transform: unset;
 }
 
+.withShadow {
+    text-shadow: black 0.1em 0.1em 10px;
+}
+
 #yourHand {
     display: flex;
     flex-wrap: wrap;
