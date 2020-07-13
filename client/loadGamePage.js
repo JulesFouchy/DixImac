@@ -11,4 +11,5 @@ const loadGamePage = () => {
     const htmlEl = document.getElementById('landingPage')
     htmlEl.innerHTML = gamePageContent
     htmlEl.removeAttribute("class")
+    setBgDaytime("game-container", false)
 }

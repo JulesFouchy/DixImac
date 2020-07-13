@@ -59,12 +59,23 @@ html, body {
 .homeBG {
     display: flex;
     flex-direction: column;
-    background-image: url(img/bg-diximac.png);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
     height: 100%;
+}
+.bg-dawn-boat {
+    background-image: url(img/bg-dawn-boat.png);
+}
+.bg-day-boat {
+    background-image: url(img/bg-day-boat.png);
+}
+.bg-dusk-boat {
+    background-image: url(img/bg-dusk-boat.png);
+}
+.bg-night-boat {
+    background-image: url(img/bg-night-boat.png);
 }
 /*----- FOOTER ----*/
 .footer {
@@ -86,11 +97,23 @@ html, body {
     min-height:100%;
     padding: 15px;
     margin: auto;
-    background-image: url(img/bg-game.png);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
     background-size: cover;
+}
+
+.bg-dawn {
+    background-image: url(img/bg-dawn.png);
+}
+.bg-day {
+    background-image: url(img/bg-day.png);
+}
+.bg-dusk {
+    background-image: url(img/bg-dusk.png);
+}
+.bg-night {
+    background-image: url(img/bg-night.png);
 }
 
 .game-container #pseudo-input {
