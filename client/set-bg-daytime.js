@@ -5,7 +5,7 @@ const setBgDaytime = (containerName, bWithBoat) => {
         el.classList.add(bWithBoat ? "bg-night-boat" : "bg-night")
     else if (hour <= 8)
         el.classList.add(bWithBoat ? "bg-dawn-boat" : "bg-dawn")
-    else if (hour <= 19)
+    else if (hour <= 18)
         el.classList.add(bWithBoat ? "bg-day-boat" : "bg-day")
     else
         el.classList.add(bWithBoat ? "bg-dusk-boat" : "bg-dusk")
