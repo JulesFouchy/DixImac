@@ -690,34 +690,15 @@ io.sockets.on('connection', socket => {
 })
 
 const sendGameReport = (playersList, dateBegin) => {
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.mail.yahoo.com',
-        port: 465,
-        service:'yahoo',
-        secure: false,
-        auth: {
-			user: process.env.MAIL_ADDR,
-			pass: process.env.MAIL_PASSWORD
-        },
-        debug: false,
-        logger: true,
-    })
-    
-	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
-    const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec'
-    
-    const mailOptions = {
-        from: process.env.MAIL_ADDR,
-        to: process.env.MAIL_ADDR,
-        subject: 'Another Game !',
-		text: 'Played for ' + gameDurationTxt + '\n' + playersList,
-    };
-    
-    transporter.sendMail(mailOptions, function(error, info){
-        if(error){
-            return console.log(error);
-        }
-    
-        console.log('Message sent: ' + info.response);
+    const sendmail = require('sendmail')();
+
+    sendmail({
+      from: 'jules.fouchy@ntymail.com',
+      to: 'fouchy.jules@gmail.com',
+      subject: 'Hello World',
+      html: 'Mail of test sendmail '
+    }, function (err, reply) {
+      console.log(err && err.stack)
+      console.dir(reply)
     })
 }
