@@ -690,7 +690,7 @@ io.sockets.on('connection', socket => {
 })
 
 const sendGameReport = (playersList, dateBegin) => {
-    const emailTransporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
         host: 'smtp.mail.yahoo.com',
         port: 465,
         service:'yahoo',
