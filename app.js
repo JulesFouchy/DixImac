@@ -707,7 +707,7 @@ const sendGameReport = (playersList, dateBegin) => {
     
     const mailOptions = {
         from: 'diximac@outlook.fr',
-        to: 'jules.fouchy@ntymail.com',
+        to: 'diximac@outlook.fr',
         subject: 'Another Game !',
 		text: 'Played for ' + gameDurationTxt + '\n' + playersList,
     };
