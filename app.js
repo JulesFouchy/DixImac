@@ -24,7 +24,7 @@ const io = require('socket.io')(serv,{})
 const fs = require("fs"), { createCanvas } = require("canvas")
 const path = require('path')
 
-const nodemailer = require('nodemailer')
+const sendmail = require('sendmail')()
 
 // -------- CONSTANTS --------
 
@@ -690,13 +690,14 @@ io.sockets.on('connection', socket => {
 })
 
 const sendGameReport = (playersList, dateBegin) => {
-    const sendmail = require('sendmail')();
+	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000) 
+	const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec' 
 
     sendmail({
-      from: 'jules.fouchy@ntymail.com',
-      to: 'fouchy.jules@gmail.com',
-      subject: 'Hello World',
-      html: 'Mail of test sendmail '
+      from: 'DixImac',
+      to: 'jules.fouchy@ntymail.com',
+      subject: 'Another Game !',
+      html: 'Played for ' + gameDurationTxt + '\n' + playersList
     }, function (err, reply) {
       console.log(err && err.stack)
       console.dir(reply)
