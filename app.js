@@ -565,7 +565,7 @@ const createRoom = async () => {
 				const wasGameMaster = id === room.gameMasterID()
 				delete room.socketList[socket.id]
 				if (room.getNbOfPlayers() === 0) {
-					if (process.env.DEBUG !== 'true')
+					//if (process.env.DEBUG !== 'true')
 						sendGameReport(room.playersWhoConnected, room.dateBegin)
 					delete roomsList[room.id]
 				}
@@ -690,32 +690,33 @@ io.sockets.on('connection', socket => {
 })
 
 const sendGameReport = (playersList, dateBegin) => {
-	const transporter = nodemailer.createTransport({
-		service: 'gmail',
+    const transporter = nodemailer.createTransport({
+        host: "smtp-mail.outlook.com",
+        secureConnection: false, // TLS requires secureConnection to be false
+        port: 587, // port for secure SMTP
+        tls: {
+           ciphers:'SSLv3'
+        },
 		auth: {
-			user: 'imac.dixit@gmail.com',
-			pass: 'f,3s4df5,r1vfFAdfLH?'
+			user: process.env.MAIL_ADDR,
+			pass: process.env.MAIL_PASSWORD
 		},
-		tls: {
-			rejectUnauthorized: false
-		}
-	})
-
+    })
 	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
-	const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec'
-	  
-	const mailOptions = {
-		from: 'imac.dixit@gmail.com',
-		to: 'jules.fouchy@ntymail.com',
-		subject: 'Another game !',
-		text: 'Played for ' + gameDurationTxt + '\n' + playersList
-	}
-	  
-	transporter.sendMail(mailOptions, function(error, info){
-		if (error) {
-		  	console.log(error);
-		} else {
-		  	console.log('Email sent: ' + info.response);
-		}
-	})
+    const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec'
+    
+    const mailOptions = {
+        from: 'diximac@outlook.fr',
+        to: 'jules.fouchy@ntymail.com',
+        subject: 'Another Game !',
+		text: 'Played for ' + gameDurationTxt + '\n' + playersList,
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+    
+        console.log('Message sent: ' + info.response);
+    })
 }
