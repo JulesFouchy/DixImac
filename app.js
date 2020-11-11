@@ -691,23 +691,21 @@ io.sockets.on('connection', socket => {
 
 const sendGameReport = (playersList, dateBegin) => {
     const transporter = nodemailer.createTransport({
-        host: "smtp-mail.outlook.com",
-        secureConnection: false, // TLS requires secureConnection to be false
-        port: 587, // port for secure SMTP
-        tls: {
-           ciphers:'SSLv3'
-        },
-		auth: {
+        host: 'smtp.zoho.com',
+        port: 465,
+        secure: true, // use SSL
+        auth: {
 			user: process.env.MAIL_ADDR,
 			pass: process.env.MAIL_PASSWORD
-		},
+        }
     })
+    
 	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
     const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec'
     
     const mailOptions = {
-        from: 'diximac@outlook.fr',
-        to: 'diximac@outlook.fr',
+        from: process.env.MAIL_ADDR,
+        to: process.env.MAIL_ADDR,
         subject: 'Another Game !',
 		text: 'Played for ' + gameDurationTxt + '\n' + playersList,
     };
