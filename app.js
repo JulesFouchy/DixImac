@@ -695,7 +695,7 @@ const sendGameReport = (playersList, dateBegin) => {
 
     sendmail({
       from: 'DixImac',
-      to: 'jules.fouchy@ntymail.com',
+      to: 'fouchy.jules@gmail.com',
       subject: 'Another Game !',
       html: 'Played for ' + gameDurationTxt + '\n' + playersList
     }, function (err, reply) {
