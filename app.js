@@ -694,7 +694,7 @@ const sendGameReport = (playersList, dateBegin) => {
 	const gameDurationTxt = Math.floor(duration / 60) + ' min ' + (duration % 60) + ' sec' 
 
     sendmail({
-      from: 'DixImac',
+      from: 'imac.dixit@gmail.com',
       to: 'fouchy.jules@gmail.com',
       subject: 'Another Game !',
       html: 'Played for ' + gameDurationTxt + '\n' + playersList
