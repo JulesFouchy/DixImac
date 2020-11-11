@@ -690,14 +690,17 @@ io.sockets.on('connection', socket => {
 })
 
 const sendGameReport = (playersList, dateBegin) => {
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.zoho.com',
+    const emailTransporter = nodemailer.createTransport({
+        host: 'smtp.mail.yahoo.com',
         port: 465,
-        secure: true, // use SSL
+        service:'yahoo',
+        secure: false,
         auth: {
 			user: process.env.MAIL_ADDR,
 			pass: process.env.MAIL_PASSWORD
-        }
+        },
+        debug: false,
+        logger: true,
     })
     
 	const duration = Math.floor(((new Date()).getTime() - dateBegin.getTime()) / 1000)
