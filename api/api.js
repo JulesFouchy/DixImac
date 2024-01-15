@@ -3,7 +3,7 @@ const router = express.Router()
 require('dotenv/config')
 const cardRendering = require('../cardRendering')
 
-const webCardsLocation = 'http://diximac.herokuapp.com/client/cards'
+const webCardsLocation = 'https://diximac.onrender.com/client/cards'
 
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
